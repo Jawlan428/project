@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 488de70c6507ea549a4261b26ce649ea
+timeCreated: 1435049505
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 39886
+  packageName: Modern Office
+  packageVersion: 1.4
+  assetPath: Assets/Modern Office/Prefabs/paper2.prefab
+  uploadId: 789504

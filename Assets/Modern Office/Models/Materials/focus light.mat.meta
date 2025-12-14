@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: fadc6493f76f2f04a81dd65d798ffea0
+timeCreated: 1456483803
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 39886
+  packageName: Modern Office
+  packageVersion: 1.4
+  assetPath: Assets/Modern Office/Models/Materials/focus light.mat
+  uploadId: 789504

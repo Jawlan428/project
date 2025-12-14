@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 11045849803d0f84db171901441e8a8d
+timeCreated: 1456649838
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 39886
+  packageName: Modern Office
+  packageVersion: 1.4
+  assetPath: Assets/Modern Office/Models/Materials/Buildings.mat
+  uploadId: 789504

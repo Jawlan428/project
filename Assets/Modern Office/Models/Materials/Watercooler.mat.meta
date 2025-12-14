@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 1bc18af3b8116664995fcbd3db4f2e7d
+timeCreated: 1456641368
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 39886
+  packageName: Modern Office
+  packageVersion: 1.4
+  assetPath: Assets/Modern Office/Models/Materials/Watercooler.mat
+  uploadId: 789504

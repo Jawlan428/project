@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 733966e0ed75c5c418c6f63a09b92779
+timeCreated: 1435049149
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 39886
+  packageName: Modern Office
+  packageVersion: 1.4
+  assetPath: Assets/Modern Office/Prefabs/Chair.prefab
+  uploadId: 789504

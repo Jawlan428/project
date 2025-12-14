@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 1a5aaa2a1771ec1499e24c0afa05b3fe
+timeCreated: 1456485743
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 39886
+  packageName: Modern Office
+  packageVersion: 1.4
+  assetPath: Assets/Modern Office/Models/Materials/markers.mat
+  uploadId: 789504

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 7327545155a91ad43ab10cc4c6d3ec63
+timeCreated: 1434790141
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 39886
+  packageName: Modern Office
+  packageVersion: 1.4
+  assetPath: Assets/Modern Office/Models/Materials/screen.mat
+  uploadId: 789504

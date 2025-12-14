@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 31da809508907774bb0efaea39513c27
+timeCreated: 1456475712
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 39886
+  packageName: Modern Office
+  packageVersion: 1.4
+  assetPath: Assets/Modern Office/Prefabs/Box1.prefab
+  uploadId: 789504

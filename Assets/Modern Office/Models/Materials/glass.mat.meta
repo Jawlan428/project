@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 818eba3688688eb4c8ee31016b5a76da
+timeCreated: 1434905181
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 39886
+  packageName: Modern Office
+  packageVersion: 1.4
+  assetPath: Assets/Modern Office/Models/Materials/glass.mat
+  uploadId: 789504

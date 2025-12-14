@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: e967de860b6a3be45a0e28a276c4ffd1
+timeCreated: 1456652003
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 39886
+  packageName: Modern Office
+  packageVersion: 1.4
+  assetPath: Assets/Modern Office/Models/Materials/Asphalt.mat
+  uploadId: 789504

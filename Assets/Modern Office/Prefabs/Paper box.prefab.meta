@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: dc4a12e12d705354fa6d7e6900a5c9cf
+timeCreated: 1456476225
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 39886
+  packageName: Modern Office
+  packageVersion: 1.4
+  assetPath: Assets/Modern Office/Prefabs/Paper box.prefab
+  uploadId: 789504

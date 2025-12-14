@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 92db64123bc915e469e94329cc51d5f6
+timeCreated: 1456592677
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 39886
+  packageName: Modern Office
+  packageVersion: 1.4
+  assetPath: Assets/Modern Office/Models/Materials/Filecabinet.mat
+  uploadId: 789504

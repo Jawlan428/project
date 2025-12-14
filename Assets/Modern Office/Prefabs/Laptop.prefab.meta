@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: d6eb7398e97dd8748829488d721e4843
+timeCreated: 1456486473
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 39886
+  packageName: Modern Office
+  packageVersion: 1.4
+  assetPath: Assets/Modern Office/Prefabs/Laptop.prefab
+  uploadId: 789504

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: eb59b83e1a9be0b43b8bcd489ae2cf21
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 39886
+  packageName: Modern Office
+  packageVersion: 1.4
+  assetPath: Assets/Modern Office/Models/Materials/notebook.mat
+  uploadId: 789504

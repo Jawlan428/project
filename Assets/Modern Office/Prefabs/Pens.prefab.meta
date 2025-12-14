@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 5dcb652f657ebe344850fcbf0d03808d
+timeCreated: 1456485888
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 39886
+  packageName: Modern Office
+  packageVersion: 1.4
+  assetPath: Assets/Modern Office/Prefabs/Pens.prefab
+  uploadId: 789504

@@ -1,0 +1,9 @@
+fileFormatVersion: 2
+guid: 2b4f0919c5e7a1d49b4317eceaa20cf0
+AssetOrigin:
+  serializedVersion: 1
+  productId: 39886
+  packageName: Modern Office
+  packageVersion: 1.4
+  assetPath: Assets/Modern Office/Scripts/RotateMoveCamera_InputSystem.cs
+  uploadId: 789504

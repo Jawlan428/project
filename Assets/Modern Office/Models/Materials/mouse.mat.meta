@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: e5935c5575da83e42b14dae554ba9061
+timeCreated: 1456601021
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 39886
+  packageName: Modern Office
+  packageVersion: 1.4
+  assetPath: Assets/Modern Office/Models/Materials/mouse.mat
+  uploadId: 789504

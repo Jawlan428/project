@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: f7bc952ca8e4f854ea3aad8614e2b46c
+timeCreated: 1456611437
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 39886
+  packageName: Modern Office
+  packageVersion: 1.4
+  assetPath: Assets/Modern Office/Models/Materials/machine metallic.mat
+  uploadId: 789504

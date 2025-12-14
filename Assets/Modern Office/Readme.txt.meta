@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 77e01fc824289a349983efdef4b0f3cd
+timeCreated: 1434971074
+licenseType: Store
+TextScriptImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 39886
+  packageName: Modern Office
+  packageVersion: 1.4
+  assetPath: Assets/Modern Office/Readme.txt
+  uploadId: 789504

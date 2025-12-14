@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: acdb5511142eb1c499bbcee043119940
+timeCreated: 1434479129
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 39886
+  packageName: Modern Office
+  packageVersion: 1.4
+  assetPath: Assets/Modern Office/Models/Materials/Floor.mat
+  uploadId: 789504

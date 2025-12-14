@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: cde9f345b996e6a4aabde10dd6565fd9
+timeCreated: 1434478418
+licenseType: Store
+DefaultImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 39886
+  packageName: Modern Office
+  packageVersion: 1.4
+  assetPath: Assets/Modern Office/Scene/Demo.unity
+  uploadId: 789504
