@@ -3220,8 +3220,13 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -5716681864270162303, guid: effe21434c31d2a49b6c2f13d8700c05,
         type: 3}
-      propertyPath: m_PlayAutomatically
+      propertyPath: m_AnimatePhysics
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -5716681864270162303, guid: effe21434c31d2a49b6c2f13d8700c05,
+        type: 3}
+      propertyPath: m_PlayAutomatically
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: effe21434c31d2a49b6c2f13d8700c05, type: 3}
       propertyPath: m_Name
@@ -3809,6 +3814,33 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a8e50400fdb0bf44281b50ecbc6ba674, type: 3}
+--- !u!1 &1972569429 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 175044, guid: 673e8edb660c26f4e9778772e128008e,
+    type: 3}
+  m_PrefabInstance: {fileID: 3009365806842411573}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1972569434
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1972569429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 344bd2c7980174b4ea371584baaf6337, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: VRMP::XRMultiplayer.SimpleYouTubePlayer
+  m_VideoPlayer: {fileID: 0}
+  m_ScreenDisplay: {fileID: 0}
+  m_VideoURLOrID: 85kTHwJ1Ju8
+  m_AutoPlay: 1
+  m_Loop: 1
+  m_ProxyServiceURL: https://invidious.io.lol/api/v1/videos/
+  m_UseProxyService: 1
+  m_RenderTexture: {fileID: 0}
+  m_AudioSource: {fileID: 0}
 --- !u!1001 &1985991140
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5515,7 +5547,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 175044, guid: 673e8edb660c26f4e9778772e128008e,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1972569434}
   m_SourcePrefab: {fileID: 100100000, guid: 673e8edb660c26f4e9778772e128008e, type: 3}
 --- !u!1001 &3091869868193034135
 PrefabInstance:
@@ -6563,7 +6599,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 468780, guid: 52bb3254d0e9a7b4d84a6c5690612cee, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 7.408207
+      value: 7.408
       objectReference: {fileID: 0}
     - target: {fileID: 468780, guid: 52bb3254d0e9a7b4d84a6c5690612cee, type: 3}
       propertyPath: m_LocalPosition.y
@@ -6571,7 +6607,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 468780, guid: 52bb3254d0e9a7b4d84a6c5690612cee, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 5.291737
+      value: 5.32
       objectReference: {fileID: 0}
     - target: {fileID: 468780, guid: 52bb3254d0e9a7b4d84a6c5690612cee, type: 3}
       propertyPath: m_LocalRotation.w
