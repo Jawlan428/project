@@ -1692,6 +1692,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: XR Device Simulator
       objectReference: {fileID: 0}
+    - target: {fileID: 6598815579406187037, guid: 18ddb545287c546e19cc77dc9fbb2189,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2569,6 +2574,41 @@ PrefabInstance:
         type: 3}
       propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
       value: 1801810542
+      objectReference: {fileID: 0}
+    - target: {fileID: 6572913439002396471, guid: a1adb4a6fb2422d47b8534d95732c77e,
+        type: 3}
+      propertyPath: m_Dropdown
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6572913439002396471, guid: a1adb4a6fb2422d47b8534d95732c77e,
+        type: 3}
+      propertyPath: m_HeaderText
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6572913439002396471, guid: a1adb4a6fb2422d47b8534d95732c77e,
+        type: 3}
+      propertyPath: m_VideoImage
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6572913439002396471, guid: a1adb4a6fb2422d47b8534d95732c77e,
+        type: 3}
+      propertyPath: m_VideoPlayer
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6572913439002396471, guid: a1adb4a6fb2422d47b8534d95732c77e,
+        type: 3}
+      propertyPath: m_VideoFadeGroup
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6572913439002396471, guid: a1adb4a6fb2422d47b8534d95732c77e,
+        type: 3}
+      propertyPath: m_InfoButtonObject
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6572913439002396471, guid: a1adb4a6fb2422d47b8534d95732c77e,
+        type: 3}
+      propertyPath: m_VideoPlayerObject
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 6601954192284327293, guid: a1adb4a6fb2422d47b8534d95732c77e,
         type: 3}
