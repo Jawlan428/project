@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 2367732e1046f469383be83d848601e3
+timeCreated: 1557054129
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 143045
+  packageName: pmjo's Next Gen Recorder Free (Beta)
+  packageVersion: 0.9.14.1
+  assetPath: Assets/NextGenRecorder/Examples/SimpleRecorder/Prefabs/SimpleRecorder.prefab
+  uploadId: 434001

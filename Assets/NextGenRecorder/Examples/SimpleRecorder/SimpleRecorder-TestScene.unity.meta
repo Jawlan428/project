@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 075c1ee971a4c4af3958d269742d5462
+timeCreated: 1557047432
+licenseType: Store
+DefaultImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 143045
+  packageName: pmjo's Next Gen Recorder Free (Beta)
+  packageVersion: 0.9.14.1
+  assetPath: Assets/NextGenRecorder/Examples/SimpleRecorder/SimpleRecorder-TestScene.unity
+  uploadId: 434001

@@ -97,7 +97,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.burst": {
-      "version": "1.8.25",
+      "version": "1.8.27",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -205,7 +205,7 @@
       }
     },
     "com.unity.multiplayer.playmode": {
-      "version": "1.6.2",
+      "version": "1.6.3",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -357,7 +357,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.services.multiplayer": {
-      "version": "1.2.0",
+      "version": "1.2.1",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -387,7 +387,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.services.vivox": {
-      "version": "16.7.0",
+      "version": "16.8.0",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -522,7 +522,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.xr.hands": {
-      "version": "1.7.1",
+      "version": "1.7.2",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -535,7 +535,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.xr.interaction.toolkit": {
-      "version": "3.3.0",
+      "version": "3.3.1",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -561,7 +561,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.xr.management": {
-      "version": "4.5.3",
+      "version": "4.5.4",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -573,13 +573,14 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.xr.openxr": {
-      "version": "1.16.0",
+      "version": "1.16.1",
       "depth": 0,
       "source": "registry",
       "dependencies": {
         "com.unity.inputsystem": "1.6.3",
         "com.unity.xr.core-utils": "2.3.0",
         "com.unity.xr.management": "4.4.0",
+        "com.unity.modules.androidjni": "1.0.0",
         "com.unity.xr.legacyinputhelpers": "2.1.2"
       },
       "url": "https://packages.unity.com"

@@ -26,6 +26,9 @@ namespace XRMultiplayer
             {
                 foreach (TMP_Text t in m_VersionTextComponents)
                 {
+                    if (t == null)
+                        continue;
+
                     t.text = $"{m_Prefix}{Application.version}{m_Suffix}";
                 }
             }

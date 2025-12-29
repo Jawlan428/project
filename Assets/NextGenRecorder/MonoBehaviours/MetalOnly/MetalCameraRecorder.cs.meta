@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 8499dadc1725343e1a590fcce81f4c84
+timeCreated: 1584380317
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 143045
+  packageName: pmjo's Next Gen Recorder Free (Beta)
+  packageVersion: 0.9.14.1
+  assetPath: Assets/NextGenRecorder/MonoBehaviours/MetalOnly/MetalCameraRecorder.cs
+  uploadId: 434001

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: bf56d520b150c47b7b16c86a19b68c56
+timeCreated: 1552048518
+licenseType: Store
+TextScriptImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 143045
+  packageName: pmjo's Next Gen Recorder Free (Beta)
+  packageVersion: 0.9.14.1
+  assetPath: Assets/NextGenRecorder/ReadMe.txt
+  uploadId: 434001
