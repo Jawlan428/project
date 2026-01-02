@@ -1,15 +1,3 @@
-%YAML 1.1
-%TAG !u! tag:unity3d.com,2011:
---- !u!114 &11400000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f3fe6e38ac2d4c22b04340d6eda2a47e, type: 3}
-  m_Name: MetaXRAudioSettings
-  m_EditorClassIdentifier: Meta.XR.Audio::MetaXRAudioSettings
-  voiceLimit: 64
+version https://git-lfs.github.com/spec/v1
+oid sha256:ee3dff55f0a8a2e4284629d078d800ba096f7ffb00e0221262de652896b56e20
+size 459
