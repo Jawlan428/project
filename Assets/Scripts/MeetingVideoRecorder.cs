@@ -2,6 +2,7 @@ using UnityEngine;
 using System.IO;
 using System.Diagnostics;
 using System.Collections;
+using System;
 using Debug = UnityEngine.Debug;
 
 public class MeetingVideoRecorder : MonoBehaviour
@@ -64,9 +65,13 @@ public class MeetingVideoRecorder : MonoBehaviour
             Debug.Log("FFmpeg found: " + ffmpegPath);
         }
         
-        videoFolderPath = Path.Combine(Application.dataPath, "Videos");
+        // Save videos to Desktop
+        string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+        videoFolderPath = Path.Combine(desktopPath, "MeetingRecordings");
         if (!Directory.Exists(videoFolderPath))
             Directory.CreateDirectory(videoFolderPath);
+        
+        Debug.Log("Videos will be saved to: " + videoFolderPath);
         
         captureInterval = 1f / frameRate;
         FindRecordingCamera();
@@ -343,8 +348,31 @@ exit /b %errorlevel%
         
         if (success)
         {
-            Debug.Log("✅ MP4 created: " + outputPath);
-            processingStatus = "MP4 created!";
+            // Move the final MP4 to Desktop
+            string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            string finalVideoPath = Path.Combine(desktopPath, Path.GetFileName(outputPath));
+            
+            // If file already exists on desktop, add timestamp
+            if (File.Exists(finalVideoPath))
+            {
+                string fileNameWithoutExt = Path.GetFileNameWithoutExtension(outputPath);
+                string extension = Path.GetExtension(outputPath);
+                string timestamp = System.DateTime.Now.ToString("_HHmmss");
+                finalVideoPath = Path.Combine(desktopPath, fileNameWithoutExt + timestamp + extension);
+            }
+            
+            try
+            {
+                File.Copy(outputPath, finalVideoPath, true);
+                Debug.Log("✅ MP4 created and saved to Desktop: " + finalVideoPath);
+                processingStatus = "MP4 saved to Desktop!";
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning("Could not copy to Desktop, saved at: " + outputPath);
+                Debug.LogWarning("Error: " + ex.Message);
+                processingStatus = "MP4 created!";
+            }
             
             if (deleteFramesAfterMP4)
             {
