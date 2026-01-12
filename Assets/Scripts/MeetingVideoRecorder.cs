@@ -23,7 +23,6 @@ public class MeetingVideoRecorder : MonoBehaviour
     
     [Header("UI Settings")]
     public bool showUI = true;
-    
     [Header("Status")]
     public bool isRecording = false;
     public bool isProcessing = false;
@@ -152,8 +151,8 @@ public class MeetingVideoRecorder : MonoBehaviour
         
         float buttonWidth = 220;
         float buttonHeight = 60;
-        float x = 20;
-        float y = 20;
+        float x = 170;
+        float y = 80;
         
         GUI.DrawTexture(new Rect(x - 10, y - 10, buttonWidth + 20, 200), darkTex);
         

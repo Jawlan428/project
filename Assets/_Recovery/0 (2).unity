@@ -8290,7 +8290,7 @@ PrefabInstance:
     - target: {fileID: 6598815579406187037, guid: 18ddb545287c546e19cc77dc9fbb2189,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -9488,7 +9488,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bf1c759f1ce97447ba24d7613cd4ee9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MeetingVideoRecorder
-  recordingCamera: {fileID: 4607428429233221386}
+  recordingCamera: {fileID: 4607428429233221390}
   frameRate: 30
   resolutionWidth: 1280
   resolutionHeight: 720
@@ -16303,7 +16303,7 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 4607428429233221380}
   m_PrefabAsset: {fileID: 0}
---- !u!20 &4607428429233221386 stripped
+--- !u!20 &4607428429233221390 stripped
 Camera:
   m_CorrespondingSourceObject: {fileID: 8383550645295993585, guid: 77ac6b10722bcca4a8baf70e44d89e78,
     type: 3}
