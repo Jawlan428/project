@@ -94,7 +94,7 @@ public class MeetingVideoRecorder : MonoBehaviour
         recordingCamera = Camera.main;
         if (recordingCamera == null)
         {
-            foreach (Camera cam in FindObjectsOfType<Camera>())
+            foreach (Camera cam in FindObjectsByType<Camera>(FindObjectsSortMode.None))
             {
                 if (cam.enabled && cam.gameObject.activeInHierarchy)
                 {
@@ -158,10 +158,27 @@ public class MeetingVideoRecorder : MonoBehaviour
         
         if (isProcessing)
         {
-            buttonStyle.normal.background = blueTex;
-            buttonStyle.hover.background = blueTex;
-            GUI.Button(new Rect(x, y, buttonWidth, buttonHeight), "⏳ PROCESSING...", buttonStyle);
-            GUI.Label(new Rect(x, y + buttonHeight + 10, buttonWidth, 25), processingStatus, statusStyle);
+            // Show green if successful, blue if processing, red if failed
+            if (processingStatus.Contains("SUCCESSFUL"))
+            {
+                buttonStyle.normal.background = greenTex;
+                buttonStyle.hover.background = greenTex;
+                GUI.Button(new Rect(x, y, buttonWidth, buttonHeight), "✅ DONE", buttonStyle);
+            }
+            else if (processingStatus.Contains("Failed"))
+            {
+                buttonStyle.normal.background = redTex;
+                buttonStyle.hover.background = redTex;
+                GUI.Button(new Rect(x, y, buttonWidth, buttonHeight), "❌ ERROR", buttonStyle);
+            }
+            else
+            {
+                buttonStyle.normal.background = blueTex;
+                buttonStyle.hover.background = blueTex;
+                GUI.Button(new Rect(x, y, buttonWidth, buttonHeight), "⏳ PROCESSING...", buttonStyle);
+            }
+            
+            GUI.Label(new Rect(x, y + buttonHeight + 10, buttonWidth, 50), processingStatus, statusStyle);
         }
         else if (isRecording)
         {
@@ -306,6 +323,7 @@ exit /b %errorlevel%
         Debug.Log("Created batch file: " + batPath);
         
         bool success = false;
+        Process process = null;
         
         try
         {
@@ -320,26 +338,45 @@ exit /b %errorlevel%
                 WorkingDirectory = currentSessionPath
             };
             
-            using (Process process = new Process { StartInfo = startInfo })
+            process = new Process { StartInfo = startInfo };
+            process.Start();
+            Debug.Log("FFmpeg process started...");
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError("Error starting FFmpeg: " + ex.Message);
+            isProcessing = false;
+            yield break;
+        }
+        
+        // Wait asynchronously without freezing Unity (OUTSIDE try-catch)
+        while (process != null && !process.HasExited)
+        {
+            yield return new WaitForSeconds(0.5f);
+            processingStatus = "Creating MP4...";
+        }
+        
+        // Get results after process completes
+        if (process != null)
+        {
+            try
             {
-                process.Start();
-                
                 string output = process.StandardOutput.ReadToEnd();
                 string error = process.StandardError.ReadToEnd();
                 
-                process.WaitForExit();
-                
-                Debug.Log("FFmpeg output: " + error); // FFmpeg writes to stderr
+                Debug.Log("FFmpeg output: " + error);
                 
                 success = (process.ExitCode == 0) && File.Exists(outputPath);
                 
                 if (!success)
                     Debug.LogError("FFmpeg failed: " + process.ExitCode);
+                    
+                process.Dispose();
             }
-        }
-        catch (System.Exception ex)
-        {
-            Debug.LogError("Error: " + ex.Message);
+            catch (System.Exception ex)
+            {
+                Debug.LogError("Error reading FFmpeg output: " + ex.Message);
+            }
         }
         
         // מחיקת קובץ BAT
@@ -364,13 +401,13 @@ exit /b %errorlevel%
             {
                 File.Copy(outputPath, finalVideoPath, true);
                 Debug.Log("✅ MP4 created and saved to Desktop: " + finalVideoPath);
-                processingStatus = "MP4 saved to Desktop!";
+                processingStatus = "✅ RECORDING SUCCESSFUL!";
             }
             catch (Exception ex)
             {
                 Debug.LogWarning("Could not copy to Desktop, saved at: " + outputPath);
                 Debug.LogWarning("Error: " + ex.Message);
-                processingStatus = "MP4 created!";
+                processingStatus = "✅ RECORDING SUCCESSFUL!";
             }
             
             if (deleteFramesAfterMP4)
@@ -382,10 +419,11 @@ exit /b %errorlevel%
         else
         {
             Debug.LogError("❌ Failed to create MP4");
-            processingStatus = "Failed!";
+            processingStatus = "❌ Recording Failed!";
         }
         
-        yield return new WaitForSeconds(2f);
+        // Show success/failure message for 5 seconds
+        yield return new WaitForSeconds(5f);
         isProcessing = false;
         processingStatus = "";
     }
