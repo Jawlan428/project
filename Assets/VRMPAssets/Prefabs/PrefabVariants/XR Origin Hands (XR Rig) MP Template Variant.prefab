@@ -5460,22 +5460,6 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 3856858767515338584}
-    - targetCorrespondingSourceObject: {fileID: 2425469361241291328, guid: d6878e1999eb4b44a9f5a263af86c185,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
-    - targetCorrespondingSourceObject: {fileID: 5807523068563062282, guid: d6878e1999eb4b44a9f5a263af86c185,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
-    - targetCorrespondingSourceObject: {fileID: 2974021035037999946, guid: d6878e1999eb4b44a9f5a263af86c185,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
-    - targetCorrespondingSourceObject: {fileID: 1250152698927207567, guid: d6878e1999eb4b44a9f5a263af86c185,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 8716539860532282902}
   m_SourcePrefab: {fileID: 100100000, guid: d6878e1999eb4b44a9f5a263af86c185, type: 3}
 --- !u!114 &1270315244746559373 stripped
 MonoBehaviour:
@@ -5561,27 +5545,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01f69dc1cb084aa42b2f2f8cd87bc770, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &7791223177432348522 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1250152698927207567, guid: d6878e1999eb4b44a9f5a263af86c185,
-    type: 3}
-  m_PrefabInstance: {fileID: 9027064624405046245}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &8716539860532282902
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7791223177432348522}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07aaccfa1bc2417d8fbd0d9e2e102c2c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.XR.Hands::UnityEngine.XR.Hands.XRHandSkeletonDriver
-  m_XRHandTrackingEvents: {fileID: 0}
-  m_RootTransform: {fileID: 0}
-  m_JointTransformReferences: []
 --- !u!1 &8383550644803842697 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 657184243640684908, guid: d6878e1999eb4b44a9f5a263af86c185,

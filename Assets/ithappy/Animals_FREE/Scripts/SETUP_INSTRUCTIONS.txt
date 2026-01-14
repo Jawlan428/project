@@ -1,0 +1,163 @@
+================================================================================
+CHICKEN WANDER SETUP - EXACT STEPS
+================================================================================
+
+GOAL: Make Chicken_001 move freely around your farm area.
+
+================================================================================
+STEP 1: OPEN CHICKEN PREFAB
+================================================================================
+
+1. In Unity Project window, navigate to:
+   Assets/ithappy/Animals_FREE/Prefabs/Chicken_001.prefab
+
+2. DOUBLE-CLICK Chicken_001.prefab to open in Prefab Mode
+   (You'll see "Prefab" in the top bar)
+
+================================================================================
+STEP 2: ADD CHICKENWANDERNPC SCRIPT
+================================================================================
+
+1. In Prefab Mode, select the ROOT GameObject (Chicken_001)
+
+2. In Inspector, click "Add Component"
+
+3. Search: "Chicken Wander NPC"
+
+4. Click to add it
+
+================================================================================
+STEP 3: CONFIGURE SETTINGS
+================================================================================
+
+Still in Prefab Mode, with ChickenWanderNPC component selected:
+
+SET THESE VALUES:
+
+┌─────────────────────────────────────────────────────────────┐
+│ Wander Area                                                  │
+├─────────────────────────────────────────────────────────────┤
+│ Center Transform:  [Leave EMPTY or assign later]            │
+│ Wander Radius:     3                                         │
+├─────────────────────────────────────────────────────────────┤
+│ Movement                                                     │
+├─────────────────────────────────────────────────────────────┤
+│ Walk Speed:        0.6                                       │
+│ Turn Speed:        240                                       │
+│ Stopping Distance: 0.2                                       │
+├─────────────────────────────────────────────────────────────┤
+│ Behavior                                                     │
+├─────────────────────────────────────────────────────────────┤
+│ Idle Time Min:     1                                         │
+│ Idle Time Max:     3                                         │
+├─────────────────────────────────────────────────────────────┤
+│ Gravity                                                      │
+├─────────────────────────────────────────────────────────────┤
+│ Gravity:           -9.81                                     │
+└─────────────────────────────────────────────────────────────┘
+
+4. Click "<" arrow in top-left to EXIT Prefab Mode (saves automatically)
+
+================================================================================
+STEP 4: CREATE WANDER AREA CENTER (OPTIONAL)
+================================================================================
+
+1. In Scene Hierarchy, right-click → Create Empty
+
+2. Name it: "ChickenAreaCenter"
+
+3. Position it where you want chickens to wander around
+   (e.g., center of your farm pen)
+
+4. If you created this, go back to Chicken_001 prefab and:
+   - Set "Center Transform" to drag ChickenAreaCenter here
+   - OR leave it empty to use chicken's initial position as center
+
+================================================================================
+STEP 5: PLACE CHICKEN IN SCENE
+================================================================================
+
+1. Drag Chicken_001 prefab from Project window into Scene Hierarchy
+
+2. Position it anywhere (within wander radius if you set a center)
+
+================================================================================
+STEP 6: TEST IT!
+================================================================================
+
+1. Press PLAY button (▶)
+
+2. Open Console window (Window → General → Console)
+
+3. You should see:
+   [ChickenWanderNPC] Started on Chicken_001...
+   [ChickenWanderNPC] New target: ...
+   [ChickenWanderNPC] Arrived, idling...
+
+4. Watch the chicken - it should MOVE!
+
+================================================================================
+WHAT THE SCRIPT DOES AUTOMATICALLY:
+================================================================================
+
+✓ Disables CreatureMover (conflicting script)
+✓ Disables MovePlayerInput (conflicting script)
+✓ Disables root motion (animator.applyRootMotion = false)
+✓ Sets Rigidbody to kinematic (if exists)
+✓ Logs warnings about what was disabled
+
+================================================================================
+TROUBLESHOOTING:
+================================================================================
+
+CHICKEN STILL DOESN'T MOVE?
+
+1. Check Console for errors (red messages)
+   - Fix any errors first
+
+2. Check Console for warnings (yellow messages)
+   - Look for: "[ChickenWanderNPC] Disabled conflicting scripts..."
+   - This is GOOD - it means conflicts were handled
+
+3. Verify:
+   ✓ ChickenWanderNPC component is ENABLED (checkbox checked)
+   ✓ CharacterController component exists and is enabled
+   ✓ Animator component exists and is enabled
+   ✓ Ground has a Collider component
+
+4. Check if script is running:
+   - Console should show: "[ChickenWanderNPC] Started on..."
+   - If NO messages, script might not be attached or enabled
+
+5. Check CharacterController settings:
+   - Min Move Distance should be small (0.001)
+   - Height and Radius should be appropriate for chicken
+
+6. Check ground:
+   - Ground MUST have a Collider (BoxCollider, MeshCollider, etc.)
+   - Without colliders, chicken will fall through
+
+================================================================================
+ANIMATION NOTES:
+================================================================================
+
+The script tries these methods IN ORDER:
+
+1. "Speed" parameter (float) - Sets to 0 for idle, walkSpeed for walk
+2. "State" parameter (float) - Sets to 0 for idle, 0.5 for walk
+3. State names: "Idle", "Walk", "Base Layer.Idle", "Base Layer.Walk"
+4. Clip names: "Chicken_001_idle", "Chicken_003_walk"
+
+Your Chicken.controller likely has "State" parameter - script will use that!
+
+================================================================================
+IMPORTANT:
+================================================================================
+
+- Script location: Assets/ithappy/Animals_FREE/Scripts/ChickenWanderNPC.cs
+- Uses CharacterController.Move (NOT root motion)
+- Automatically disables conflicting scripts
+- No NavMesh required
+- No UI or inventory features
+
+================================================================================
