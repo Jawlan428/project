@@ -939,6 +939,153 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: db03e7c0d3c808940a1ec44ab8ce089b, type: 3}
+--- !u!1001 &72803068
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 6191479115475244193, guid: cbd015c8392edc84097e8e4de87a9d0a,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 2.18
+      objectReference: {fileID: 0}
+    - target: {fileID: 6191479115475244193, guid: cbd015c8392edc84097e8e4de87a9d0a,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.20211458
+      objectReference: {fileID: 0}
+    - target: {fileID: 6191479115475244193, guid: cbd015c8392edc84097e8e4de87a9d0a,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 9.54
+      objectReference: {fileID: 0}
+    - target: {fileID: 6191479115475244193, guid: cbd015c8392edc84097e8e4de87a9d0a,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6191479115475244193, guid: cbd015c8392edc84097e8e4de87a9d0a,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6191479115475244193, guid: cbd015c8392edc84097e8e4de87a9d0a,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6191479115475244193, guid: cbd015c8392edc84097e8e4de87a9d0a,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6191479115475244193, guid: cbd015c8392edc84097e8e4de87a9d0a,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6191479115475244193, guid: cbd015c8392edc84097e8e4de87a9d0a,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6191479115475244193, guid: cbd015c8392edc84097e8e4de87a9d0a,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6544990386230654568, guid: cbd015c8392edc84097e8e4de87a9d0a,
+        type: 3}
+      propertyPath: m_Name
+      value: germanshepherd
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6544990386230654568, guid: cbd015c8392edc84097e8e4de87a9d0a,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 72803071}
+    - targetCorrespondingSourceObject: {fileID: 6544990386230654568, guid: cbd015c8392edc84097e8e4de87a9d0a,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 72803070}
+    - targetCorrespondingSourceObject: {fileID: 6544990386230654568, guid: cbd015c8392edc84097e8e4de87a9d0a,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 72803074}
+  m_SourcePrefab: {fileID: 100100000, guid: cbd015c8392edc84097e8e4de87a9d0a, type: 3}
+--- !u!1 &72803069 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6544990386230654568, guid: cbd015c8392edc84097e8e4de87a9d0a,
+    type: 3}
+  m_PrefabInstance: {fileID: 72803068}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &72803070
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 72803069}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f286a72ec9f21e45bf3fd54341dba8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DemoKitStylizedAnimatedDogs.DogPatrolPoint
+  gizmoColor: {r: 0, g: 1, b: 1, a: 1}
+  gizmoSize: 0.5
+--- !u!114 &72803071
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 72803069}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34e2dd68fa0b3f943a0714d9d0bfc58f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DemoKitStylizedAnimatedDogs.DogNPCController
+  playerTransform: {fileID: 0}
+  detectionRadius: 8
+  followRadius: 5
+  stopDistance: 1.5
+  walkSpeed: 1.2
+  runSpeed: 2.5
+  rotationSpeed: 5
+  patrolPoints: []
+  patrolPointReachDistance: 1
+  patrolWaitTime: 2
+  lockYPosition: 1
+--- !u!114 &72803074
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 72803069}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4067bc5527302e4e9eb9ba99dc7cc76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DemoKitStylizedAnimatedDogs.DogRoamController
+  roamCenter: {fileID: 0}
+  roamRadius: 10
+  minWaitTime: 1
+  maxWaitTime: 3
+  walkSpeed: 1.2
+  runSpeed: 2.5
+  useRunIfFar: 0
+  runDistanceThreshold: 8
+  rotationSpeed: 240
+  maxNavMeshSampleAttempts: 20
+  radiusReductionOnFail: 0.2
+  lockYPosition: 1
 --- !u!1 &79965968
 GameObject:
   m_ObjectHideFlags: 0
@@ -21166,3 +21313,4 @@ SceneRoots:
   - {fileID: 755348479}
   - {fileID: 1734055027}
   - {fileID: 20269051}
+  - {fileID: 72803068}

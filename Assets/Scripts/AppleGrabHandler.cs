@@ -182,6 +182,17 @@ public class AppleGrabHandler : MonoBehaviour
         if (behaviorLogger != null)
             behaviorLogger.LogGrab(gameObject);
         
+        // AUDIT INTEGRATION
+        if (AuditLogger.Instance != null)
+        {
+            AuditLogger.Instance.Log(
+                AuditEventType.APPLE_PICKED,
+                targetId: gameObject.name,
+                zoneName: "Orchard",
+                position: transform.position
+            );
+        }
+        
         // CRITICAL: Ensure movement type is VelocityTracking when grabbed
         // This prevents the object from snapping back to original position
         grabInteractable.movementType = UnityEngine.XR.Interaction.Toolkit.Interactables.XRBaseInteractable.MovementType.VelocityTracking;
@@ -262,6 +273,17 @@ public class AppleGrabHandler : MonoBehaviour
         }
         
         Debug.Log($"{gameObject.name} released by: {args.interactorObject.transform.name}. Still selected: {grabInteractable.isSelected}");
+        
+        // AUDIT INTEGRATION
+        if (AuditLogger.Instance != null && !grabInteractable.isSelected)
+        {
+            AuditLogger.Instance.Log(
+                AuditEventType.APPLE_DROPPED,
+                targetId: gameObject.name,
+                zoneName: "Orchard",
+                position: transform.position
+            );
+        }
         
         if (rb == null)
             return;

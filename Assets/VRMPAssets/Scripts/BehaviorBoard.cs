@@ -90,4 +90,3 @@ public class BehaviorBoard : MonoBehaviour
         eventText.text = string.Join("\n", lines.Select(l => l.Text));
     }
 }
-

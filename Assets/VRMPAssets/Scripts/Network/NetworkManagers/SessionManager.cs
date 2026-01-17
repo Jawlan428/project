@@ -320,6 +320,17 @@ namespace XRMultiplayer
             {
                 m_CurrentSession.SessionPropertiesChanged += OnSessionPropertiesChanged;
             }
+            
+            // AUDIT INTEGRATION - Log JOIN_MEETING when connection succeeds
+            if (AuditLogger.Instance != null)
+            {
+                // Get player name from PlayerIdentity (set when name is entered)
+                string playerName = PlayerIdentity.Instance != null ? PlayerIdentity.Instance.PlayerName : "Unknown";
+                AuditLogger.Instance.Log(
+                    AuditEventType.JOIN_MEETING,
+                    zoneName: "Office"
+                );
+            }
         }
 
         private void OnSessionPropertiesChanged()
@@ -330,6 +341,12 @@ namespace XRMultiplayer
 
         public async Task LeaveSession()
         {
+            // AUDIT INTEGRATION - Log LEAVE_MEETING before leaving
+            if (AuditLogger.Instance != null && m_CurrentSession != null)
+            {
+                AuditLogger.Instance.Log(AuditEventType.LEAVE_MEETING);
+            }
+            
             if (m_CurrentSession != null)
             {
                 m_CurrentSession.SessionPropertiesChanged -= OnSessionPropertiesChanged;

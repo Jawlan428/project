@@ -160,6 +160,20 @@ public class VRInventoryBox : MonoBehaviour
         occupiedSlots[slotIndex] = item;
         ConfigureItemForStorage(item);
         Debug.Log($"[VRInventoryBox] Item '{item.name}' placed in slot {slotIndex}");
+        
+        // AUDIT INTEGRATION
+        if (AuditLogger.Instance != null)
+        {
+            int itemCount = GetOccupiedSlotCount();
+            string metaJson = $"{{\"slot\":{slotIndex},\"count\":{itemCount}}}";
+            AuditLogger.Instance.Log(
+                AuditEventType.APPLE_ADDED_TO_INVENTORY,
+                targetId: "Inventory",
+                zoneName: "Office",
+                position: item.transform.position,
+                metaJson: metaJson
+            );
+        }
     }
     
     private void OnItemRemoved(SelectExitEventArgs args, int slotIndex)
@@ -171,6 +185,20 @@ public class VRInventoryBox : MonoBehaviour
         occupiedSlots[slotIndex] = null;
         ConfigureItemForGrabbing(item);
         Debug.Log($"[VRInventoryBox] Item '{item.name}' removed from slot {slotIndex}");
+        
+        // AUDIT INTEGRATION
+        if (AuditLogger.Instance != null)
+        {
+            int itemCount = GetOccupiedSlotCount();
+            string metaJson = $"{{\"slot\":{slotIndex},\"count\":{itemCount}}}";
+            AuditLogger.Instance.Log(
+                AuditEventType.APPLE_REMOVED_FROM_INVENTORY,
+                targetId: "Inventory",
+                zoneName: "Office",
+                position: item.transform.position,
+                metaJson: metaJson
+            );
+        }
     }
     
     private void ConfigureItemForStorage(XRGrabInteractable item)

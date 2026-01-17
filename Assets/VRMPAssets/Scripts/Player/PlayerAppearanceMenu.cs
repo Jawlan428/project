@@ -40,6 +40,9 @@ namespace XRMultiplayer
         public void SubmitNewPlayerName(string text)
         {
             XRINetworkGameManager.LocalPlayerName.Value = text;
+            
+            // AUDIT INTEGRATION - Set player name when entered (JOIN_MEETING will be logged when connection succeeds)
+            PlayerIdentity.Instance.SetPlayerName(text);
         }
 
         /// <summary>
