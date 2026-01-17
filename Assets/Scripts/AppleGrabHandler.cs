@@ -27,6 +27,9 @@ public class AppleGrabHandler : MonoBehaviour
     
     [Tooltip("Particle effect to spawn when apple detaches")]
     public GameObject detachEffect;
+
+    [Header("Behavior Logging (Optional)")]
+    public PlayerBehaviorLogger behaviorLogger;
     
     private FixedJoint fixedJoint;
     private UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable grabInteractable;
@@ -43,6 +46,8 @@ public class AppleGrabHandler : MonoBehaviour
         fixedJoint = GetComponent<FixedJoint>();
         grabInteractable = GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
         rb = GetComponent<Rigidbody>();
+        if (behaviorLogger == null)
+            behaviorLogger = FindFirstObjectByType<PlayerBehaviorLogger>();
         
         // Validate components
         // FixedJoint is optional - it will be destroyed after first grab if present
@@ -174,6 +179,8 @@ public class AppleGrabHandler : MonoBehaviour
         
         // Log which interactor is grabbing (for debugging)
         Debug.Log($"{gameObject.name} grabbed by: {args.interactorObject.transform.name}");
+        if (behaviorLogger != null)
+            behaviorLogger.LogGrab(gameObject);
         
         // CRITICAL: Ensure movement type is VelocityTracking when grabbed
         // This prevents the object from snapping back to original position

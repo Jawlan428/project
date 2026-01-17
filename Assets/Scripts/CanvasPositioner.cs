@@ -52,7 +52,7 @@ public class CanvasPositioner : MonoBehaviour
         if (mainCamera == null)
         {
             // Find any active camera
-            mainCamera = FindObjectOfType<Camera>();
+            mainCamera = FindFirstObjectByType<Camera>();
         }
         
         if (mainCamera != null)

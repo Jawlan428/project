@@ -141,7 +141,7 @@ public class VRInventoryBox : MonoBehaviour
         socket.selectEntered.AddListener((args) => OnItemPlaced(args, slotIndex));
         socket.selectExited.AddListener((args) => OnItemRemoved(args, slotIndex));
         
-        XRInteractionManager manager = FindObjectOfType<XRInteractionManager>();
+        XRInteractionManager manager = FindFirstObjectByType<XRInteractionManager>();
         if (manager != null)
         {
             socket.interactionManager = manager;

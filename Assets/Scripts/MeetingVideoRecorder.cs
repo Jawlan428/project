@@ -12,22 +12,29 @@ public class MeetingVideoRecorder : MonoBehaviour
     public int frameRate = 30;
     public int resolutionWidth = 1280;
     public int resolutionHeight = 720;
-    
+
     [Header("Audio Settings")]
-    public bool recordAudio = true;
+    public bool recordGameAudio = true;        // ✅ captures in-game audio (recommended)
+    public GameAudioCapture gameAudioCapture;  // auto-found if null
+
+    public bool recordMicrophone = false;      // optional
     public int audioSampleRate = 44100;
-    
+    public string microphoneDevice = "";
+    [Range(0.1f, 5f)]
+    public float microphoneGain = 1f;
+
     [Header("Output Settings")]
     public bool autoCreateMP4 = true;
     public bool deleteFramesAfterMP4 = true;
-    
+
     [Header("UI Settings")]
     public bool showUI = true;
+
     [Header("Status")]
     public bool isRecording = false;
     public bool isProcessing = false;
-    public string microphoneDevice = "";
-    
+    private bool isStartingRecording = false;
+
     private string videoFolderPath;
     private string currentSessionPath;
     private string ffmpegPath;
@@ -38,10 +45,17 @@ public class MeetingVideoRecorder : MonoBehaviour
     private float nextCaptureTime;
     private float recordingStartTime;
     private string processingStatus = "";
-    
-    private AudioClip audioClip;
+
+    // mic
+    private AudioClip micClip;
     private bool hasMicrophone = false;
-    
+    private int lastMicPosition = 0;
+    private readonly System.Collections.Generic.List<float> micSamples = new System.Collections.Generic.List<float>(1024 * 10);
+    private float[] micReadBuffer;
+    private int micSampleRate = 0;
+    private int micChannels = 1;
+
+    // UI textures
     private GUIStyle buttonStyle;
     private GUIStyle statusStyle;
     private GUIStyle pathStyle;
@@ -52,8 +66,9 @@ public class MeetingVideoRecorder : MonoBehaviour
 
     void Start()
     {
+        // ffmpeg path (adjust if needed)
         ffmpegPath = Path.Combine(Application.dataPath, "ffmpeg-8.0.1-essentials_build", "bin", "ffmpeg.exe");
-        
+
         if (!File.Exists(ffmpegPath))
         {
             Debug.LogError("FFmpeg not found at: " + ffmpegPath);
@@ -63,25 +78,62 @@ public class MeetingVideoRecorder : MonoBehaviour
         {
             Debug.Log("FFmpeg found: " + ffmpegPath);
         }
-        
-        // Save videos to Desktop
+
+        // Save videos to Desktop/MeetingRecordings
         string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         videoFolderPath = Path.Combine(desktopPath, "MeetingRecordings");
         if (!Directory.Exists(videoFolderPath))
             Directory.CreateDirectory(videoFolderPath);
-        
+
         Debug.Log("Videos will be saved to: " + videoFolderPath);
-        
+
         captureInterval = 1f / frameRate;
         FindRecordingCamera();
-        
+
+        // find or attach audio capture automatically
+        if (recordGameAudio)
+            EnsureGameAudioCapture();
+
+        // microphone detection
         if (Microphone.devices.Length > 0)
         {
-            microphoneDevice = Microphone.devices[0];
             hasMicrophone = true;
-            Debug.Log("Microphone: " + microphoneDevice);
+
+            if (string.IsNullOrEmpty(microphoneDevice))
+            {
+                // Use system default by passing empty string to Microphone.Start
+                microphoneDevice = "";
+                Debug.Log("Microphone detected. Using system default device.");
+            }
+            else
+            {
+                bool found = false;
+                foreach (string device in Microphone.devices)
+                {
+                    if (device == microphoneDevice)
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found)
+                {
+                    Debug.LogWarning("Configured microphone not found. Using system default.");
+                    microphoneDevice = "";
+                }
+                else
+                {
+                    Debug.Log("Microphone detected: " + microphoneDevice);
+                }
+            }
         }
-        
+        else
+        {
+            hasMicrophone = false;
+            Debug.LogWarning("No microphone device detected.");
+        }
+
         redTex = MakeTexture(new Color(0.8f, 0.2f, 0.2f, 0.9f));
         greenTex = MakeTexture(new Color(0.2f, 0.7f, 0.3f, 0.9f));
         darkTex = MakeTexture(new Color(0.1f, 0.1f, 0.1f, 0.85f));
@@ -91,6 +143,7 @@ public class MeetingVideoRecorder : MonoBehaviour
     void FindRecordingCamera()
     {
         if (recordingCamera != null) return;
+
         recordingCamera = Camera.main;
         if (recordingCamera == null)
         {
@@ -103,8 +156,32 @@ public class MeetingVideoRecorder : MonoBehaviour
                 }
             }
         }
+
         if (recordingCamera != null)
-            Debug.Log("Camera: " + recordingCamera.name);
+            Debug.Log("Recording camera: " + recordingCamera.name);
+    }
+
+    void EnsureGameAudioCapture()
+    {
+        if (gameAudioCapture != null) return;
+
+        gameAudioCapture = FindFirstObjectByType<GameAudioCapture>();
+        if (gameAudioCapture != null) return;
+
+        AudioListener listener = FindFirstObjectByType<AudioListener>();
+
+        if (listener == null && recordingCamera != null)
+            listener = recordingCamera.GetComponent<AudioListener>();
+
+        if (listener == null && recordingCamera != null)
+            listener = recordingCamera.gameObject.AddComponent<AudioListener>();
+
+        if (listener != null)
+            gameAudioCapture = listener.GetComponent<GameAudioCapture>() ??
+                               listener.gameObject.AddComponent<GameAudioCapture>();
+
+        if (gameAudioCapture == null)
+            Debug.LogWarning("No AudioListener found. Game audio capture will be silent.");
     }
 
     Texture2D MakeTexture(Color color)
@@ -122,50 +199,61 @@ public class MeetingVideoRecorder : MonoBehaviour
             CaptureFrame();
             nextCaptureTime = Time.time + captureInterval;
         }
+
+        if (isRecording && recordMicrophone && hasMicrophone && micClip != null &&
+            Microphone.IsRecording(microphoneDevice))
+        {
+            CaptureMicSamples();
+        }
     }
 
     void OnGUI()
     {
         if (!showUI) return;
-        
+
         if (buttonStyle == null)
         {
-            buttonStyle = new GUIStyle(GUI.skin.button);
-            buttonStyle.fontSize = 24;
-            buttonStyle.fontStyle = FontStyle.Bold;
+            buttonStyle = new GUIStyle(GUI.skin.button)
+            {
+                fontSize = 24,
+                fontStyle = FontStyle.Bold
+            };
             buttonStyle.normal.textColor = Color.white;
             buttonStyle.hover.textColor = Color.white;
             buttonStyle.active.textColor = Color.white;
-            
-            statusStyle = new GUIStyle(GUI.skin.label);
-            statusStyle.fontSize = 16;
-            statusStyle.fontStyle = FontStyle.Bold;
+
+            statusStyle = new GUIStyle(GUI.skin.label)
+            {
+                fontSize = 16,
+                fontStyle = FontStyle.Bold,
+                alignment = TextAnchor.MiddleCenter
+            };
             statusStyle.normal.textColor = Color.white;
-            statusStyle.alignment = TextAnchor.MiddleCenter;
-            
-            pathStyle = new GUIStyle(GUI.skin.label);
-            pathStyle.fontSize = 11;
+
+            pathStyle = new GUIStyle(GUI.skin.label)
+            {
+                fontSize = 11,
+                wordWrap = true
+            };
             pathStyle.normal.textColor = Color.yellow;
-            pathStyle.wordWrap = true;
         }
-        
+
         float buttonWidth = 220;
         float buttonHeight = 60;
         float x = 170;
         float y = 80;
-        
-        GUI.DrawTexture(new Rect(x - 10, y - 10, buttonWidth + 20, 200), darkTex);
-        
+
+        GUI.DrawTexture(new Rect(x - 10, y - 10, buttonWidth + 20, 220), darkTex);
+
         if (isProcessing)
         {
-            // Show green if successful, blue if processing, red if failed
-            if (processingStatus.Contains("SUCCESSFUL"))
+            if (processingStatus.Contains("SUCCESS"))
             {
                 buttonStyle.normal.background = greenTex;
                 buttonStyle.hover.background = greenTex;
                 GUI.Button(new Rect(x, y, buttonWidth, buttonHeight), "✅ DONE", buttonStyle);
             }
-            else if (processingStatus.Contains("Failed"))
+            else if (processingStatus.Contains("ERROR") || processingStatus.Contains("Failed"))
             {
                 buttonStyle.normal.background = redTex;
                 buttonStyle.hover.background = redTex;
@@ -177,136 +265,239 @@ public class MeetingVideoRecorder : MonoBehaviour
                 buttonStyle.hover.background = blueTex;
                 GUI.Button(new Rect(x, y, buttonWidth, buttonHeight), "⏳ PROCESSING...", buttonStyle);
             }
-            
-            GUI.Label(new Rect(x, y + buttonHeight + 10, buttonWidth, 50), processingStatus, statusStyle);
+
+            GUI.Label(new Rect(x, y + buttonHeight + 10, buttonWidth, 60), processingStatus, statusStyle);
         }
         else if (isRecording)
         {
             buttonStyle.normal.background = redTex;
             buttonStyle.hover.background = redTex;
-            
+
             if (GUI.Button(new Rect(x, y, buttonWidth, buttonHeight), "⏹ STOP", buttonStyle))
                 StopRecording();
-            
+
             float elapsed = Time.time - recordingStartTime;
             int minutes = Mathf.FloorToInt(elapsed / 60);
             int seconds = Mathf.FloorToInt(elapsed % 60);
             string dot = (Mathf.FloorToInt(Time.time * 2) % 2 == 0) ? "🔴" : "⚫";
-            
-            GUI.Label(new Rect(x, y + buttonHeight + 10, buttonWidth, 25), 
-                string.Format("{0} REC {1:00}:{2:00}", dot, minutes, seconds), statusStyle);
-            GUI.Label(new Rect(x, y + buttonHeight + 35, buttonWidth, 25), frameCount + " frames", statusStyle);
-            
-            if (recordAudio && hasMicrophone)
-                GUI.Label(new Rect(x, y + buttonHeight + 60, buttonWidth, 25), "🎤 Recording audio", statusStyle);
+
+            GUI.Label(new Rect(x, y + buttonHeight + 10, buttonWidth, 25),
+                $"{dot} REC {minutes:00}:{seconds:00}", statusStyle);
+            GUI.Label(new Rect(x, y + buttonHeight + 35, buttonWidth, 25),
+                frameCount + " frames", statusStyle);
+
+            if (recordGameAudio && gameAudioCapture != null)
+                GUI.Label(new Rect(x, y + buttonHeight + 60, buttonWidth, 25), "🔊 Game audio: ON", statusStyle);
+
+            if (recordMicrophone && hasMicrophone)
+                GUI.Label(new Rect(x, y + buttonHeight + 85, buttonWidth, 25), "🎤 Mic: ON", statusStyle);
         }
         else
         {
             buttonStyle.normal.background = greenTex;
             buttonStyle.hover.background = greenTex;
-            
+
             if (GUI.Button(new Rect(x, y, buttonWidth, buttonHeight), "⏺ RECORD", buttonStyle))
                 StartRecording();
-            
+
             GUI.Label(new Rect(x, y + buttonHeight + 10, buttonWidth, 25), "Ready to record", statusStyle);
-            if (hasMicrophone)
-                GUI.Label(new Rect(x, y + buttonHeight + 35, buttonWidth, 25), "🎤 Mic ready", statusStyle);
+
+            if (recordGameAudio)
+                GUI.Label(new Rect(x, y + buttonHeight + 35, buttonWidth, 25), "🔊 Game audio: ON", statusStyle);
+
+            if (recordMicrophone)
+                GUI.Label(new Rect(x, y + buttonHeight + 60, buttonWidth, 25),
+                    hasMicrophone ? "🎤 Mic ready" : "🎤 Mic NOT found", statusStyle);
+
             if (autoCreateMP4)
-                GUI.Label(new Rect(x, y + buttonHeight + 60, buttonWidth, 25), "🎬 Auto MP4: ON", statusStyle);
-            
+                GUI.Label(new Rect(x, y + buttonHeight + 85, buttonWidth, 25), "🎬 Auto MP4: ON", statusStyle);
+
             string camName = recordingCamera != null ? recordingCamera.name : "None!";
-            GUI.Label(new Rect(x, y + buttonHeight + 90, buttonWidth, 50), "Cam: " + camName, pathStyle);
+            GUI.Label(new Rect(x, y + buttonHeight + 110, buttonWidth, 50), "Cam: " + camName, pathStyle);
         }
     }
 
     public void StartRecording()
     {
-        if (isRecording || isProcessing) return;
-        
+        if (isRecording || isProcessing || isStartingRecording) return;
+        StartCoroutine(StartRecordingRoutine());
+    }
+
+    IEnumerator StartRecordingRoutine()
+    {
+        isStartingRecording = true;
+
         FindRecordingCamera();
         if (recordingCamera == null)
         {
-            Debug.LogError("No camera!");
-            return;
+            Debug.LogError("No recording camera found!");
+            isStartingRecording = false;
+            yield break;
         }
-        
-        string sessionName = "Recording_" + System.DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
+
+        string sessionName = "Recording_" + DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
         currentSessionPath = Path.Combine(videoFolderPath, sessionName);
         Directory.CreateDirectory(currentSessionPath);
-        
+
         renderTexture = new RenderTexture(resolutionWidth, resolutionHeight, 24, RenderTextureFormat.ARGB32);
         renderTexture.Create();
         screenShot = new Texture2D(resolutionWidth, resolutionHeight, TextureFormat.RGB24, false);
-        
-        if (recordAudio && hasMicrophone)
+
+        // Start microphone first and wait until it begins capturing samples.
+        if (recordMicrophone && hasMicrophone)
         {
-            audioClip = Microphone.Start(microphoneDevice, false, 3600, audioSampleRate);
-            Debug.Log("🎤 Audio started");
+            int sampleRateToUse = audioSampleRate;
+            Microphone.GetDeviceCaps(microphoneDevice, out int minRate, out int maxRate);
+            if (maxRate != 0 && (sampleRateToUse < minRate || sampleRateToUse > maxRate))
+                sampleRateToUse = maxRate;
+
+            micClip = Microphone.Start(microphoneDevice, true, 3600, sampleRateToUse);
+            micSampleRate = micClip != null ? micClip.frequency : sampleRateToUse;
+            micChannels = micClip != null ? micClip.channels : 1;
+            lastMicPosition = 0;
+            micSamples.Clear();
+
+            float startTime = Time.realtimeSinceStartup;
+            while (Microphone.GetPosition(microphoneDevice) <= 0)
+            {
+                if (Time.realtimeSinceStartup - startTime > 2f)
+                {
+                    Debug.LogWarning("🎤 Microphone did not start producing samples in time.");
+                    break;
+                }
+                yield return null;
+            }
         }
-        
+
+        // Start capturing game audio after mic is ready.
+        if (recordGameAudio)
+        {
+            EnsureGameAudioCapture();
+
+            if (gameAudioCapture != null)
+            {
+                gameAudioCapture.StartCapture();
+                Debug.Log("🔊 Game audio capture started");
+            }
+            else
+            {
+                Debug.LogWarning("GameAudioCapture not found. Game audio will NOT be recorded.");
+            }
+        }
+
         frameCount = 0;
         nextCaptureTime = Time.time;
         recordingStartTime = Time.time;
         isRecording = true;
-        
+        isStartingRecording = false;
+
         Debug.Log("🔴 Recording started: " + currentSessionPath);
     }
 
+
     public void StopRecording()
     {
-        if (!isRecording) return;
+        if (!isRecording && !isStartingRecording) return;
         isRecording = false;
-        
+        isStartingRecording = false;
+
         string audioPath = null;
-        if (recordAudio && hasMicrophone && audioClip != null)
+        string micPath = null;
+
+        // Stop and save game audio
+        if (recordGameAudio && gameAudioCapture != null)
         {
-            int position = Microphone.GetPosition(microphoneDevice);
-            Microphone.End(microphoneDevice);
-            
-            if (position > 0)
+            float[] gameSamples = gameAudioCapture.StopCapture();
+            if (gameSamples != null && gameSamples.Length > 0)
             {
-                audioPath = Path.Combine(currentSessionPath, "audio.wav");
-                SaveWav(audioClip, position, audioPath);
-                Debug.Log("🎤 Audio saved");
+                audioPath = Path.Combine(currentSessionPath, "game.wav");
+                SaveWavFromSamples(gameSamples, gameAudioCapture.SampleRate, gameAudioCapture.Channels, audioPath, 1f);
+                Debug.Log("🔊 Game audio saved: " + audioPath);
+            }
+            else
+            {
+                Debug.LogWarning("Game audio samples were empty.");
             }
         }
-        
+
+        // Stop microphone (optional). If you also want MIC, you can write a separate file.
+        if (recordMicrophone && hasMicrophone && micClip != null)
+        {
+            CaptureMicSamples();
+            int position = Microphone.GetPosition(microphoneDevice);
+            Microphone.End(microphoneDevice);
+
+            if (position <= 0 && lastMicPosition > 0)
+                position = lastMicPosition;
+
+            if (micSamples.Count > 0)
+            {
+                micPath = Path.Combine(currentSessionPath, "mic.wav");
+                SaveWavFromSamples(micSamples.ToArray(), micSampleRate > 0 ? micSampleRate : audioSampleRate, micChannels, micPath, microphoneGain);
+                Debug.Log("🎤 Mic audio saved: " + micPath);
+            }
+            else
+            {
+                Debug.LogWarning("🎤 Mic recording had no samples. Check device permissions.");
+            }
+
+            micClip = null;
+        }
+
+        // Cleanup textures
         if (renderTexture != null)
         {
             renderTexture.Release();
             Destroy(renderTexture);
             renderTexture = null;
         }
+
         if (screenShot != null)
         {
             Destroy(screenShot);
             screenShot = null;
         }
-        
-        Debug.Log("⬛ Stopped: " + frameCount + " frames");
-        
+
+        Debug.Log("⬛ Stopped recording: " + frameCount + " frames");
+
         if (autoCreateMP4 && File.Exists(ffmpegPath) && frameCount > 0)
-            StartCoroutine(CreateMP4Coroutine(audioPath));
+            StartCoroutine(CreateMP4Coroutine(audioPath, micPath));
     }
 
-    IEnumerator CreateMP4Coroutine(string audioPath)
+    IEnumerator CreateMP4Coroutine(string audioPath, string micPath)
     {
         isProcessing = true;
         processingStatus = "Creating MP4...";
-        
-        yield return new WaitForSeconds(1f);
-        
+
+        yield return new WaitForSeconds(0.5f);
+
         string outputPath = Path.Combine(currentSessionPath, "meeting.mp4");
-        
-        // יצירת קובץ BAT זמני לביצוע FFmpeg (פותר בעיות נתיבים עם רווחים)
         string batPath = Path.Combine(currentSessionPath, "convert.bat");
-        
+
         string batContent;
-        if (audioPath != null && File.Exists(audioPath))
+
+        if (!string.IsNullOrEmpty(audioPath) && File.Exists(audioPath) &&
+            !string.IsNullOrEmpty(micPath) && File.Exists(micPath))
         {
             batContent = $@"@echo off
 cd /d ""{currentSessionPath}""
-""{ffmpegPath}"" -y -framerate {frameRate} -i ""frame_%%06d.jpg"" -i ""audio.wav"" -c:v libx264 -preset fast -crf 23 -c:a aac -b:a 128k -pix_fmt yuv420p -shortest ""meeting.mp4""
+""{ffmpegPath}"" -y -framerate {frameRate} -i ""frame_%%06d.jpg"" -i ""{Path.GetFileName(audioPath)}"" -i ""{Path.GetFileName(micPath)}"" -filter_complex ""[1:a][2:a]amix=inputs=2:duration=longest:dropout_transition=0[a]"" -map 0:v -map ""[a]"" -c:v libx264 -preset fast -crf 23 -c:a aac -b:a 192k -pix_fmt yuv420p -shortest ""meeting.mp4""
+exit /b %errorlevel%
+";
+        }
+        else if (!string.IsNullOrEmpty(audioPath) && File.Exists(audioPath))
+        {
+            batContent = $@"@echo off
+cd /d ""{currentSessionPath}""
+""{ffmpegPath}"" -y -framerate {frameRate} -i ""frame_%%06d.jpg"" -i ""{Path.GetFileName(audioPath)}"" -map 0:v -map 1:a -c:v libx264 -preset fast -crf 23 -c:a aac -b:a 192k -pix_fmt yuv420p -shortest ""meeting.mp4""
+exit /b %errorlevel%
+";
+        }
+        else if (!string.IsNullOrEmpty(micPath) && File.Exists(micPath))
+        {
+            batContent = $@"@echo off
+cd /d ""{currentSessionPath}""
+""{ffmpegPath}"" -y -framerate {frameRate} -i ""frame_%%06d.jpg"" -i ""{Path.GetFileName(micPath)}"" -map 0:v -map 1:a -c:v libx264 -preset fast -crf 23 -c:a aac -b:a 192k -pix_fmt yuv420p -shortest ""meeting.mp4""
 exit /b %errorlevel%
 ";
         }
@@ -318,13 +509,13 @@ cd /d ""{currentSessionPath}""
 exit /b %errorlevel%
 ";
         }
-        
+
         File.WriteAllText(batPath, batContent);
         Debug.Log("Created batch file: " + batPath);
-        
+
         bool success = false;
         Process process = null;
-        
+
         try
         {
             ProcessStartInfo startInfo = new ProcessStartInfo
@@ -337,179 +528,249 @@ exit /b %errorlevel%
                 CreateNoWindow = true,
                 WorkingDirectory = currentSessionPath
             };
-            
+
             process = new Process { StartInfo = startInfo };
             process.Start();
-            Debug.Log("FFmpeg process started...");
         }
-        catch (System.Exception ex)
+        catch (Exception ex)
         {
             Debug.LogError("Error starting FFmpeg: " + ex.Message);
             isProcessing = false;
             yield break;
         }
-        
-        // Wait asynchronously without freezing Unity (OUTSIDE try-catch)
+
         while (process != null && !process.HasExited)
         {
             yield return new WaitForSeconds(0.5f);
-            processingStatus = "Creating MP4...";
         }
-        
-        // Get results after process completes
+
         if (process != null)
         {
-            try
-            {
-                string output = process.StandardOutput.ReadToEnd();
-                string error = process.StandardError.ReadToEnd();
-                
-                Debug.Log("FFmpeg output: " + error);
-                
-                success = (process.ExitCode == 0) && File.Exists(outputPath);
-                
-                if (!success)
-                    Debug.LogError("FFmpeg failed: " + process.ExitCode);
-                    
-                process.Dispose();
-            }
-            catch (System.Exception ex)
-            {
-                Debug.LogError("Error reading FFmpeg output: " + ex.Message);
-            }
+            string stdOut = process.StandardOutput.ReadToEnd();
+            string stdErr = process.StandardError.ReadToEnd();
+
+            if (!string.IsNullOrEmpty(stdOut)) Debug.Log("FFmpeg stdout: " + stdOut);
+            if (!string.IsNullOrEmpty(stdErr)) Debug.Log("FFmpeg stderr: " + stdErr);
+
+            success = (process.ExitCode == 0) && File.Exists(outputPath);
+            if (!success)
+                Debug.LogError("FFmpeg failed. ExitCode=" + process.ExitCode);
+
+            process.Dispose();
         }
-        
-        // מחיקת קובץ BAT
+
         try { File.Delete(batPath); } catch { }
-        
+
         if (success)
         {
-            // Move the final MP4 to Desktop
             string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             string finalVideoPath = Path.Combine(desktopPath, Path.GetFileName(outputPath));
-            
-            // If file already exists on desktop, add timestamp
+
             if (File.Exists(finalVideoPath))
             {
                 string fileNameWithoutExt = Path.GetFileNameWithoutExtension(outputPath);
                 string extension = Path.GetExtension(outputPath);
-                string timestamp = System.DateTime.Now.ToString("_HHmmss");
+                string timestamp = DateTime.Now.ToString("_HHmmss");
                 finalVideoPath = Path.Combine(desktopPath, fileNameWithoutExt + timestamp + extension);
             }
-            
+
             try
             {
                 File.Copy(outputPath, finalVideoPath, true);
-                Debug.Log("✅ MP4 created and saved to Desktop: " + finalVideoPath);
-                processingStatus = "✅ RECORDING SUCCESSFUL!";
+                processingStatus = "✅ RECORDING SUCCESS!";
+                Debug.Log("✅ MP4 created: " + finalVideoPath);
             }
             catch (Exception ex)
             {
-                Debug.LogWarning("Could not copy to Desktop, saved at: " + outputPath);
-                Debug.LogWarning("Error: " + ex.Message);
-                processingStatus = "✅ RECORDING SUCCESSFUL!";
+                processingStatus = "✅ RECORDING SUCCESS (saved in session folder)";
+                Debug.LogWarning("Could not copy MP4 to Desktop. Saved at: " + outputPath);
+                Debug.LogWarning("Copy error: " + ex.Message);
             }
-            
+
             if (deleteFramesAfterMP4)
             {
-                yield return new WaitForSeconds(0.5f);
-                DeleteTemporaryFiles(audioPath);
+                yield return new WaitForSeconds(0.2f);
+                DeleteTemporaryFiles();
             }
         }
         else
         {
+            processingStatus = "❌ RECORDING ERROR!";
             Debug.LogError("❌ Failed to create MP4");
-            processingStatus = "❌ Recording Failed!";
         }
-        
-        // Show success/failure message for 5 seconds
-        yield return new WaitForSeconds(5f);
+
+        yield return new WaitForSeconds(4f);
         isProcessing = false;
         processingStatus = "";
     }
 
-    void DeleteTemporaryFiles(string audioPath)
+    void DeleteTemporaryFiles()
     {
         try
         {
             foreach (string file in Directory.GetFiles(currentSessionPath, "frame_*.jpg"))
                 File.Delete(file);
+
             foreach (string file in Directory.GetFiles(currentSessionPath, "*.meta"))
                 File.Delete(file);
-            if (audioPath != null && File.Exists(audioPath))
-                File.Delete(audioPath);
-            Debug.Log("🗑 Temp files deleted");
+
+            // keep audio.wav for debug, you can delete if you want:
+            // foreach (string file in Directory.GetFiles(currentSessionPath, "*.wav"))
+            //     File.Delete(file);
+
+            Debug.Log("🗑 Temp frames deleted");
         }
-        catch (System.Exception ex)
+        catch (Exception ex)
         {
             Debug.LogWarning("Delete error: " + ex.Message);
-        }
-    }
-
-    void SaveWav(AudioClip clip, int sampleCount, string path)
-    {
-        float[] samples = new float[sampleCount * clip.channels];
-        clip.GetData(samples, 0);
-        
-        using (var fs = new FileStream(path, FileMode.Create))
-        using (var writer = new BinaryWriter(fs))
-        {
-            int byteRate = audioSampleRate * clip.channels * 2;
-            int dataSize = sampleCount * clip.channels * 2;
-            
-            writer.Write(System.Text.Encoding.ASCII.GetBytes("RIFF"));
-            writer.Write(36 + dataSize);
-            writer.Write(System.Text.Encoding.ASCII.GetBytes("WAVE"));
-            writer.Write(System.Text.Encoding.ASCII.GetBytes("fmt "));
-            writer.Write(16);
-            writer.Write((short)1);
-            writer.Write((short)clip.channels);
-            writer.Write(audioSampleRate);
-            writer.Write(byteRate);
-            writer.Write((short)(clip.channels * 2));
-            writer.Write((short)16);
-            writer.Write(System.Text.Encoding.ASCII.GetBytes("data"));
-            writer.Write(dataSize);
-            
-            foreach (float sample in samples)
-                writer.Write((short)(Mathf.Clamp(sample, -1f, 1f) * 32767));
         }
     }
 
     void CaptureFrame()
     {
         if (recordingCamera == null || renderTexture == null || screenShot == null) return;
-        
+
         RenderTexture prevRT = recordingCamera.targetTexture;
         RenderTexture prevActive = RenderTexture.active;
-        
+
         recordingCamera.targetTexture = renderTexture;
         recordingCamera.Render();
-        
+
         RenderTexture.active = renderTexture;
         screenShot.ReadPixels(new Rect(0, 0, resolutionWidth, resolutionHeight), 0, 0);
         screenShot.Apply();
-        
+
         recordingCamera.targetTexture = prevRT;
         RenderTexture.active = prevActive;
-        
+
         byte[] bytes = screenShot.EncodeToJPG(90);
-        File.WriteAllBytes(Path.Combine(currentSessionPath, string.Format("frame_{0:D6}.jpg", frameCount)), bytes);
+        File.WriteAllBytes(Path.Combine(currentSessionPath, $"frame_{frameCount:D6}.jpg"), bytes);
         frameCount++;
     }
 
-    void OnDestroy()
+    // -------- WAV helpers --------
+
+    void CaptureMicSamples()
     {
-        if (isRecording) StopRecording();
-        if (redTex) Destroy(redTex);
-        if (greenTex) Destroy(greenTex);
-        if (darkTex) Destroy(darkTex);
-        if (blueTex) Destroy(blueTex);
+        if (micClip == null) return;
+
+        int position = Microphone.GetPosition(microphoneDevice);
+        if (position < 0) return;
+
+        int clipSamples = micClip.samples;
+        if (clipSamples <= 0) return;
+
+        if (position == 0 && lastMicPosition == 0)
+            return;
+
+        if (position == lastMicPosition)
+            return;
+
+        if (position > lastMicPosition)
+        {
+            ReadMicRange(lastMicPosition, position - lastMicPosition);
+        }
+        else
+        {
+            ReadMicRange(lastMicPosition, clipSamples - lastMicPosition);
+            if (position > 0)
+                ReadMicRange(0, position);
+        }
+
+        lastMicPosition = position;
     }
 
-    void OnApplicationQuit()
+    void ReadMicRange(int offsetSamples, int sampleCount)
     {
-        if (isRecording) StopRecording();
+        if (sampleCount <= 0) return;
+
+        int total = sampleCount * micChannels;
+        if (micReadBuffer == null || micReadBuffer.Length != total)
+            micReadBuffer = new float[total];
+
+        micClip.GetData(micReadBuffer, offsetSamples);
+        micSamples.AddRange(micReadBuffer);
+    }
+
+    void SaveWavFromSamples(float[] samples, int sampleRate, int channels, string path, float gain)
+    {
+        using (var fs = new FileStream(path, FileMode.Create))
+        using (var writer = new BinaryWriter(fs))
+        {
+            int sampleCount = samples.Length;
+            int dataSize = sampleCount * 2; // 16-bit
+            int byteRate = sampleRate * channels * 2;
+
+            // RIFF header
+            writer.Write(new char[4] { 'R', 'I', 'F', 'F' });
+            writer.Write(36 + dataSize);
+            writer.Write(new char[4] { 'W', 'A', 'V', 'E' });
+
+            // fmt chunk
+            writer.Write(new char[4] { 'f', 'm', 't', ' ' });
+            writer.Write(16); // chunk size
+            writer.Write((short)1); // PCM
+            writer.Write((short)channels);
+            writer.Write(sampleRate);
+            writer.Write(byteRate);
+            writer.Write((short)(channels * 2)); // block align
+            writer.Write((short)16); // bits per sample
+
+            // data chunk
+            writer.Write(new char[4] { 'd', 'a', 't', 'a' });
+            writer.Write(dataSize);
+
+            // write samples
+            foreach (float sample in samples)
+            {
+                float boosted = Mathf.Clamp(sample * gain, -1f, 1f);
+                short s = (short)(boosted * 32767f);
+                writer.Write(s);
+            }
+        }
+    }
+
+    void SaveWavFromClip(AudioClip clip, int position, int sampleRate, string path)
+    {
+        int clipSampleRate = clip.frequency;
+        int channels = clip.channels;
+        int sampleFrames = Mathf.Min(position, clip.samples);
+        float[] samples = new float[sampleFrames * channels];
+        clip.GetData(samples, 0);
+
+        using (var fs = new FileStream(path, FileMode.Create))
+        using (var writer = new BinaryWriter(fs))
+        {
+            int sampleCount = samples.Length;
+            int dataSize = sampleCount * 2; // 16-bit
+            int byteRate = clipSampleRate * channels * 2;
+
+            // RIFF header
+            writer.Write(new char[4] { 'R', 'I', 'F', 'F' });
+            writer.Write(36 + dataSize);
+            writer.Write(new char[4] { 'W', 'A', 'V', 'E' });
+
+            // fmt chunk
+            writer.Write(new char[4] { 'f', 'm', 't', ' ' });
+            writer.Write(16);
+            writer.Write((short)1); // PCM
+            writer.Write((short)channels);
+            writer.Write(clipSampleRate);
+            writer.Write(byteRate);
+            writer.Write((short)(channels * 2));
+            writer.Write((short)16);
+
+            // data chunk
+            writer.Write(new char[4] { 'd', 'a', 't', 'a' });
+            writer.Write(dataSize);
+
+            // write samples
+            foreach (float sample in samples)
+            {
+                float boosted = Mathf.Clamp(sample * microphoneGain, -1f, 1f);
+                short s = (short)(boosted * 32767f);
+                writer.Write(s);
+            }
+        }
     }
 }
-

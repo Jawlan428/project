@@ -22,7 +22,7 @@ public class RecordingUIController : MonoBehaviour
     {
         // Find recorder if not assigned
         if (recorder == null)
-            recorder = FindObjectOfType<MeetingVideoRecorder>();
+            recorder = FindFirstObjectByType<MeetingVideoRecorder>();
         
         // Get button image component
         if (recordButton != null)
@@ -103,7 +103,7 @@ public class RecordingUIController : MonoBehaviour
                 
                 statusText.text = string.Format("{0} Recording {1:00}:{2:00}\n", dot, minutes, seconds);
                 
-                if (recorder.recordAudio && !string.IsNullOrEmpty(recorder.microphoneDevice))
+                if (recorder.recordMicrophone && !string.IsNullOrEmpty(recorder.microphoneDevice))
                     statusText.text += "🎤 Recording audio\n";
                 
                 if (recorder.recordingCamera != null)
@@ -126,9 +126,9 @@ public class RecordingUIController : MonoBehaviour
             {
                 statusText.text = "Ready to record\n";
                 
-                if (recorder.recordAudio && !string.IsNullOrEmpty(recorder.microphoneDevice))
+                if (recorder.recordMicrophone && !string.IsNullOrEmpty(recorder.microphoneDevice))
                     statusText.text += "🎤 Mic ready\n";
-                else if (recorder.recordAudio)
+                else if (recorder.recordMicrophone)
                     statusText.text += "🎤 No mic detected\n";
                 
                 if (recorder.autoCreateMP4)
