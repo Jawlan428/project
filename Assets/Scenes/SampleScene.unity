@@ -255,7 +255,7 @@ MonoBehaviour:
   - Option A
   - Option B
   allowChangeVote: 1
-  resultsText: {fileID: 0}
+  resultsText: {fileID: 118789335}
   resultsHeader: Results
   localPlayerId: LocalPlayer
 --- !u!114 &20269048
@@ -329,7 +329,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 20269046}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -1.34}
+  m_LocalPosition: {x: 0, y: 0, z: 42.173}
   m_LocalScale: {x: 0.003, y: 0.003, z: 0.003}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -341,7 +341,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 1.32, y: 1.34}
+  m_AnchoredPosition: {x: -2.592, y: 1.146}
   m_SizeDelta: {x: 945.5, y: 666.25}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &27992272
@@ -1037,8 +1037,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f286a72ec9f21e45bf3fd54341dba8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DemoKitStylizedAnimatedDogs.DogPatrolPoint
-  gizmoColor: {r: 0, g: 1, b: 1, a: 1}
-  gizmoSize: 0.5
 --- !u!114 &72803071
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1051,17 +1049,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34e2dd68fa0b3f943a0714d9d0bfc58f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DemoKitStylizedAnimatedDogs.DogNPCController
-  playerTransform: {fileID: 0}
-  detectionRadius: 8
-  followRadius: 5
-  stopDistance: 1.5
-  walkSpeed: 1.2
-  runSpeed: 2.5
-  rotationSpeed: 5
-  patrolPoints: []
-  patrolPointReachDistance: 1
-  patrolWaitTime: 2
-  lockYPosition: 1
 --- !u!114 &72803074
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1074,18 +1061,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4067bc5527302e4e9eb9ba99dc7cc76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DemoKitStylizedAnimatedDogs.DogRoamController
-  roamCenter: {fileID: 0}
-  roamRadius: 10
-  minWaitTime: 1
-  maxWaitTime: 3
-  walkSpeed: 1.2
-  runSpeed: 2.5
-  useRunIfFar: 0
-  runDistanceThreshold: 8
-  rotationSpeed: 240
-  maxNavMeshSampleAttempts: 20
-  radiusReductionOnFail: 0.2
-  lockYPosition: 1
 --- !u!1 &79965968
 GameObject:
   m_ObjectHideFlags: 0
@@ -1264,20 +1239,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e562a15a9115c8e4cb377d8bf89871cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerBehaviorLogger
-  playerName: Player
-  useAvatarName: 1
-  avatarRoot: {fileID: 0}
-  avatarNameText: {fileID: 0}
-  autoFindNameText: 1
-  nameRefreshInterval: 1
-  moveThreshold: 0.5
-  moveLogInterval: 2
-  logHeartbeat: 1
-  heartbeatInterval: 5
-  enableDebugHotkeys: 0
-  grabKey: 103
-  talkKey: 116
-  buttonKey: 98
 --- !u!1 &118789332
 GameObject:
   m_ObjectHideFlags: 0
@@ -1366,8 +1327,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4280453922
-  m_fontColor: {r: 0.1333333, g: 0.5450981, b: 0.1333333, a: 1}
+    rgba: 4293322470
+  m_fontColor: {r: 0.9, g: 0.9, b: 0.9, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -11669,9 +11630,10 @@ MonoBehaviour:
   frameRate: 30
   resolutionWidth: 1280
   resolutionHeight: 720
+  recordSystemAudio: 1
+  recordMicrophone: 1
   recordGameAudio: 1
   gameAudioCapture: {fileID: 0}
-  recordMicrophone: 1
   audioSampleRate: 44100
   microphoneDevice: 
   microphoneGain: 3
@@ -13569,67 +13531,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!1001 &1522488051
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 152674, guid: 733966e0ed75c5c418c6f63a09b92779, type: 3}
-      propertyPath: m_Name
-      value: Chair
-      objectReference: {fileID: 0}
-    - target: {fileID: 488988, guid: 733966e0ed75c5c418c6f63a09b92779, type: 3}
-      propertyPath: m_RootOrder
-      value: 40
-      objectReference: {fileID: 0}
-    - target: {fileID: 488988, guid: 733966e0ed75c5c418c6f63a09b92779, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -2.6459615
-      objectReference: {fileID: 0}
-    - target: {fileID: 488988, guid: 733966e0ed75c5c418c6f63a09b92779, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.0049999356
-      objectReference: {fileID: 0}
-    - target: {fileID: 488988, guid: 733966e0ed75c5c418c6f63a09b92779, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 42.845783
-      objectReference: {fileID: 0}
-    - target: {fileID: 488988, guid: 733966e0ed75c5c418c6f63a09b92779, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.042444605
-      objectReference: {fileID: 0}
-    - target: {fileID: 488988, guid: 733966e0ed75c5c418c6f63a09b92779, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 9.27648e-10
-      objectReference: {fileID: 0}
-    - target: {fileID: 488988, guid: 733966e0ed75c5c418c6f63a09b92779, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0.99909884
-      objectReference: {fileID: 0}
-    - target: {fileID: 488988, guid: 733966e0ed75c5c418c6f63a09b92779, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0.000000021836009
-      objectReference: {fileID: 0}
-    - target: {fileID: 488988, guid: 733966e0ed75c5c418c6f63a09b92779, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 488988, guid: 733966e0ed75c5c418c6f63a09b92779, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 175.135
-      objectReference: {fileID: 0}
-    - target: {fileID: 488988, guid: 733966e0ed75c5c418c6f63a09b92779, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 733966e0ed75c5c418c6f63a09b92779, type: 3}
 --- !u!1 &1528247835
 GameObject:
   m_ObjectHideFlags: 0
@@ -15445,10 +15346,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2ba8ae38d455a74ba01577a8694a988, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BehaviorBoard
-  eventText: {fileID: 471679564}
-  maxLines: 12
-  autoExpireLines: 1
-  lineLifetimeSeconds: 2
 --- !u!114 &1734055024
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21246,7 +21143,6 @@ SceneRoots:
   - {fileID: 1482531372}
   - {fileID: 1395030446}
   - {fileID: 1467838064}
-  - {fileID: 1522488051}
   - {fileID: 2067667399}
   - {fileID: 1116261091}
   - {fileID: 2106460220}

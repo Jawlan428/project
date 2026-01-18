@@ -1,4 +1,4 @@
-/// <summary>
+﻿/// <summary>
 /// Enumeration of all audit event types that can be logged.
 /// </summary>
 public enum AuditEventType
@@ -13,5 +13,6 @@ public enum AuditEventType
     APPLE_DROPPED,
     APPLE_ADDED_TO_INVENTORY,
     APPLE_REMOVED_FROM_INVENTORY,
+    POLL_VOTE,
     ERROR
 }
