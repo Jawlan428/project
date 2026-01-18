@@ -14,10 +14,15 @@ public class MeetingVideoRecorder : MonoBehaviour
     public int resolutionHeight = 720;
 
     [Header("Audio Settings")]
-    public bool recordGameAudio = true;        // ✅ captures in-game audio (recommended)
-    public GameAudioCapture gameAudioCapture;  // auto-found if null
+    [Tooltip("Capture system audio (ALL sounds including other participants' Vivox voices)")]
+    public bool recordSystemAudio = true;      // ✅ captures what plays through speakers (other participants)
+    
+    [Tooltip("Capture YOUR voice via microphone - REQUIRED for host voice")]
+    public bool recordMicrophone = true;       // ✅ captures YOUR voice (host)
 
-    public bool recordMicrophone = false;      // optional
+    [Tooltip("Also capture Unity game audio separately (backup if system audio fails)")]
+    public bool recordGameAudio = true;        // Backup: Unity-only audio
+    public GameAudioCapture gameAudioCapture;  // auto-found if null
     public int audioSampleRate = 44100;
     public string microphoneDevice = "";
     [Range(0.1f, 5f)]
@@ -55,6 +60,9 @@ public class MeetingVideoRecorder : MonoBehaviour
     private int micSampleRate = 0;
     private int micChannels = 1;
 
+    // System audio capture (for Vivox + all system sounds)
+    private SystemAudioCapture systemAudioCapture;
+
     // UI textures
     private GUIStyle buttonStyle;
     private GUIStyle statusStyle;
@@ -90,43 +98,58 @@ public class MeetingVideoRecorder : MonoBehaviour
         captureInterval = 1f / frameRate;
         FindRecordingCamera();
 
-        // find or attach audio capture automatically
+        // Setup system audio capture for Vivox + all system sounds
+        if (recordSystemAudio)
+            EnsureSystemAudioCapture();
+
+        // find or attach Unity game audio capture (optional backup)
         if (recordGameAudio)
             EnsureGameAudioCapture();
 
-        // microphone detection
+        // microphone detection - find the best microphone
         if (Microphone.devices.Length > 0)
         {
             hasMicrophone = true;
 
+            Debug.Log("🎤 Available microphones:");
+            foreach (string device in Microphone.devices)
+            {
+                Debug.Log($"   - {device}");
+            }
+
+            // If no device specified, try to find the best one
             if (string.IsNullOrEmpty(microphoneDevice))
             {
-                // Use system default by passing empty string to Microphone.Start
-                microphoneDevice = "";
-                Debug.Log("Microphone detected. Using system default device.");
-            }
-            else
-            {
-                bool found = false;
+                // Priority: Microphone Array > any non-virtual mic > first available
                 foreach (string device in Microphone.devices)
                 {
-                    if (device == microphoneDevice)
+                    string lower = device.ToLower();
+                    // Prefer Microphone Array (built-in laptop mic)
+                    if (lower.Contains("microphone array"))
                     {
-                        found = true;
+                        microphoneDevice = device;
                         break;
                     }
+                    // Skip virtual devices (Oculus, etc.) - they might conflict with VR
+                    if (lower.Contains("virtual") || lower.Contains("oculus") || lower.Contains("cable"))
+                    {
+                        continue;
+                    }
+                    // Use first real microphone found
+                    if (string.IsNullOrEmpty(microphoneDevice))
+                    {
+                        microphoneDevice = device;
+                    }
                 }
-
-                if (!found)
+                
+                // Fallback to first device if nothing else found
+                if (string.IsNullOrEmpty(microphoneDevice))
                 {
-                    Debug.LogWarning("Configured microphone not found. Using system default.");
-                    microphoneDevice = "";
-                }
-                else
-                {
-                    Debug.Log("Microphone detected: " + microphoneDevice);
+                    microphoneDevice = Microphone.devices[0];
                 }
             }
+            
+            Debug.Log($"🎤 Selected microphone: {microphoneDevice}");
         }
         else
         {
@@ -184,6 +207,22 @@ public class MeetingVideoRecorder : MonoBehaviour
             Debug.LogWarning("No AudioListener found. Game audio capture will be silent.");
     }
 
+    void EnsureSystemAudioCapture()
+    {
+        if (systemAudioCapture != null) return;
+
+        systemAudioCapture = FindFirstObjectByType<SystemAudioCapture>();
+        if (systemAudioCapture != null)
+        {
+            Debug.Log("🔊 SystemAudioCapture found - ALL system audio will be recorded (including Vivox)");
+            return;
+        }
+
+        // Create SystemAudioCapture if not found
+        systemAudioCapture = gameObject.AddComponent<SystemAudioCapture>();
+        Debug.Log("🔊 Created SystemAudioCapture - ALL audio including Vivox voices will be captured");
+    }
+
     Texture2D MakeTexture(Color color)
     {
         Texture2D tex = new Texture2D(1, 1);
@@ -200,10 +239,20 @@ public class MeetingVideoRecorder : MonoBehaviour
             nextCaptureTime = Time.time + captureInterval;
         }
 
-        if (isRecording && recordMicrophone && hasMicrophone && micClip != null &&
-            Microphone.IsRecording(microphoneDevice))
+        // Capture microphone samples continuously
+        if (isRecording && recordMicrophone && micClip != null)
         {
-            CaptureMicSamples();
+            bool isRecordingMic = false;
+            try
+            {
+                isRecordingMic = Microphone.IsRecording(microphoneDevice) || Microphone.IsRecording(null);
+            }
+            catch { }
+
+            if (isRecordingMic)
+            {
+                CaptureMicSamples();
+            }
         }
     }
 
@@ -286,11 +335,14 @@ public class MeetingVideoRecorder : MonoBehaviour
             GUI.Label(new Rect(x, y + buttonHeight + 35, buttonWidth, 25),
                 frameCount + " frames", statusStyle);
 
-            if (recordGameAudio && gameAudioCapture != null)
-                GUI.Label(new Rect(x, y + buttonHeight + 60, buttonWidth, 25), "🔊 Game audio: ON", statusStyle);
+            if (recordSystemAudio && systemAudioCapture != null && systemAudioCapture.IsCapturing)
+                GUI.Label(new Rect(x, y + buttonHeight + 60, buttonWidth, 25), "🔊 Participants: ON", statusStyle);
 
             if (recordMicrophone && hasMicrophone)
-                GUI.Label(new Rect(x, y + buttonHeight + 85, buttonWidth, 25), "🎤 Mic: ON", statusStyle);
+                GUI.Label(new Rect(x, y + buttonHeight + 85, buttonWidth, 25), "🎤 Your voice: ON", statusStyle);
+
+            if (recordGameAudio && gameAudioCapture != null)
+                GUI.Label(new Rect(x, y + buttonHeight + 110, buttonWidth, 25), "🎮 Game: ON", statusStyle);
         }
         else
         {
@@ -302,18 +354,21 @@ public class MeetingVideoRecorder : MonoBehaviour
 
             GUI.Label(new Rect(x, y + buttonHeight + 10, buttonWidth, 25), "Ready to record", statusStyle);
 
-            if (recordGameAudio)
-                GUI.Label(new Rect(x, y + buttonHeight + 35, buttonWidth, 25), "🔊 Game audio: ON", statusStyle);
+            if (recordSystemAudio)
+                GUI.Label(new Rect(x, y + buttonHeight + 35, buttonWidth, 25), "🔊 Participants: ON", statusStyle);
 
             if (recordMicrophone)
                 GUI.Label(new Rect(x, y + buttonHeight + 60, buttonWidth, 25),
-                    hasMicrophone ? "🎤 Mic ready" : "🎤 Mic NOT found", statusStyle);
+                    hasMicrophone ? "🎤 Your voice: ON" : "🎤 Mic NOT found!", statusStyle);
+
+            if (recordGameAudio)
+                GUI.Label(new Rect(x, y + buttonHeight + 85, buttonWidth, 25), "🎮 Game audio: ON", statusStyle);
 
             if (autoCreateMP4)
-                GUI.Label(new Rect(x, y + buttonHeight + 85, buttonWidth, 25), "🎬 Auto MP4: ON", statusStyle);
+                GUI.Label(new Rect(x, y + buttonHeight + 110, buttonWidth, 25), "🎬 Auto MP4: ON", statusStyle);
 
             string camName = recordingCamera != null ? recordingCamera.name : "None!";
-            GUI.Label(new Rect(x, y + buttonHeight + 110, buttonWidth, 50), "Cam: " + camName, pathStyle);
+            GUI.Label(new Rect(x, y + buttonHeight + 135, buttonWidth, 50), "Cam: " + camName, pathStyle);
         }
     }
 
@@ -343,33 +398,87 @@ public class MeetingVideoRecorder : MonoBehaviour
         renderTexture.Create();
         screenShot = new Texture2D(resolutionWidth, resolutionHeight, TextureFormat.RGB24, false);
 
-        // Start microphone first and wait until it begins capturing samples.
+        // Start microphone capture for YOUR voice (host)
         if (recordMicrophone && hasMicrophone)
         {
-            int sampleRateToUse = audioSampleRate;
+            // Get device capabilities
             Microphone.GetDeviceCaps(microphoneDevice, out int minRate, out int maxRate);
-            if (maxRate != 0 && (sampleRateToUse < minRate || sampleRateToUse > maxRate))
-                sampleRateToUse = maxRate;
-
-            micClip = Microphone.Start(microphoneDevice, true, 3600, sampleRateToUse);
-            micSampleRate = micClip != null ? micClip.frequency : sampleRateToUse;
-            micChannels = micClip != null ? micClip.channels : 1;
-            lastMicPosition = 0;
-            micSamples.Clear();
-
-            float startTime = Time.realtimeSinceStartup;
-            while (Microphone.GetPosition(microphoneDevice) <= 0)
+            
+            // Choose sample rate - prefer 44100, but respect device limits
+            int sampleRateToUse = audioSampleRate;
+            if (maxRate > 0)
             {
-                if (Time.realtimeSinceStartup - startTime > 2f)
+                sampleRateToUse = Mathf.Clamp(sampleRateToUse, minRate, maxRate);
+            }
+            
+            Debug.Log($"🎤 Starting microphone: {microphoneDevice} @ {sampleRateToUse}Hz");
+
+            // Stop any existing recording on this device first
+            if (Microphone.IsRecording(microphoneDevice))
+            {
+                Microphone.End(microphoneDevice);
+                yield return new WaitForSeconds(0.1f);
+            }
+
+            // Start recording with a shorter buffer (60 seconds, loop)
+            micClip = Microphone.Start(microphoneDevice, true, 60, sampleRateToUse);
+            
+            if (micClip == null)
+            {
+                Debug.LogError($"🎤 Failed to start microphone: {microphoneDevice}");
+                // Try with null (default device)
+                Debug.Log("🎤 Trying default microphone...");
+                micClip = Microphone.Start(null, true, 60, sampleRateToUse);
+            }
+
+            if (micClip != null)
+            {
+                micSampleRate = micClip.frequency;
+                micChannels = micClip.channels;
+                lastMicPosition = 0;
+                micSamples.Clear();
+
+                // Wait for microphone to start producing samples (up to 3 seconds)
+                float startTime = Time.realtimeSinceStartup;
+                while (Microphone.GetPosition(microphoneDevice) <= 0)
                 {
-                    Debug.LogWarning("🎤 Microphone did not start producing samples in time.");
-                    break;
+                    if (Time.realtimeSinceStartup - startTime > 3f)
+                    {
+                        Debug.LogWarning("🎤 Microphone slow to start, continuing anyway...");
+                        break;
+                    }
+                    yield return null;
                 }
-                yield return null;
+                
+                Debug.Log($"🎤 Microphone recording started! (Channels: {micChannels}, Rate: {micSampleRate})");
+            }
+            else
+            {
+                Debug.LogError("🎤 Could not start any microphone!");
+                hasMicrophone = false;
             }
         }
 
-        // Start capturing game audio after mic is ready.
+        // Start system audio capture (captures ALL audio including Vivox)
+        if (recordSystemAudio)
+        {
+            EnsureSystemAudioCapture();
+
+            if (systemAudioCapture != null)
+            {
+                string systemAudioPath = Path.Combine(currentSessionPath, "system.wav");
+                if (systemAudioCapture.StartCapture(systemAudioPath))
+                {
+                    Debug.Log("🔊 System audio capture started (includes Vivox voices)");
+                }
+                else
+                {
+                    Debug.LogWarning("Failed to start system audio capture. See setup instructions.");
+                }
+            }
+        }
+
+        // Start capturing Unity game audio (optional backup)
         if (recordGameAudio)
         {
             EnsureGameAudioCapture();
@@ -377,7 +486,7 @@ public class MeetingVideoRecorder : MonoBehaviour
             if (gameAudioCapture != null)
             {
                 gameAudioCapture.StartCapture();
-                Debug.Log("🔊 Game audio capture started");
+                Debug.Log("🔊 Unity game audio capture started");
             }
             else
             {
@@ -401,10 +510,26 @@ public class MeetingVideoRecorder : MonoBehaviour
         isRecording = false;
         isStartingRecording = false;
 
+        string systemAudioPath = null;
         string audioPath = null;
         string micPath = null;
 
-        // Stop and save game audio
+        // Stop system audio capture first (captures Vivox + all system sounds)
+        if (recordSystemAudio && systemAudioCapture != null && systemAudioCapture.IsCapturing)
+        {
+            systemAudioPath = systemAudioCapture.StopCapture();
+            if (!string.IsNullOrEmpty(systemAudioPath) && File.Exists(systemAudioPath))
+            {
+                Debug.Log("🔊 System audio saved: " + systemAudioPath);
+            }
+            else
+            {
+                Debug.LogWarning("System audio capture produced no output.");
+                systemAudioPath = null;
+            }
+        }
+
+        // Stop and save Unity game audio (backup)
         if (recordGameAudio && gameAudioCapture != null)
         {
             float[] gameSamples = gameAudioCapture.StopCapture();
@@ -420,25 +545,41 @@ public class MeetingVideoRecorder : MonoBehaviour
             }
         }
 
-        // Stop microphone (optional). If you also want MIC, you can write a separate file.
-        if (recordMicrophone && hasMicrophone && micClip != null)
+        // Stop microphone and save YOUR voice
+        if (recordMicrophone && micClip != null)
         {
+            // Capture any remaining samples
             CaptureMicSamples();
-            int position = Microphone.GetPosition(microphoneDevice);
-            Microphone.End(microphoneDevice);
+            
+            // Get final position
+            int position = 0;
+            try
+            {
+                position = Microphone.GetPosition(microphoneDevice);
+            }
+            catch { }
+            
+            // Stop microphone
+            try
+            {
+                Microphone.End(microphoneDevice);
+            }
+            catch { }
 
             if (position <= 0 && lastMicPosition > 0)
                 position = lastMicPosition;
+
+            Debug.Log($"🎤 Microphone captured {micSamples.Count} samples");
 
             if (micSamples.Count > 0)
             {
                 micPath = Path.Combine(currentSessionPath, "mic.wav");
                 SaveWavFromSamples(micSamples.ToArray(), micSampleRate > 0 ? micSampleRate : audioSampleRate, micChannels, micPath, microphoneGain);
-                Debug.Log("🎤 Mic audio saved: " + micPath);
+                Debug.Log("🎤 YOUR voice saved: " + micPath);
             }
             else
             {
-                Debug.LogWarning("🎤 Mic recording had no samples. Check device permissions.");
+                Debug.LogWarning("🎤 Mic recording had no samples. Your voice won't be in the recording.");
             }
 
             micClip = null;
@@ -461,10 +602,10 @@ public class MeetingVideoRecorder : MonoBehaviour
         Debug.Log("⬛ Stopped recording: " + frameCount + " frames");
 
         if (autoCreateMP4 && File.Exists(ffmpegPath) && frameCount > 0)
-            StartCoroutine(CreateMP4Coroutine(audioPath, micPath));
+            StartCoroutine(CreateMP4Coroutine(systemAudioPath, audioPath, micPath));
     }
 
-    IEnumerator CreateMP4Coroutine(string audioPath, string micPath)
+    IEnumerator CreateMP4Coroutine(string systemAudioPath, string audioPath, string micPath)
     {
         isProcessing = true;
         processingStatus = "Creating MP4...";
@@ -474,32 +615,61 @@ public class MeetingVideoRecorder : MonoBehaviour
         string outputPath = Path.Combine(currentSessionPath, "meeting.mp4");
         string batPath = Path.Combine(currentSessionPath, "convert.bat");
 
+        // Determine which audio files are available
+        bool hasSystemAudio = !string.IsNullOrEmpty(systemAudioPath) && File.Exists(systemAudioPath);
+        bool hasGameAudio = !string.IsNullOrEmpty(audioPath) && File.Exists(audioPath);
+        bool hasMicAudio = !string.IsNullOrEmpty(micPath) && File.Exists(micPath);
+
         string batContent;
 
-        if (!string.IsNullOrEmpty(audioPath) && File.Exists(audioPath) &&
-            !string.IsNullOrEmpty(micPath) && File.Exists(micPath))
+        // Best case: System audio (other participants) + Mic (your voice)
+        if (hasSystemAudio && hasMicAudio)
         {
+            // Mix system audio (other participants + game sounds) with microphone (your voice)
+            batContent = $@"@echo off
+cd /d ""{currentSessionPath}""
+""{ffmpegPath}"" -y -framerate {frameRate} -i ""frame_%%06d.jpg"" -i ""{Path.GetFileName(systemAudioPath)}"" -i ""{Path.GetFileName(micPath)}"" -filter_complex ""[1:a][2:a]amix=inputs=2:duration=longest:dropout_transition=0[a]"" -map 0:v -map ""[a]"" -c:v libx264 -preset fast -crf 23 -c:a aac -b:a 192k -pix_fmt yuv420p -shortest ""meeting.mp4""
+exit /b %errorlevel%
+";
+            Debug.Log("✅ Using system audio (participants) + microphone (your voice)");
+        }
+        else if (hasSystemAudio)
+        {
+            // System audio only (other participants, but no host voice)
+            batContent = $@"@echo off
+cd /d ""{currentSessionPath}""
+""{ffmpegPath}"" -y -framerate {frameRate} -i ""frame_%%06d.jpg"" -i ""{Path.GetFileName(systemAudioPath)}"" -map 0:v -map 1:a -c:v libx264 -preset fast -crf 23 -c:a aac -b:a 192k -pix_fmt yuv420p -shortest ""meeting.mp4""
+exit /b %errorlevel%
+";
+            Debug.Log("Using system audio only (participants voices, but YOUR voice may be missing!)");
+        }
+        else if (hasGameAudio && hasMicAudio)
+        {
+            // Fallback: Mix game audio with microphone
             batContent = $@"@echo off
 cd /d ""{currentSessionPath}""
 ""{ffmpegPath}"" -y -framerate {frameRate} -i ""frame_%%06d.jpg"" -i ""{Path.GetFileName(audioPath)}"" -i ""{Path.GetFileName(micPath)}"" -filter_complex ""[1:a][2:a]amix=inputs=2:duration=longest:dropout_transition=0[a]"" -map 0:v -map ""[a]"" -c:v libx264 -preset fast -crf 23 -c:a aac -b:a 192k -pix_fmt yuv420p -shortest ""meeting.mp4""
 exit /b %errorlevel%
 ";
+            Debug.Log("Using game audio + microphone (Vivox participants may not be captured)");
         }
-        else if (!string.IsNullOrEmpty(audioPath) && File.Exists(audioPath))
+        else if (hasGameAudio)
         {
             batContent = $@"@echo off
 cd /d ""{currentSessionPath}""
 ""{ffmpegPath}"" -y -framerate {frameRate} -i ""frame_%%06d.jpg"" -i ""{Path.GetFileName(audioPath)}"" -map 0:v -map 1:a -c:v libx264 -preset fast -crf 23 -c:a aac -b:a 192k -pix_fmt yuv420p -shortest ""meeting.mp4""
 exit /b %errorlevel%
 ";
+            Debug.Log("Using game audio only (voices may be missing)");
         }
-        else if (!string.IsNullOrEmpty(micPath) && File.Exists(micPath))
+        else if (hasMicAudio)
         {
             batContent = $@"@echo off
 cd /d ""{currentSessionPath}""
 ""{ffmpegPath}"" -y -framerate {frameRate} -i ""frame_%%06d.jpg"" -i ""{Path.GetFileName(micPath)}"" -map 0:v -map 1:a -c:v libx264 -preset fast -crf 23 -c:a aac -b:a 192k -pix_fmt yuv420p -shortest ""meeting.mp4""
 exit /b %errorlevel%
 ";
+            Debug.Log("Using microphone audio only (your voice only)");
         }
         else
         {
@@ -508,6 +678,7 @@ cd /d ""{currentSessionPath}""
 ""{ffmpegPath}"" -y -framerate {frameRate} -i ""frame_%%06d.jpg"" -c:v libx264 -preset fast -crf 23 -pix_fmt yuv420p ""meeting.mp4""
 exit /b %errorlevel%
 ";
+            Debug.LogWarning("No audio available - video will be silent");
         }
 
         File.WriteAllText(batPath, batContent);
@@ -654,7 +825,19 @@ exit /b %errorlevel%
     {
         if (micClip == null) return;
 
-        int position = Microphone.GetPosition(microphoneDevice);
+        // Try to get position, handle both specified device and null (default)
+        int position = -1;
+        try
+        {
+            position = Microphone.GetPosition(microphoneDevice);
+            if (position < 0)
+                position = Microphone.GetPosition(null);
+        }
+        catch
+        {
+            try { position = Microphone.GetPosition(null); } catch { }
+        }
+
         if (position < 0) return;
 
         int clipSamples = micClip.samples;
@@ -672,6 +855,7 @@ exit /b %errorlevel%
         }
         else
         {
+            // Wrapped around the buffer
             ReadMicRange(lastMicPosition, clipSamples - lastMicPosition);
             if (position > 0)
                 ReadMicRange(0, position);
