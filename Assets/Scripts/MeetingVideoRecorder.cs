@@ -622,13 +622,17 @@ public class MeetingVideoRecorder : MonoBehaviour
 
         string batContent;
 
+        // Unity-compatible encoding settings: baseline profile + faststart for streaming
+        string unityVideoSettings = "-c:v libx264 -profile:v baseline -level 3.1 -preset fast -crf 23 -pix_fmt yuv420p -movflags +faststart";
+        string unityAudioSettings = "-c:a aac -b:a 128k";
+
         // Best case: System audio (other participants) + Mic (your voice)
         if (hasSystemAudio && hasMicAudio)
         {
             // Mix system audio (other participants + game sounds) with microphone (your voice)
             batContent = $@"@echo off
 cd /d ""{currentSessionPath}""
-""{ffmpegPath}"" -y -framerate {frameRate} -i ""frame_%%06d.jpg"" -i ""{Path.GetFileName(systemAudioPath)}"" -i ""{Path.GetFileName(micPath)}"" -filter_complex ""[1:a][2:a]amix=inputs=2:duration=longest:dropout_transition=0[a]"" -map 0:v -map ""[a]"" -c:v libx264 -preset fast -crf 23 -c:a aac -b:a 192k -pix_fmt yuv420p -shortest ""meeting.mp4""
+""{ffmpegPath}"" -y -framerate {frameRate} -i ""frame_%%06d.jpg"" -i ""{Path.GetFileName(systemAudioPath)}"" -i ""{Path.GetFileName(micPath)}"" -filter_complex ""[1:a][2:a]amix=inputs=2:duration=longest:dropout_transition=0[a]"" -map 0:v -map ""[a]"" {unityVideoSettings} {unityAudioSettings} -shortest ""meeting.mp4""
 exit /b %errorlevel%
 ";
             Debug.Log("✅ Using system audio (participants) + microphone (your voice)");
@@ -638,7 +642,7 @@ exit /b %errorlevel%
             // System audio only (other participants, but no host voice)
             batContent = $@"@echo off
 cd /d ""{currentSessionPath}""
-""{ffmpegPath}"" -y -framerate {frameRate} -i ""frame_%%06d.jpg"" -i ""{Path.GetFileName(systemAudioPath)}"" -map 0:v -map 1:a -c:v libx264 -preset fast -crf 23 -c:a aac -b:a 192k -pix_fmt yuv420p -shortest ""meeting.mp4""
+""{ffmpegPath}"" -y -framerate {frameRate} -i ""frame_%%06d.jpg"" -i ""{Path.GetFileName(systemAudioPath)}"" -map 0:v -map 1:a {unityVideoSettings} {unityAudioSettings} -shortest ""meeting.mp4""
 exit /b %errorlevel%
 ";
             Debug.Log("Using system audio only (participants voices, but YOUR voice may be missing!)");
@@ -648,7 +652,7 @@ exit /b %errorlevel%
             // Fallback: Mix game audio with microphone
             batContent = $@"@echo off
 cd /d ""{currentSessionPath}""
-""{ffmpegPath}"" -y -framerate {frameRate} -i ""frame_%%06d.jpg"" -i ""{Path.GetFileName(audioPath)}"" -i ""{Path.GetFileName(micPath)}"" -filter_complex ""[1:a][2:a]amix=inputs=2:duration=longest:dropout_transition=0[a]"" -map 0:v -map ""[a]"" -c:v libx264 -preset fast -crf 23 -c:a aac -b:a 192k -pix_fmt yuv420p -shortest ""meeting.mp4""
+""{ffmpegPath}"" -y -framerate {frameRate} -i ""frame_%%06d.jpg"" -i ""{Path.GetFileName(audioPath)}"" -i ""{Path.GetFileName(micPath)}"" -filter_complex ""[1:a][2:a]amix=inputs=2:duration=longest:dropout_transition=0[a]"" -map 0:v -map ""[a]"" {unityVideoSettings} {unityAudioSettings} -shortest ""meeting.mp4""
 exit /b %errorlevel%
 ";
             Debug.Log("Using game audio + microphone (Vivox participants may not be captured)");
@@ -657,7 +661,7 @@ exit /b %errorlevel%
         {
             batContent = $@"@echo off
 cd /d ""{currentSessionPath}""
-""{ffmpegPath}"" -y -framerate {frameRate} -i ""frame_%%06d.jpg"" -i ""{Path.GetFileName(audioPath)}"" -map 0:v -map 1:a -c:v libx264 -preset fast -crf 23 -c:a aac -b:a 192k -pix_fmt yuv420p -shortest ""meeting.mp4""
+""{ffmpegPath}"" -y -framerate {frameRate} -i ""frame_%%06d.jpg"" -i ""{Path.GetFileName(audioPath)}"" -map 0:v -map 1:a {unityVideoSettings} {unityAudioSettings} -shortest ""meeting.mp4""
 exit /b %errorlevel%
 ";
             Debug.Log("Using game audio only (voices may be missing)");
@@ -666,7 +670,7 @@ exit /b %errorlevel%
         {
             batContent = $@"@echo off
 cd /d ""{currentSessionPath}""
-""{ffmpegPath}"" -y -framerate {frameRate} -i ""frame_%%06d.jpg"" -i ""{Path.GetFileName(micPath)}"" -map 0:v -map 1:a -c:v libx264 -preset fast -crf 23 -c:a aac -b:a 192k -pix_fmt yuv420p -shortest ""meeting.mp4""
+""{ffmpegPath}"" -y -framerate {frameRate} -i ""frame_%%06d.jpg"" -i ""{Path.GetFileName(micPath)}"" -map 0:v -map 1:a {unityVideoSettings} {unityAudioSettings} -shortest ""meeting.mp4""
 exit /b %errorlevel%
 ";
             Debug.Log("Using microphone audio only (your voice only)");
@@ -675,7 +679,7 @@ exit /b %errorlevel%
         {
             batContent = $@"@echo off
 cd /d ""{currentSessionPath}""
-""{ffmpegPath}"" -y -framerate {frameRate} -i ""frame_%%06d.jpg"" -c:v libx264 -preset fast -crf 23 -pix_fmt yuv420p ""meeting.mp4""
+""{ffmpegPath}"" -y -framerate {frameRate} -i ""frame_%%06d.jpg"" {unityVideoSettings} ""meeting.mp4""
 exit /b %errorlevel%
 ";
             Debug.LogWarning("No audio available - video will be silent");
@@ -748,6 +752,12 @@ exit /b %errorlevel%
             try
             {
                 File.Copy(outputPath, finalVideoPath, true);
+                
+                // Create a .ready marker file to indicate encoding is complete
+                string readyMarkerPath = Path.Combine(currentSessionPath, "encoding_complete.marker");
+                File.WriteAllText(readyMarkerPath, DateTime.Now.ToString("o"));
+                Debug.Log("✅ Created encoding complete marker: " + readyMarkerPath);
+                
                 processingStatus = "✅ RECORDING SUCCESS!";
                 Debug.Log("✅ MP4 created: " + finalVideoPath);
             }
@@ -756,6 +766,17 @@ exit /b %errorlevel%
                 processingStatus = "✅ RECORDING SUCCESS (saved in session folder)";
                 Debug.LogWarning("Could not copy MP4 to Desktop. Saved at: " + outputPath);
                 Debug.LogWarning("Copy error: " + ex.Message);
+                
+                // Still create marker if MP4 exists
+                if (File.Exists(outputPath))
+                {
+                    try
+                    {
+                        string readyMarkerPath = Path.Combine(currentSessionPath, "encoding_complete.marker");
+                        File.WriteAllText(readyMarkerPath, DateTime.Now.ToString("o"));
+                    }
+                    catch { }
+                }
             }
 
             if (deleteFramesAfterMP4)
