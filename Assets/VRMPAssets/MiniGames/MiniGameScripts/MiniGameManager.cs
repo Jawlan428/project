@@ -319,7 +319,7 @@ namespace XRMultiplayer.MiniGames
             if (LocalPlayerInGame)
             {
                 m_DynamicButton.button.interactable = true;
-                PlayerHudNotification.Instance.ShowText($"Game Started!");
+                PlayerHudNotification.Show("Game Started!");
                 ToggleShrink(true);
                 if (!m_UseInGameOffset)
                 {
@@ -445,7 +445,7 @@ namespace XRMultiplayer.MiniGames
 
                 if (LocalPlayerInGame)
                 {
-                    PlayerHudNotification.Instance.ShowText("Game Start Cancelled");
+                    PlayerHudNotification.Show("Game Start Cancelled");
                 }
                 m_GameStateText.text = "Pre Game";
             }
@@ -468,7 +468,7 @@ namespace XRMultiplayer.MiniGames
 
                 if (LocalPlayerInGame)
                 {
-                    PlayerHudNotification.Instance.ShowText(m_GameStateText.text);
+                    PlayerHudNotification.Show(m_GameStateText.text);
                 }
                 yield return new WaitForSeconds(1);
             }
@@ -633,7 +633,7 @@ namespace XRMultiplayer.MiniGames
                     Transform destination = GetClosestReadyPosition(m_JoinTeleportTransform.position);
                     m_ScoreboardTransform.rotation = destination.rotation;
                     m_ScoreboardTransform.position = destination.position + (m_ScoreboardTransform.forward + m_PreGameOffset);
-                    PlayerHudNotification.Instance.ShowText($"Joined {currentMiniGame.gameName}");
+                    PlayerHudNotification.Show($"Joined {currentMiniGame.gameName}");
                     m_BarrierRend.gameObject.SetActive(false);
                 }
 
@@ -704,7 +704,7 @@ namespace XRMultiplayer.MiniGames
 
                 ToggleShrink(false);
                 currentMiniGame.RemoveInteractables();
-                PlayerHudNotification.Instance.ShowText($"Left {currentMiniGame.gameName}");
+                PlayerHudNotification.Show($"Left {currentMiniGame.gameName}");
                 TeleportToArea(m_LeaveTeleportTransform);
                 m_ScoreboardTransform.SetPositionAndRotation(m_ScoreboardStartPose.position, m_ScoreboardStartPose.rotation);
                 m_BarrierRend.gameObject.SetActive(true);

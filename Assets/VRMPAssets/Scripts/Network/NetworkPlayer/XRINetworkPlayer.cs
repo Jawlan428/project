@@ -279,7 +279,13 @@ namespace XRMultiplayer
         public override void OnNetworkDespawn()
         {
             base.OnNetworkDespawn();
-            PlayerHudNotification.Instance.ShowText($"<b>{m_PlayerName.Value}</b> left");
+            // Use playerName property which properly converts FixedString128Bytes to string
+            string displayName = playerName;
+            if (string.IsNullOrEmpty(displayName))
+            {
+                displayName = "Unknown Player";
+            }
+            PlayerHudNotification.Show($"<b>{displayName}</b> left");
             onDisconnected?.Invoke(this);
         }
 
@@ -380,17 +386,22 @@ namespace XRMultiplayer
         /// </summary><remarks>Invokes the callback <see cref="onNameUpdated"/>.</remarks>
         void UpdatePlayerName(FixedString128Bytes oldName, FixedString128Bytes currentName)
         {
-            onNameUpdated?.Invoke(currentName.ToString());
+            string nameString = currentName.ToString();
+            onNameUpdated?.Invoke(nameString);
 
-            if (!m_InitialConnected & !string.IsNullOrEmpty(currentName.ToString()))
+            // Use logical AND (&&) instead of bitwise AND (&)
+            if (!m_InitialConnected && !string.IsNullOrEmpty(nameString))
             {
                 m_InitialConnected = true;
                 if (!IsLocalPlayer)
-                    PlayerHudNotification.Instance.ShowText($"<b>{playerName}</b> joined");
+                {
+                    string displayName = string.IsNullOrEmpty(nameString) ? "Unknown Player" : nameString;
+                    PlayerHudNotification.Show($"<b>{displayName}</b> joined");
+                }
             }
 
             if (m_UpdateObjectName)
-                gameObject.name = currentName.ToString();
+                gameObject.name = nameString;
         }
 
         /// <summary>

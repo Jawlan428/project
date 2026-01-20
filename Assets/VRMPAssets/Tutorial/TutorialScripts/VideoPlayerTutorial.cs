@@ -25,6 +25,7 @@ namespace XRMultiplayer
         Camera m_MainCam;
 
         bool m_IsHidden = false;
+        bool m_IsValid = false;
 
         IEnumerator m_FadeEnumerator;
 
@@ -32,20 +33,34 @@ namespace XRMultiplayer
         {
             m_MainCam = Camera.main;
 
-            if (m_VideoClips.Length < 2)
+            // Validate required references
+            if (m_VideoFadeGroup == null || m_InfoButtonFadeGroup == null || 
+                m_InfoButtonObject == null || m_VideoPlayerObject == null)
             {
-                m_Dropdown.gameObject.SetActive(false);
+                Debug.LogWarning("[VideoPlayerTutorial] Required references not assigned, disabling tutorial.");
+                m_IsValid = false;
+                enabled = false;
+                return;
             }
-            else
+            m_IsValid = true;
+
+            if (m_Dropdown != null)
             {
-                // Clear the dropdown options
-                m_Dropdown.ClearOptions();
-                foreach (var c in m_VideoClips)
+                if (m_VideoClips == null || m_VideoClips.Length < 2)
                 {
-                    TMP_Dropdown.OptionData optionData = new TMP_Dropdown.OptionData(c.name);
-                    m_Dropdown.options.Add(optionData);
+                    m_Dropdown.gameObject.SetActive(false);
                 }
-                m_Dropdown.onValueChanged.AddListener(PickVideo);
+                else
+                {
+                    // Clear the dropdown options
+                    m_Dropdown.ClearOptions();
+                    foreach (var c in m_VideoClips)
+                    {
+                        TMP_Dropdown.OptionData optionData = new TMP_Dropdown.OptionData(c.name);
+                        m_Dropdown.options.Add(optionData);
+                    }
+                    m_Dropdown.onValueChanged.AddListener(PickVideo);
+                }
             }
 
             Hide();
@@ -62,6 +77,8 @@ namespace XRMultiplayer
 
         void Update()
         {
+            if (!m_IsValid || m_MainCam == null) return;
+
             if (Vector3.Distance(m_MainCam.transform.position, transform.position) < m_HideDistance)
             {
                 if (m_IsHidden)
@@ -80,6 +97,7 @@ namespace XRMultiplayer
 
         void HideTutorial()
         {
+            if (!m_IsValid) return;
             m_IsHidden = true;
             if (m_FadeEnumerator != null) StopCoroutine(m_FadeEnumerator);
             m_FadeEnumerator = FadeOutRoutine();
@@ -88,6 +106,7 @@ namespace XRMultiplayer
 
         void EnableTutorial()
         {
+            if (!m_IsValid) return;
             m_IsHidden = false;
             ToggleVideo(m_AutoDisplay);
         }
@@ -98,14 +117,18 @@ namespace XRMultiplayer
         /// <param name="toggle"></param>
         public void ToggleVideo(bool toggle)
         {
+            if (!m_IsValid) return;
+
             m_InfoButtonObject.SetActive(!toggle);
             m_VideoPlayerObject.SetActive(toggle);
 
             if (toggle)
             {
                 m_VideoFadeGroup.alpha = 0.0f;
-                m_VideoImage.material.color = new Color(1, 1, 1, m_VideoFadeGroup.alpha);
-                m_VideoPlayer.targetTexture.Release();
+                if (m_VideoImage != null && m_VideoImage.material != null)
+                    m_VideoImage.material.color = new Color(1, 1, 1, m_VideoFadeGroup.alpha);
+                if (m_VideoPlayer != null && m_VideoPlayer.targetTexture != null)
+                    m_VideoPlayer.targetTexture.Release();
                 if (m_FadeEnumerator != null) StopCoroutine(m_FadeEnumerator);
                 m_FadeEnumerator = FadeVideoRoutine();
                 StartCoroutine(m_FadeEnumerator);
@@ -130,35 +153,42 @@ namespace XRMultiplayer
 
         IEnumerator FadeVideoRoutine()
         {
-            while (m_VideoFadeGroup.alpha < 1.0f)
+            while (m_VideoFadeGroup != null && m_VideoFadeGroup.alpha < 1.0f)
             {
                 m_VideoFadeGroup.alpha += Time.deltaTime * m_FadeSpeedVideo;
-                m_VideoImage.material.color = new Color(1, 1, 1, m_VideoFadeGroup.alpha);
+                if (m_VideoImage != null && m_VideoImage.material != null)
+                    m_VideoImage.material.color = new Color(1, 1, 1, m_VideoFadeGroup.alpha);
                 yield return null;
             }
         }
 
         IEnumerator FadeOutRoutine()
         {
+            if (m_VideoFadeGroup == null || m_InfoButtonFadeGroup == null)
+            {
+                yield break;
+            }
+
             while (m_VideoFadeGroup.alpha > 0.0f || m_InfoButtonFadeGroup.alpha > 0.0f)
             {
                 float fadeAmount = Time.deltaTime * m_FadeSpeedVideo;
                 m_VideoFadeGroup.alpha -= fadeAmount;
-                m_VideoImage.material.color = new Color(1, 1, 1, m_VideoFadeGroup.alpha);
+                if (m_VideoImage != null && m_VideoImage.material != null)
+                    m_VideoImage.material.color = new Color(1, 1, 1, m_VideoFadeGroup.alpha);
 
                 m_InfoButtonFadeGroup.alpha -= fadeAmount;
                 yield return null;
             }
 
             Hide();
-            m_VideoPlayer.targetTexture.Release();
-
+            if (m_VideoPlayer != null && m_VideoPlayer.targetTexture != null)
+                m_VideoPlayer.targetTexture.Release();
         }
 
         void Hide()
         {
-            m_InfoButtonObject.SetActive(false);
-            m_VideoPlayerObject.SetActive(false);
+            if (m_InfoButtonObject != null) m_InfoButtonObject.SetActive(false);
+            if (m_VideoPlayerObject != null) m_VideoPlayerObject.SetActive(false);
             m_IsHidden = true;
         }
     }

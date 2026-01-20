@@ -208,7 +208,7 @@ namespace XRMultiplayer
         IEnumerator ShowPermissionsAfterDelay(float delay = 1.0f)
         {
             Utils.Log($"{k_DebugPrepend}Requesting Microphone Permissions");
-            PlayerHudNotification.Instance.ShowText("Requesting Microphone Permissions", 3.0f);
+            PlayerHudNotification.Show("Requesting Microphone Permissions", 3.0f);
             yield return new WaitForSeconds(delay);
             PermissionCallbacks permissionCallbacks = new();
             permissionCallbacks.PermissionDenied += PermissionDeniedCallback;
@@ -228,7 +228,7 @@ namespace XRMultiplayer
         {
             if (permissionName == Permission.Microphone)
             {
-                PlayerHudNotification.Instance.ShowText("Microphone Permissions Denied", 3.0f);
+                PlayerHudNotification.Show("Microphone Permissions Denied", 3.0f);
             }
         }
 
@@ -236,7 +236,7 @@ namespace XRMultiplayer
         {
             Utils.Log($"{k_DebugPrepend}Microphone Permissions Granted");
             s_HasMicrophonePermission.Value = true;
-            PlayerHudNotification.Instance.ShowText("Microphone Permissions Granted", 3.0f);
+            PlayerHudNotification.Show("Microphone Permissions Granted", 3.0f);
         }
 
         async void EnableVoiceChat()
@@ -429,7 +429,7 @@ namespace XRMultiplayer
 
             if (!Permission.HasUserAuthorizedPermission(Permission.Microphone))
             {
-                PlayerHudNotification.Instance.ShowText(k_MicrophonePersmissionDialogue, 3.0f);
+                PlayerHudNotification.Show(k_MicrophonePersmissionDialogue, 3.0f);
             }
         }
 
@@ -466,7 +466,7 @@ namespace XRMultiplayer
                 XRINetworkPlayer.LocalPlayer.SetVoiceId(m_LocalParticpant.PlayerId);
                 Utils.Log($"{k_DebugPrepend}Joined Voice Channel: {m_CurrentLobbyId}");
                 m_ConnectionStatus.Value = "Joined Voice Channel";
-                PlayerHudNotification.Instance.ShowText("Joined Voice Chat", 3.0f);
+                PlayerHudNotification.Show("Joined Voice Chat", 3.0f);
             }
             else
             {
@@ -490,7 +490,7 @@ namespace XRMultiplayer
                 m_ConnectionStatus.Value = "Left Voice Channel";
                 m_ConnectedToRoom = false;
                 m_LocalParticpant = null;
-                PlayerHudNotification.Instance.ShowText("Voice Chat Disconnected", 3.0f);
+                PlayerHudNotification.Show("Voice Chat Disconnected", 3.0f);
             }
         }
 

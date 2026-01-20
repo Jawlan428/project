@@ -255,7 +255,7 @@ namespace XRMultiplayer
                 {
                     Utils.Log($"{k_DebugPrepend}Failed to Authenticate.", 1);
                     ConnectionFailed("Failed to Authenticate.");
-                    PlayerHudNotification.Instance.ShowText($"Failed to Authenticate.");
+                    PlayerHudNotification.Show("Failed to Authenticate.");
                     return;
                 }
             }
@@ -277,7 +277,8 @@ namespace XRMultiplayer
             OnSessionOwnerPromoted?.Invoke(sessionOwnerId);
             if (TryGetPlayerByID(sessionOwnerId, out XRINetworkPlayer player))
             {
-                PlayerHudNotification.Instance.ShowText($"<b>Status:</b> {player.playerName} now the Host.");
+                string displayName = string.IsNullOrEmpty(player.playerName) ? "Unknown Player" : player.playerName;
+                PlayerHudNotification.Show($"<b>Status:</b> {displayName} now the Host.");
             }
         }
 
@@ -323,7 +324,7 @@ namespace XRMultiplayer
         {
             LocalId = localPlayerId;
             m_ConnectionState.Value = ConnectionState.Connected;
-            PlayerHudNotification.Instance.ShowText($"<b>Status:</b> Connected");
+            PlayerHudNotification.Show("<b>Status:</b> Connected");
             Utils.Log($"{k_DebugPrepend}Local Player Started with ID: {localPlayerId}", 0);
         }
 
@@ -337,7 +338,7 @@ namespace XRMultiplayer
         {
             m_Connected.Value = false;
             m_CurrentPlayerIDs.Clear();
-            PlayerHudNotification.Instance.ShowText($"<b>Status:</b> Disconnected");
+            PlayerHudNotification.Show("<b>Status:</b> Disconnected");
             // Check if authenticated on disconnect.
             if (IsAuthenticated())
             {

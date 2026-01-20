@@ -5,11 +5,12 @@ using TMPro;
 using System;
 using Unity.Netcode;
 using UnityEngine.UI;
-using UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets;
+// using UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets; // Removed - requires XRI Samples
 using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit.Locomotion.Turning;
 using UnityEngine.Android;
 using UnityEngine.XR.Interaction.Toolkit.Locomotion.Gravity;
+using UnityEngine.XR.Interaction.Toolkit.Locomotion.Movement;
 
 namespace XRMultiplayer
 {
@@ -50,7 +51,7 @@ namespace XRMultiplayer
         [SerializeField] float m_SnapTurnUpdateAmount = 15.0f;
 
         VoiceChatManager m_VoiceChatManager;
-        DynamicMoveProvider m_MoveProvider;
+        ContinuousMoveProvider m_MoveProvider; // Changed from DynamicMoveProvider (requires XRI Samples)
         SnapTurnProvider m_TurnProvider;
         UnityEngine.XR.Interaction.Toolkit.Locomotion.Comfort.TunnelingVignetteController m_TunnelingVignetteController;
 
@@ -59,7 +60,7 @@ namespace XRMultiplayer
         private void Awake()
         {
             m_VoiceChatManager = FindFirstObjectByType<VoiceChatManager>();
-            m_MoveProvider = FindFirstObjectByType<DynamicMoveProvider>();
+            m_MoveProvider = FindFirstObjectByType<ContinuousMoveProvider>(); // Changed from DynamicMoveProvider
             m_TurnProvider = FindFirstObjectByType<SnapTurnProvider>();
             m_TunnelingVignetteController = FindFirstObjectByType<UnityEngine.XR.Interaction.Toolkit.Locomotion.Comfort.TunnelingVignetteController>();
 
@@ -248,7 +249,7 @@ namespace XRMultiplayer
             m_MutedIcon.enabled = muted;
             m_MicOnIcon.enabled = !muted;
             m_LocalPlayerAudioVolume.enabled = !muted;
-            PlayerHudNotification.Instance.ShowText($"<b>Microphone: {(muted ? "OFF" : "ON")}</b>");
+            PlayerHudNotification.Show($"<b>Microphone: {(muted ? "OFF" : "ON")}</b>");
         }
 
         // Room Options
@@ -275,21 +276,20 @@ namespace XRMultiplayer
         // Player Options
         public void SetHandOrientation(bool toggle)
         {
-            if (toggle)
-            {
-                m_MoveProvider.leftHandMovementDirection = DynamicMoveProvider.MovementDirection.HandRelative;
-            }
+            // Requires DynamicMoveProvider from XRI Samples - disabled
+            // if (toggle) { m_MoveProvider.leftHandMovementDirection = DynamicMoveProvider.MovementDirection.HandRelative; }
+            Debug.LogWarning("SetHandOrientation: Requires XRI Starter Assets Samples");
         }
         public void SetHeadOrientation(bool toggle)
         {
-            if (toggle)
-            {
-                m_MoveProvider.leftHandMovementDirection = DynamicMoveProvider.MovementDirection.HeadRelative;
-            }
+            // Requires DynamicMoveProvider from XRI Samples - disabled
+            // if (toggle) { m_MoveProvider.leftHandMovementDirection = DynamicMoveProvider.MovementDirection.HeadRelative; }
+            Debug.LogWarning("SetHeadOrientation: Requires XRI Starter Assets Samples");
         }
         public void SetMoveSpeed(float speedPercent)
         {
-            m_MoveProvider.moveSpeed = Mathf.Lerp(m_MinMaxMoveSpeed.x, m_MinMaxMoveSpeed.y, speedPercent);
+            if (m_MoveProvider != null)
+                m_MoveProvider.moveSpeed = Mathf.Lerp(m_MinMaxMoveSpeed.x, m_MinMaxMoveSpeed.y, speedPercent);
         }
 
         public void UpdateSnapTurn(int dir)
@@ -306,12 +306,13 @@ namespace XRMultiplayer
 
         public void ToggleFlight(bool toggle)
         {
+            if (m_MoveProvider == null) return;
             var gravityProvider = m_MoveProvider.GetComponent<GravityProvider>();
             if (gravityProvider != null)
             {
                 gravityProvider.enabled = !toggle;
             }
-            m_MoveProvider.enableFly = toggle;
+            // m_MoveProvider.enableFly = toggle; // Requires DynamicMoveProvider from XRI Samples
         }
     }
 }

@@ -150,14 +150,14 @@ namespace XRMultiplayer.MiniGames
             {
                 if (m_MiniGameManager.LocalPlayerInGame)
                 {
-                    PlayerHudNotification.Instance.ShowText($"Game Ending In {seconds}");
+                    PlayerHudNotification.Show($"Game Ending In {seconds}");
                 }
                 yield return new WaitForSeconds(1.0f);
                 seconds--;
             }
             if (m_MiniGameManager.LocalPlayerInGame)
             {
-                PlayerHudNotification.Instance.ShowText($"Game Complete!");
+                PlayerHudNotification.Show("Game Complete!");
             }
 
             if (m_MiniGameManager.IsOwner && m_MiniGameManager.currentNetworkedGameState == MiniGameManager.GameState.InGame)

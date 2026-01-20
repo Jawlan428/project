@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using XRMultiplayer;
 
 /// <summary>
 /// Singleton audit logger that records events, displays them on BehaviorBoard,
@@ -161,7 +162,45 @@ public class AuditLogger : MonoBehaviour
     }
 
     /// <summary>
-    /// Logs an audit event. Automatically fetches player name from PlayerIdentity.
+    /// Gets the current player name from multiple sources (XRINetworkGameManager, PlayerIdentity, or default)
+    /// </summary>
+    private string GetCurrentPlayerName()
+    {
+        // Source 1: Try XRINetworkGameManager (Unity Creator UI name)
+        try
+        {
+            string networkName = XRINetworkGameManager.LocalPlayerName?.Value;
+            if (!string.IsNullOrEmpty(networkName) && networkName != "Player" && networkName != "Unknown")
+            {
+                // Also sync to PlayerIdentity for consistency
+                if (PlayerIdentity.Instance != null && PlayerIdentity.Instance.PlayerName == "Unknown")
+                {
+                    PlayerIdentity.Instance.SetPlayerName(networkName);
+                }
+                return networkName;
+            }
+        }
+        catch (System.Exception)
+        {
+            // XRINetworkGameManager might not be available
+        }
+        
+        // Source 2: Try PlayerIdentity
+        if (PlayerIdentity.Instance != null)
+        {
+            string identityName = PlayerIdentity.Instance.PlayerName;
+            if (!string.IsNullOrEmpty(identityName) && identityName != "Unknown")
+            {
+                return identityName;
+            }
+        }
+        
+        // Default fallback
+        return "Unknown";
+    }
+
+    /// <summary>
+    /// Logs an audit event. Automatically fetches player name from multiple sources.
     /// </summary>
     /// <param name="type">The type of event</param>
     /// <param name="targetId">Optional target identifier</param>
@@ -180,12 +219,8 @@ public class AuditLogger : MonoBehaviour
             _hasLoggedSessionStart = true;
         }
 
-        // Get player name from PlayerIdentity
-        string playerName = "Unknown";
-        if (PlayerIdentity.Instance != null)
-        {
-            playerName = PlayerIdentity.Instance.PlayerName;
-        }
+        // Get player name - check multiple sources
+        string playerName = GetCurrentPlayerName();
 
         // Create audit event
         AuditEvent evt = new AuditEvent
@@ -280,5 +315,14 @@ public class AuditLogger : MonoBehaviour
     void OnApplicationQuit()
     {
         Flush();
+    }
+
+    /// <summary>
+    /// Returns a copy of recent events in the in-memory buffer.
+    /// Used by AnalyticsCanvasController for initial population.
+    /// </summary>
+    public List<AuditEvent> GetRecentEvents()
+    {
+        return new List<AuditEvent>(_events);
     }
 }
