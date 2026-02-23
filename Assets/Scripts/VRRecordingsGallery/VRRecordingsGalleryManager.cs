@@ -258,17 +258,19 @@ namespace VRRecordings
                 }
                 
                 // Also detect frame-based recordings (Quest recordings)
-                if (detectFrameBasedRecordings && currentDepth == 0)
+                // Check at ALL depths, not just depth 0, since recordings are in subdirectories
+                if (detectFrameBasedRecordings)
                 {
                     // Check if this directory contains frame files
                     string[] frameFiles = Directory.GetFiles(directoryPath, "frame_*.jpg");
-                    Debug.Log($"[VRRecordingsGallery] Checking {directoryPath} for frames: found {frameFiles.Length} frame files");
                     
                     if (frameFiles.Length > 0)
                     {
                         // This is a frame-based recording folder
                         Debug.Log($"[VRRecordingsGallery] ✅ Detected frame-based recording: {directoryPath} ({frameFiles.Length} frames)");
                         AddFrameBasedRecording(directoryPath, frameFiles.Length);
+                        // Don't recurse into subdirectories of a recording folder
+                        return;
                     }
                 }
 
@@ -321,7 +323,8 @@ namespace VRRecordings
                     TimeSpan age = DateTime.Now - dirInfo.LastWriteTime;
                     Debug.Log($"[VRRecordingsGallery]   - Age: {age.TotalSeconds:F1} seconds");
                     
-                    if (age.TotalSeconds < 3)
+                    // Be more lenient - only skip if VERY recent (under 1 second)
+                    if (age.TotalSeconds < 1)
                     {
                         Debug.Log($"[VRRecordingsGallery] ⏳ Skipping {folderPath}: recording may still be in progress (age: {age.TotalSeconds:F1}s)");
                         return;

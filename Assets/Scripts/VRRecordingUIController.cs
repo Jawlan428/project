@@ -167,11 +167,18 @@ namespace VRRecordings
             Debug.Log($"[VRRecordingUI] Frame files in recording: {frameFiles.Length}");
         }
         
+        // Auto-find gallery manager if not assigned
+        if (galleryManager == null)
+        {
+            galleryManager = FindFirstObjectByType<VRRecordingsGalleryManager>();
+            Debug.Log($"[VRRecordingUI] Auto-found gallery manager: {galleryManager != null}");
+        }
+        
         // Refresh gallery after a short delay (wait for marker file to be created)
         if (galleryManager != null)
         {
-            Debug.Log("[VRRecordingUI] Refreshing gallery in 2 seconds...");
-            StartCoroutine(RefreshGalleryDelayed());
+            Debug.Log("[VRRecordingUI] Refreshing gallery...");
+            StartCoroutine(RefreshGalleryDelayed(recordingPath));
         }
         else
         {
@@ -186,10 +193,38 @@ namespace VRRecordings
             statusText.text = $"Error: {error}";
     }
 
-    private System.Collections.IEnumerator RefreshGalleryDelayed()
+    private System.Collections.IEnumerator RefreshGalleryDelayed(string recordingPath = null)
     {
-        // Wait a bit longer to ensure marker file is created
-        yield return new WaitForSeconds(2f);
+        // Wait for encoding_complete.marker file if we have a path
+        if (!string.IsNullOrEmpty(recordingPath) && System.IO.Directory.Exists(recordingPath))
+        {
+            string markerPath = System.IO.Path.Combine(recordingPath, "encoding_complete.marker");
+            float waitTime = 0f;
+            float maxWait = 5f; // Wait up to 5 seconds for marker
+            
+            Debug.Log($"[VRRecordingUI] Waiting for marker file: {markerPath}");
+            
+            while (!System.IO.File.Exists(markerPath) && waitTime < maxWait)
+            {
+                yield return new WaitForSeconds(0.5f);
+                waitTime += 0.5f;
+            }
+            
+            if (System.IO.File.Exists(markerPath))
+            {
+                Debug.Log($"[VRRecordingUI] ✅ Marker file found after {waitTime}s");
+            }
+            else
+            {
+                Debug.Log($"[VRRecordingUI] ⚠️ Marker file not found after {maxWait}s, refreshing anyway");
+            }
+        }
+        else
+        {
+            // Fallback: just wait 2 seconds
+            yield return new WaitForSeconds(2f);
+        }
+        
         if (galleryManager != null)
         {
             Debug.Log("[VRRecordingUI] Refreshing gallery now...");
