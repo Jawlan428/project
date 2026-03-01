@@ -61,7 +61,7 @@ public class AnalyticsCanvasDebugger : EditorWindow
                 EditorGUILayout.LabelField("AuditLogger", "NOT FOUND");
             }
 
-            AnalyticsCanvasController controller = Object.FindObjectOfType<AnalyticsCanvasController>();
+            AnalyticsCanvasController controller = Object.FindFirstObjectByType<AnalyticsCanvasController>();
             if (controller != null)
             {
                 EditorGUILayout.LabelField("AnalyticsCanvasController", "Found");
@@ -97,7 +97,7 @@ public class AnalyticsCanvasDebugger : EditorWindow
         }
 
         // Check Controller
-        AnalyticsCanvasController controller = Object.FindObjectOfType<AnalyticsCanvasController>();
+        AnalyticsCanvasController controller = Object.FindFirstObjectByType<AnalyticsCanvasController>();
         if (controller == null)
         {
             Debug.LogError("[Debugger] AnalyticsCanvasController not found in scene!");

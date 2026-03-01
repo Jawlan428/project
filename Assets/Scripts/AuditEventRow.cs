@@ -105,7 +105,7 @@ public class AuditEventRow : MonoBehaviour
 
         // Prevent overflow
         text.overflowMode = TextOverflowModes.Truncate;
-        text.enableWordWrapping = false;
+        text.textWrappingMode = TextWrappingModes.NoWrap;
     }
 
     /// <summary>

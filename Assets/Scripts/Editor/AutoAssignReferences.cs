@@ -11,7 +11,7 @@ public class AutoAssignReferences
     [MenuItem("Tools/Analytics Canvas/Auto-Assign References")]
     public static void AssignReferences()
     {
-        AnalyticsCanvasController controller = Object.FindObjectOfType<AnalyticsCanvasController>();
+        AnalyticsCanvasController controller = Object.FindFirstObjectByType<AnalyticsCanvasController>();
         if (controller == null)
         {
             EditorUtility.DisplayDialog("Error", "AnalyticsCanvasController not found in scene!", "OK");
@@ -23,7 +23,7 @@ public class AutoAssignReferences
         // Find EventScrollRect
         if (controller.eventScrollRect == null)
         {
-            ScrollRect scrollRect = Object.FindObjectOfType<ScrollRect>();
+            ScrollRect scrollRect = Object.FindFirstObjectByType<ScrollRect>();
             if (scrollRect != null)
             {
                 controller.eventScrollRect = scrollRect;

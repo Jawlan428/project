@@ -46,6 +46,12 @@ namespace PlantGrowth
         public bool IsDead => _isDead;
         public PlantStageAsset StageAsset => stageAsset;
 
+        /// <summary>
+        /// Fired when plant advances to a new growth stage. (plant, oldStageIndex, newStageIndex)
+        /// Subscribe from SmartFarm.EventLogger or other systems.
+        /// </summary>
+        public static event System.Action<PlantController, int, int> OnStageChanged;
+
         private void Awake()
         {
             if (stageHolder == null)
@@ -153,8 +159,10 @@ namespace PlantGrowth
             while (_stageProgress >= 1f && !stageAsset.IsFinalStage(_stageIndex))
             {
                 _stageProgress -= 1f;
+                int oldStage = _stageIndex;
                 _stageIndex++;
                 RefreshStageVisual();
+                OnStageChanged?.Invoke(this, oldStage, _stageIndex);
             }
 
             if (_stageProgress > 1f)

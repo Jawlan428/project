@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 
 namespace PlantGrowth
 {
@@ -67,9 +68,22 @@ namespace PlantGrowth
         private IEnumerator InitializeAndRun()
         {
             yield return null; // Defer 1 frame so VR/network can connect first
+
             FindAndRegisterAllPlantsInScene();
-            Debug.Log($"[PlantGrowth] Manager started. Found {_plants.Count} plants in scene. (If 0, add plants via Tools > Plant Growth > Add Full Setup)");
+            Debug.Log($"[PlantGrowth] Manager started. Found {_plants.Count} plants in scene. (If 0, run Tools > Farm > Farm Setup)");
             if (_plants.Count == 0) yield break;
+
+            bool isClient = NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening && !NetworkManager.Singleton.IsServer;
+
+            if (isClient)
+            {
+                // Client: initialize plants with defaults (no save load, no tick)
+                foreach (var p in _plants)
+                    if (p != null) p.Initialize(null);
+                Debug.Log("[PlantGrowth] Client - plants initialized, simulation disabled (host-authoritative).");
+                yield break;
+            }
+
 #if UNITY_EDITOR
             PlantSaveLoadService.DeleteSave(); // In editor: always start fresh each Play
 #endif

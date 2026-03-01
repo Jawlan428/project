@@ -328,7 +328,7 @@ public class AnalyticsCanvasController : MonoBehaviour
         tmp.alignment = TextAlignmentOptions.Left;
         tmp.verticalAlignment = VerticalAlignmentOptions.Middle; // Center vertically in row
         tmp.overflowMode = TextOverflowModes.Ellipsis;
-        tmp.enableWordWrapping = false;
+        tmp.textWrappingMode = TextWrappingModes.NoWrap;
         tmp.richText = true;
         tmp.raycastTarget = false; // Improve performance
 

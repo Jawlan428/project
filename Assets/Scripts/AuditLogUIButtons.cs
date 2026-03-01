@@ -21,7 +21,7 @@ public class AuditLogUIButtons : MonoBehaviour
         // Find test generator if not assigned
         if (testGenerator == null)
         {
-            testGenerator = FindObjectOfType<AuditLogTestGenerator>();
+            testGenerator = FindFirstObjectByType<AuditLogTestGenerator>();
         }
         
         // Setup button listeners if assigned
@@ -57,7 +57,7 @@ public class AuditLogUIButtons : MonoBehaviour
             Debug.LogWarning("[AuditLogUIButtons] No AuditLogTestGenerator found in scene!");
             
             // Try to find it again
-            testGenerator = FindObjectOfType<AuditLogTestGenerator>();
+            testGenerator = FindFirstObjectByType<AuditLogTestGenerator>();
             if (testGenerator != null)
             {
                 testGenerator.GenerateTestEvents();

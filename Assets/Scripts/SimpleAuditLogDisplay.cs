@@ -103,7 +103,7 @@ public class SimpleAuditLogDisplay : MonoBehaviour
         logText.color = Color.white;
         logText.alignment = TextAlignmentOptions.TopLeft;
         logText.overflowMode = TextOverflowModes.Overflow;
-        logText.enableWordWrapping = true;
+        logText.textWrappingMode = TextWrappingModes.Normal;
         logText.richText = true;
         logText.raycastTarget = false;
         

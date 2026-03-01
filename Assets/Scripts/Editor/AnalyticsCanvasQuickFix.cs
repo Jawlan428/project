@@ -137,7 +137,7 @@ public class AnalyticsCanvasQuickFix
     {
         Debug.Log("=== Analytics Canvas Diagnosis ===");
         
-        AnalyticsCanvasController controller = Object.FindObjectOfType<AnalyticsCanvasController>();
+        AnalyticsCanvasController controller = Object.FindFirstObjectByType<AnalyticsCanvasController>();
         if (controller == null)
         {
             Debug.LogError("[Diagnosis] AnalyticsCanvasController not found!");

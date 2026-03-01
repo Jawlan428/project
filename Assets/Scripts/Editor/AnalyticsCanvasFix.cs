@@ -11,7 +11,7 @@ public class AnalyticsCanvasFix : EditorWindow
     public static void FixContentPanelLayout()
     {
         // Find the AnalyticsCanvas
-        AnalyticsCanvasController controller = FindObjectOfType<AnalyticsCanvasController>();
+        AnalyticsCanvasController controller = FindFirstObjectByType<AnalyticsCanvasController>();
         
         if (controller == null)
         {
@@ -89,7 +89,7 @@ public class AnalyticsCanvasFix : EditorWindow
     [MenuItem("Tools/Analytics Canvas/Clear All Event Rows")]
     public static void ClearAllEventRows()
     {
-        AnalyticsCanvasController controller = FindObjectOfType<AnalyticsCanvasController>();
+        AnalyticsCanvasController controller = FindFirstObjectByType<AnalyticsCanvasController>();
         
         if (controller == null || controller.contentPanel == null)
         {
@@ -123,7 +123,7 @@ public class AnalyticsCanvasFix : EditorWindow
     [MenuItem("Tools/Analytics Canvas/Verify Setup")]
     public static void VerifySetup()
     {
-        AnalyticsCanvasController controller = FindObjectOfType<AnalyticsCanvasController>();
+        AnalyticsCanvasController controller = FindFirstObjectByType<AnalyticsCanvasController>();
         
         System.Text.StringBuilder report = new System.Text.StringBuilder();
         report.AppendLine("Analytics Canvas Setup Report:");
@@ -190,7 +190,7 @@ public class AnalyticsCanvasFix : EditorWindow
         }
         
         // Check AuditLogger
-        if (FindObjectOfType<AuditBootstrap>() == null)
+        if (FindFirstObjectByType<AuditBootstrap>() == null)
         {
             report.AppendLine("⚠️ AuditBootstrap not found (will auto-create at runtime)");
         }

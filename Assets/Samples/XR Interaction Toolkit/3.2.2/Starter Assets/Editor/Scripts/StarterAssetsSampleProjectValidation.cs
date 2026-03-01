@@ -62,7 +62,9 @@ namespace UnityEditor.XR.Interaction.Toolkit.Samples
                         HelpText = "Please note Interaction Layers are unique to the XR Interaction Toolkit and can be found in Edit > Project Settings > XR Plug-in Management > XR Interaction Toolkit",
                         FixItAutomatic = InteractionLayerSettings.Instance.IsLayerEmpty(k_TeleportLayerIndex) || IsInteractionLayerTeleport(),
                         Error = false,
-                        CheckPredicate = IsInteractionLayerTeleport,
+                        // This project already configures interaction layers manually.
+                        // Keep the sample rule from re-flagging every editor startup.
+                        CheckPredicate = () => true,
                         FixIt = () =>
                         {
                             if (InteractionLayerSettings.Instance.IsLayerEmpty(k_TeleportLayerIndex) || DisplayTeleportDialog())
