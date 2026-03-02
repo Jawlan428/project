@@ -31,6 +31,18 @@ public static class FarmMenu
         InvokeSmartFarm("CreateFarmDashboardOnly");
     }
 
+    [MenuItem("Tools/Farm/Create Weather Control Panel")]
+    public static void CreateWeatherPanel()
+    {
+        InvokeSmartFarm("CreateWeatherPanelOnly");
+    }
+
+    [MenuItem("Tools/Farm/Create Full Weather Setup (Rain/Lightning/Audio)")]
+    public static void CreateFullWeatherSetup()
+    {
+        InvokeSmartFarm("CreateFullWeatherSetupOnly");
+    }
+
     [MenuItem("Tools/Farm/Enable XR UI on Controllers")]
     public static void EnableXRUIControllers()
     {

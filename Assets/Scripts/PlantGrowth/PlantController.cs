@@ -269,6 +269,25 @@ namespace PlantGrowth
         }
 
         /// <summary>
+        /// Modify health by delta (positive = heal, negative = damage). Used by weather/events.
+        /// </summary>
+        public void ModifyHealth(float delta)
+        {
+            if (_isDead) return;
+            _health = Mathf.Clamp(_health + delta, 0, 100);
+            if (_health <= 0)
+            {
+                _isDead = true;
+                if (stageAsset != null && stageAsset.hasDeadStage && stageAsset.stagePrefabs != null &&
+                    stageAsset.stagePrefabs.Length > stageAsset.StageCount)
+                {
+                    _stageIndex = stageAsset.StageCount;
+                    RefreshStageVisual();
+                }
+            }
+        }
+
+        /// <summary>
         /// Set sunlight (0..100). Typically set by environment/manager.
         /// </summary>
         public void SetSunlight(float normalized)

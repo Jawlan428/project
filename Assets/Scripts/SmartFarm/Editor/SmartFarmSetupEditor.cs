@@ -1,3 +1,4 @@
+using System.IO;
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -94,6 +95,10 @@ namespace SmartFarm.Editor
             // 6. Create tablet app + page system
             CreateOrFindTabletApp(hub);
 
+            // 7. Create Weather Control Panel + full weather visuals (rain, lightning, audio)
+            CreateOrFindWeatherPanel(hub);
+            CreateFullWeatherSetup(hub);
+
             EditorSceneManager.MarkSceneDirty(scene);
             Selection.activeGameObject = hub;
 
@@ -153,6 +158,8 @@ namespace SmartFarm.Editor
                 AssetDatabase.CreateFolder("Assets", "SmartFarm");
             if (!AssetDatabase.IsValidFolder("Assets/SmartFarm/Prefabs"))
                 AssetDatabase.CreateFolder("Assets/SmartFarm", "Prefabs");
+            if (!AssetDatabase.IsValidFolder("Assets/SmartFarm/WeatherSkyboxes"))
+                AssetDatabase.CreateFolder("Assets/SmartFarm", "WeatherSkyboxes");
             if (!AssetDatabase.IsValidFolder("Assets/Resources"))
                 AssetDatabase.CreateFolder("Assets", "Resources");
             if (!AssetDatabase.IsValidFolder("Assets/Resources/SmartFarmTablet"))
@@ -831,6 +838,423 @@ namespace SmartFarm.Editor
             return go;
         }
 
+        private static void CreateOrFindWeatherPanel(GameObject hub)
+        {
+            var existing = GameObject.Find("WeatherControlPanel");
+            if (existing != null)
+            {
+                LinkWeatherPanelToHub(existing, hub);
+                return;
+            }
+
+            var cam = FindCameraForDashboard();
+            var panelGO = new GameObject("WeatherControlPanel");
+            Undo.RegisterCreatedObjectUndo(panelGO, "Weather Panel Setup");
+            panelGO.transform.position = new Vector3(-1.5f, 1.5f, 3f);
+            panelGO.transform.rotation = Quaternion.Euler(0, 180f, 0);
+            panelGO.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
+
+            var canvas = panelGO.AddComponent<Canvas>();
+            canvas.renderMode = RenderMode.WorldSpace;
+            canvas.worldCamera = cam;
+            canvas.sortingOrder = 55;
+            panelGO.AddComponent<CanvasScaler>().uiScaleMode = CanvasScaler.ScaleMode.ConstantPixelSize;
+            panelGO.AddComponent<GraphicRaycaster>();
+            var raycasterType = System.Type.GetType("UnityEngine.XR.Interaction.Toolkit.UI.TrackedDeviceGraphicRaycaster, Unity.XR.Interaction.Toolkit");
+            if (raycasterType != null) panelGO.AddComponent(raycasterType);
+
+            var rootRect = panelGO.GetComponent<RectTransform>();
+            rootRect.anchorMin = rootRect.anchorMax = new Vector2(0.5f, 0.5f);
+            rootRect.pivot = new Vector2(0.5f, 0.5f);
+            rootRect.sizeDelta = new Vector2(400, 380);
+
+            var bg = CreatePanel(panelGO.transform, "Background", new Vector2(0, 0), Vector2.zero, Vector2.one, new Color(0.08f, 0.12f, 0.18f, 0.98f));
+            bg.GetComponent<Image>().raycastTarget = true;
+
+            var title = CreateText(bg.transform, "TitleText", "Weather Control", 22, TextAlignmentOptions.Center, Vector2.zero, new Vector2(0.05f, 0.88f), new Vector2(0.95f, 0.98f));
+            var currentWeather = CreateText(bg.transform, "CurrentWeatherText", "Current: Sunny", 18, TextAlignmentOptions.Center, Vector2.zero, new Vector2(0.05f, 0.72f), new Vector2(0.95f, 0.84f));
+            var description = CreateText(bg.transform, "DescriptionText", "Sunny: Increases temperature and plant growth rate. Soil moisture decreases gradually.", 14, TextAlignmentOptions.TopLeft, new Vector2(8, -8), new Vector2(0.05f, 0.38f), new Vector2(0.95f, 0.68f));
+            description.GetComponent<TMP_Text>().enableWordWrapping = true;
+
+            var sunnyBtn = CreateButton(bg.transform, "Sunny", new Vector2(-110, -180));
+            var rainyBtn = CreateButton(bg.transform, "Rainy", new Vector2(0, -180));
+            var stormBtn = CreateButton(bg.transform, "Storm", new Vector2(110, -180));
+            ResizeButton(sunnyBtn, 100, 42);
+            ResizeButton(rainyBtn, 100, 42);
+            ResizeButton(stormBtn, 100, 42);
+            sunnyBtn.GetComponentInChildren<TMP_Text>().text = "Sunny";
+            rainyBtn.GetComponentInChildren<TMP_Text>().text = "Rainy";
+            stormBtn.GetComponentInChildren<TMP_Text>().text = "Storm";
+
+            var weatherMgr = CreateOrFindWeatherManager(hub);
+            var uiCtrl = panelGO.AddComponent<WeatherUIController>();
+            SetPrivateField(uiCtrl, "weatherManager", weatherMgr);
+            SetPrivateField(uiCtrl, "titleText", title.GetComponent<TMP_Text>());
+            SetPrivateField(uiCtrl, "currentWeatherText", currentWeather.GetComponent<TMP_Text>());
+            SetPrivateField(uiCtrl, "descriptionText", description.GetComponent<TMP_Text>());
+            SetPrivateField(uiCtrl, "sunnyButton", sunnyBtn.GetComponent<Button>());
+            SetPrivateField(uiCtrl, "rainyButton", rainyBtn.GetComponent<Button>());
+            SetPrivateField(uiCtrl, "stormButton", stormBtn.GetComponent<Button>());
+
+            var uiLayer = LayerMask.NameToLayer("UI");
+            if (uiLayer >= 0) SetLayerRecursive(panelGO, uiLayer);
+        }
+
+        private static WeatherManager CreateOrFindWeatherManager(GameObject hub)
+        {
+            var mgr = hub.GetComponent<WeatherManager>();
+            if (mgr == null) mgr = hub.AddComponent<WeatherManager>();
+            var simMgr = hub.GetComponent<FarmSimulationManager>();
+            var plantMgr = Object.FindFirstObjectByType<PlantGrowth.PlantGrowthManager>();
+            SetPrivateField(mgr, "simulationManager", simMgr);
+            SetPrivateField(mgr, "plantGrowthManager", plantMgr);
+            return mgr;
+        }
+
+        private static void CreateFullWeatherSetup(GameObject hub)
+        {
+            var weatherMgr = hub.GetComponent<WeatherManager>();
+            if (weatherMgr == null) return;
+
+            // 1. Directional Light + LightningEffect
+            var allLights = Object.FindObjectsByType<Light>(FindObjectsSortMode.None);
+            Light dirLight = null;
+            foreach (var l in allLights)
+            {
+                if (l != null && l.type == LightType.Directional)
+                {
+                    dirLight = l;
+                    break;
+                }
+            }
+            if (dirLight == null)
+            {
+                var lightGO = new GameObject("Directional Light");
+                Undo.RegisterCreatedObjectUndo(lightGO, "Weather Setup");
+                lightGO.transform.rotation = Quaternion.Euler(50f, -30f, 0f);
+                dirLight = lightGO.AddComponent<Light>();
+                dirLight.type = LightType.Directional;
+                dirLight.intensity = 1.2f;
+                dirLight.color = new Color(1f, 0.98f, 0.95f);
+            }
+            SetPrivateField(weatherMgr, "directionalLight", dirLight);
+
+            var lightning = dirLight.GetComponent<LightningEffect>();
+            if (lightning == null) lightning = dirLight.gameObject.AddComponent<LightningEffect>();
+            SetPrivateField(weatherMgr, "lightningEffect", lightning);
+
+            // 2. Skybox materials (Sunny, Rainy, Storm)
+            var (sunnySky, rainySky, stormSky) = CreateOrFindWeatherSkyboxes();
+
+            // 2b. Sky overlay (keeps your sky, darkens for Rainy/Storm)
+            var overlayGO = GameObject.Find("WeatherSkyOverlay");
+            if (overlayGO == null)
+            {
+                overlayGO = CreateSkyOverlay();
+                Undo.RegisterCreatedObjectUndo(overlayGO, "Weather Setup");
+            }
+            var skyOverlay = overlayGO.GetComponent<SkyOverlay>();
+            if (skyOverlay != null)
+                SetPrivateField(weatherMgr, "skyOverlay", skyOverlay);
+            SetPrivateField(weatherMgr, "keepOriginalSky", true);
+
+            // 2c. Cloud layer
+            var cloudGO = GameObject.Find("WeatherCloudLayer");
+            if (cloudGO == null)
+            {
+                cloudGO = CreateCloudLayer();
+                Undo.RegisterCreatedObjectUndo(cloudGO, "Weather Setup");
+            }
+            var cloudLayer = cloudGO.GetComponent<CloudLayer>();
+            if (cloudLayer != null)
+                SetPrivateField(weatherMgr, "cloudLayer", cloudLayer);
+            if (sunnySky != null) SetPrivateField(weatherMgr, "sunnySkybox", sunnySky);
+            if (rainySky != null) SetPrivateField(weatherMgr, "rainySkybox", rainySky);
+            if (stormSky != null) SetPrivateField(weatherMgr, "stormSkybox", stormSky);
+
+            // 3. Rain Particle System
+            var rainGO = GameObject.Find("WeatherRainParticles");
+            if (rainGO == null)
+            {
+                rainGO = CreateRainParticleSystem();
+                Undo.RegisterCreatedObjectUndo(rainGO, "Weather Setup");
+            }
+            rainGO.SetActive(false);
+            var rainPS = rainGO.GetComponent<ParticleSystem>();
+            if (rainPS != null)
+                SetPrivateField(weatherMgr, "rainParticleSystem", rainPS);
+
+            // 4. Weather Audio Sources (empty - user assigns clips)
+            var audioRoot = GameObject.Find("WeatherAudio");
+            if (audioRoot == null)
+            {
+                audioRoot = new GameObject("WeatherAudio");
+                Undo.RegisterCreatedObjectUndo(audioRoot, "Weather Setup");
+                audioRoot.transform.SetParent(hub.transform);
+                audioRoot.transform.localPosition = Vector3.zero;
+            }
+
+            var sunny = audioRoot.transform.Find("SunnyAmbient")?.GetComponent<AudioSource>();
+            var rainy = audioRoot.transform.Find("RainAmbient")?.GetComponent<AudioSource>();
+            var storm = audioRoot.transform.Find("StormAmbient")?.GetComponent<AudioSource>();
+            if (sunny == null) sunny = CreateWeatherAudioSource(audioRoot.transform, "SunnyAmbient");
+            if (rainy == null) { rainy = CreateWeatherAudioSource(audioRoot.transform, "RainAmbient"); rainy.loop = true; }
+            if (storm == null) { storm = CreateWeatherAudioSource(audioRoot.transform, "StormAmbient"); storm.loop = true; }
+            SetPrivateField(weatherMgr, "sunnyAmbientSource", sunny);
+            SetPrivateField(weatherMgr, "rainyAmbientSource", rainy);
+            SetPrivateField(weatherMgr, "stormAmbientSource", storm);
+
+            Debug.Log("[SmartFarm] Full weather setup complete: Light, Lightning, Sky, Rain, Audio.");
+        }
+
+        private static (Material sunny, Material rainy, Material storm) CreateOrFindWeatherSkyboxes()
+        {
+            EnsureDirectories();
+            var shader = Shader.Find("Skybox/Procedural") ?? Shader.Find("Universal Render Pipeline/Skybox/Procedural");
+            if (shader == null)
+            {
+                Debug.LogWarning("[SmartFarm] Procedural Skybox shader not found. Sky will not change with weather.");
+                return (null, null, null);
+            }
+
+            var sunny = LoadOrCreateSkyboxMaterial("Assets/SmartFarm/WeatherSkyboxes/Skybox_Sunny.mat", shader, (mat) =>
+            {
+                mat.SetColor("_SkyTint", new Color(0.32f, 0.45f, 0.78f));  // Vibrant clear blue
+                mat.SetColor("_GroundColor", new Color(0.62f, 0.55f, 0.42f));  // Warm golden horizon
+                mat.SetFloat("_SunSize", 0.05f);
+                mat.SetFloat("_SunSizeConvergence", 4f);
+                mat.SetFloat("_AtmosphereThickness", 0.25f);  // Very clear
+                mat.SetFloat("_Exposure", 1.6f);
+            });
+
+            var rainy = LoadOrCreateSkyboxMaterial("Assets/SmartFarm/WeatherSkyboxes/Skybox_Rainy.mat", shader, (mat) =>
+            {
+                mat.SetColor("_SkyTint", new Color(0.42f, 0.44f, 0.5f));  // Flat gray overcast
+                mat.SetColor("_GroundColor", new Color(0.32f, 0.35f, 0.4f));  // Dark misty horizon
+                mat.SetFloat("_SunSize", 0.008f);  // Sun hidden
+                mat.SetFloat("_SunSizeConvergence", 12f);
+                mat.SetFloat("_AtmosphereThickness", 1.8f);  // Heavy overcast
+                mat.SetFloat("_Exposure", 0.55f);
+            });
+
+            var storm = LoadOrCreateSkyboxMaterial("Assets/SmartFarm/WeatherSkyboxes/Skybox_Storm.mat", shader, (mat) =>
+            {
+                mat.SetColor("_SkyTint", new Color(0.28f, 0.3f, 0.38f));  // Dark storm clouds
+                mat.SetColor("_GroundColor", new Color(0.18f, 0.19f, 0.24f));  // Dark horizon
+                mat.SetFloat("_SunSize", 0.005f);  // Sun hidden
+                mat.SetFloat("_SunSizeConvergence", 12f);
+                mat.SetFloat("_AtmosphereThickness", 2.2f);  // Heavy overcast
+                mat.SetFloat("_Exposure", 0.45f);
+            });
+
+            return (sunny, rainy, storm);
+        }
+
+        private static GameObject CreateSkyOverlay()
+        {
+            var go = new GameObject("WeatherSkyOverlay");
+            var canvas = go.AddComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            canvas.sortingOrder = 100;
+            canvas.pixelPerfect = false;
+            go.AddComponent<CanvasScaler>().uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            go.AddComponent<GraphicRaycaster>();
+
+            var root = new GameObject("OverlayRoot", typeof(RectTransform));
+            root.transform.SetParent(go.transform, false);
+            var rect = (RectTransform)root.transform;
+            rect.anchorMin = Vector2.zero;
+            rect.anchorMax = Vector2.one;
+            rect.offsetMin = rect.offsetMax = Vector2.zero;
+
+            var img = root.AddComponent<Image>();
+            img.color = new Color(0.35f, 0.4f, 0.5f, 0.5f);
+            img.raycastTarget = false;
+
+            var overlay = go.AddComponent<SkyOverlay>();
+            var so = new SerializedObject(overlay);
+            so.FindProperty("overlayImage").objectReferenceValue = img;
+            so.ApplyModifiedPropertiesWithoutUndo();
+
+            return go;
+        }
+
+        private static GameObject CreateCloudLayer()
+        {
+            EnsureDirectories();
+            var tex = CreateOrLoadCloudTexture("Assets/SmartFarm/WeatherSkyboxes/CloudTexture.png");
+            var mat = CreateOrLoadCloudMaterial("Assets/SmartFarm/WeatherSkyboxes/CloudMaterial.mat", tex);
+
+            var go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            go.name = "WeatherCloudLayer";
+            go.transform.position = Vector3.zero;
+            go.transform.localScale = Vector3.one * 450f;
+
+            var renderer = go.GetComponent<MeshRenderer>();
+            renderer.sharedMaterial = mat;
+            renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            renderer.receiveShadows = false;
+
+            var collider = go.GetComponent<Collider>();
+            if (collider != null) UnityEngine.Object.DestroyImmediate(collider);
+
+            var cloudLayer = go.AddComponent<CloudLayer>();
+            cloudLayer.SetWeather(WeatherManager.WeatherType.Sunny);
+
+            return go;
+        }
+
+        private static Texture2D CreateOrLoadCloudTexture(string path)
+        {
+            var existing = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+            if (existing != null) return existing;
+
+            int size = 512;
+            var tex = new Texture2D(size, size);
+            for (int y = 0; y < size; y++)
+            for (int x = 0; x < size; x++)
+            {
+                float nx = x / (float)size * 4f;
+                float ny = y / (float)size * 4f;
+                float n = Mathf.PerlinNoise(nx, ny) * 0.7f + Mathf.PerlinNoise(nx * 2f, ny * 2f) * 0.3f;
+                float a = Mathf.Clamp01(n * 1.2f - 0.3f);
+                tex.SetPixel(x, y, new Color(1f, 1f, 1f, a));
+            }
+            tex.Apply();
+            tex.wrapMode = TextureWrapMode.Repeat;
+            tex.filterMode = FilterMode.Bilinear;
+
+            var png = tex.EncodeToPNG();
+            var relPath = path.StartsWith("Assets/") ? path.Substring(7) : path;
+            var fullPath = Path.Combine(Application.dataPath, relPath);
+            var dir = Path.GetDirectoryName(fullPath);
+            if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
+            File.WriteAllBytes(fullPath, png);
+            AssetDatabase.Refresh();
+            return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+        }
+
+        private static Material CreateOrLoadCloudMaterial(string path, Texture2D tex)
+        {
+            var existing = AssetDatabase.LoadAssetAtPath<Material>(path);
+            if (existing != null)
+            {
+                if (tex != null && existing.HasProperty("_MainTex"))
+                    existing.SetTexture("_MainTex", tex);
+                return existing;
+            }
+
+            var shader = Shader.Find("Sprites/Default") ?? Shader.Find("Unlit/Transparent")
+                ?? Shader.Find("Particles/Standard Unlit") ?? Shader.Find("Universal Render Pipeline/Particles/Unlit");
+            if (shader == null) { Debug.LogWarning("[SmartFarm] No transparent shader for clouds."); return null; }
+
+            var mat = new Material(shader);
+            mat.name = "CloudMaterial";
+            mat.SetTexture("_MainTex", tex);
+            mat.SetColor("_Color", new Color(1f, 1f, 1f, 0.25f));
+            mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+            mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+            mat.SetInt("_Cull", (int)UnityEngine.Rendering.CullMode.Off);
+            mat.renderQueue = 2999;
+
+            AssetDatabase.CreateAsset(mat, path);
+            AssetDatabase.SaveAssets();
+            return mat;
+        }
+
+        private static Material LoadOrCreateSkyboxMaterial(string path, Shader shader, System.Action<Material> configure)
+        {
+            var existing = AssetDatabase.LoadAssetAtPath<Material>(path);
+            if (existing != null)
+            {
+                configure?.Invoke(existing);
+                EditorUtility.SetDirty(existing);
+                AssetDatabase.SaveAssets();
+                return existing;
+            }
+
+            var mat = new Material(shader);
+            mat.name = Path.GetFileNameWithoutExtension(path);
+            configure?.Invoke(mat);
+            AssetDatabase.CreateAsset(mat, path);
+            AssetDatabase.SaveAssets();
+            return mat;
+        }
+
+        private static GameObject CreateRainParticleSystem()
+        {
+            var go = new GameObject("WeatherRainParticles");
+            go.transform.position = new Vector3(0, 18f, 0);
+
+            var ps = go.AddComponent<ParticleSystem>();
+            var renderer = go.GetComponent<ParticleSystemRenderer>();
+
+            var renderMat = AssetDatabase.GetBuiltinExtraResource<Material>("Default-Particle.mat");
+            if (renderMat == null) renderMat = AssetDatabase.GetBuiltinExtraResource<Material>("Default-Material.mat");
+            if (renderMat == null)
+            {
+                var shader = Shader.Find("Particles/Standard Unlit") ?? Shader.Find("Universal Render Pipeline/Particles/Unlit");
+                if (shader != null) renderMat = new Material(shader);
+            }
+            if (renderMat != null) renderer.material = renderMat;
+            renderer.renderMode = ParticleSystemRenderMode.Stretch;
+            renderer.lengthScale = 2f;
+            renderer.velocityScale = 0.1f;
+
+            var main = ps.main;
+            main.startLifetime = 1.2f;
+            main.startSpeed = new ParticleSystem.MinMaxCurve(18f, 26f);
+            main.startSize = new ParticleSystem.MinMaxCurve(0.04f, 0.08f);
+            main.gravityModifier = 1.2f;
+            main.simulationSpace = ParticleSystemSimulationSpace.World;
+            main.maxParticles = 8000;
+            main.startRotation = 0f;
+
+            var shape = ps.shape;
+            shape.shapeType = ParticleSystemShapeType.Box;
+            shape.scale = new Vector3(35f, 1f, 35f);
+            shape.rotation = new Vector3(0f, 0f, 0f);
+
+            var emission = ps.emission;
+            emission.rateOverTime = 1200f;
+            emission.enabled = true;
+
+            var colorOverLifetime = ps.colorOverLifetime;
+            colorOverLifetime.enabled = true;
+            var grad = new Gradient();
+            grad.SetKeys(
+                new[] { new GradientColorKey(new Color(0.85f, 0.9f, 0.95f), 0f), new GradientColorKey(new Color(0.7f, 0.78f, 0.88f), 1f) },
+                new[] { new GradientAlphaKey(0.5f, 0f), new GradientAlphaKey(0f, 1f) }
+            );
+            colorOverLifetime.color = grad;
+
+            return go;
+        }
+
+        private static AudioSource CreateWeatherAudioSource(Transform parent, string name)
+        {
+            var go = new GameObject(name);
+            go.transform.SetParent(parent);
+            go.transform.localPosition = Vector3.zero;
+            var src = go.AddComponent<AudioSource>();
+            src.playOnAwake = false;
+            src.spatialBlend = 0f;
+            return src;
+        }
+
+        private static void LinkWeatherPanelToHub(GameObject panel, GameObject hub)
+        {
+            var uiCtrl = panel.GetComponent<WeatherUIController>();
+            var weatherMgr = hub.GetComponent<WeatherManager>();
+            if (weatherMgr == null) weatherMgr = hub.AddComponent<WeatherManager>();
+            var simMgr = hub.GetComponent<FarmSimulationManager>();
+            var plantMgr = Object.FindFirstObjectByType<PlantGrowth.PlantGrowthManager>();
+            SetPrivateField(weatherMgr, "simulationManager", simMgr);
+            SetPrivateField(weatherMgr, "plantGrowthManager", plantMgr);
+            if (uiCtrl != null) SetPrivateField(uiCtrl, "weatherManager", weatherMgr);
+            CreateFullWeatherSetup(hub);
+        }
+
         private static void LinkDashboardToHub(GameObject dashboard, GameObject hub)
         {
             var dashboardUI = dashboard.GetComponent<FarmDashboardUI>();
@@ -948,6 +1372,61 @@ namespace SmartFarm.Editor
             var field = obj.GetType().GetField(fieldName,
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             field?.SetValue(obj, value);
+        }
+
+        /// <summary>
+        /// Creates rain, lightning, audio and wires all references to WeatherManager.
+        /// Use when you have the panel but need visual/audio setup.
+        /// </summary>
+        public static void CreateFullWeatherSetupOnly()
+        {
+            if (Application.isPlaying)
+            {
+                Debug.LogWarning("[SmartFarm] Stop Play mode first!");
+                return;
+            }
+            var hub = GameObject.Find("FarmSimulationHub");
+            if (hub == null)
+            {
+                Debug.LogError("[SmartFarm] FarmSimulationHub not found. Run Tools > Farm > Farm Setup first.");
+                return;
+            }
+            var weatherMgr = hub.GetComponent<WeatherManager>();
+            if (weatherMgr == null)
+            {
+                Debug.LogWarning("[SmartFarm] WeatherManager not found on hub. Adding it. Run Create Weather Control Panel if you need the UI.");
+                weatherMgr = hub.AddComponent<WeatherManager>();
+                var simMgr = hub.GetComponent<FarmSimulationManager>();
+                var plantMgr = Object.FindFirstObjectByType<PlantGrowth.PlantGrowthManager>();
+                SetPrivateField(weatherMgr, "simulationManager", simMgr);
+                SetPrivateField(weatherMgr, "plantGrowthManager", plantMgr);
+            }
+            CreateFullWeatherSetup(hub);
+            EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+            Debug.Log("[SmartFarm] Full weather setup (rain, lightning, audio) created and wired.");
+        }
+
+        /// <summary>
+        /// Creates only the Weather Control Panel if missing.
+        /// </summary>
+        public static void CreateWeatherPanelOnly()
+        {
+            if (Application.isPlaying)
+            {
+                Debug.LogWarning("[SmartFarm] Stop Play mode first!");
+                return;
+            }
+            var hub = GameObject.Find("FarmSimulationHub");
+            if (hub == null)
+            {
+                Debug.LogError("[SmartFarm] FarmSimulationHub not found. Run Tools > Farm > Farm Setup first.");
+                return;
+            }
+            CreateOrFindWeatherPanel(hub);
+            CreateFullWeatherSetup(hub);
+            EnableXRUIControllers();
+            EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+            Debug.Log("[SmartFarm] Weather Control Panel + full weather setup created.");
         }
 
         /// <summary>
