@@ -12,7 +12,7 @@ Material:
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
-  - _SUNDISK_HIGH_QUALITY
+  - _SUNDISK_NONE
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -26,13 +26,13 @@ Material:
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
-    - _AtmosphereThickness: 2.2
-    - _Exposure: 0.45
-    - _SunDisk: 2
-    - _SunSize: 0.005
-    - _SunSizeConvergence: 12
+    - _AtmosphereThickness: 2.8
+    - _Exposure: 0.24
+    - _SunDisk: 0
+    - _SunSize: 0.001
+    - _SunSizeConvergence: 20
     m_Colors:
-    - _GroundColor: {r: 0.18, g: 0.19, b: 0.24, a: 1}
-    - _SkyTint: {r: 0.28, g: 0.3, b: 0.38, a: 1}
+    - _GroundColor: {r: 0.06, g: 0.07, b: 0.1, a: 1}
+    - _SkyTint: {r: 0.18, g: 0.22, b: 0.3, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

@@ -1029,22 +1029,24 @@ namespace SmartFarm.Editor
 
             var rainy = LoadOrCreateSkyboxMaterial("Assets/SmartFarm/WeatherSkyboxes/Skybox_Rainy.mat", shader, (mat) =>
             {
-                mat.SetColor("_SkyTint", new Color(0.42f, 0.44f, 0.5f));  // Flat gray overcast
-                mat.SetColor("_GroundColor", new Color(0.32f, 0.35f, 0.4f));  // Dark misty horizon
-                mat.SetFloat("_SunSize", 0.008f);  // Sun hidden
-                mat.SetFloat("_SunSizeConvergence", 12f);
-                mat.SetFloat("_AtmosphereThickness", 1.8f);  // Heavy overcast
-                mat.SetFloat("_Exposure", 0.55f);
+                mat.SetColor("_SkyTint", new Color(0.30f, 0.35f, 0.45f));  // Cool gray-blue
+                mat.SetColor("_GroundColor", new Color(0.14f, 0.16f, 0.20f));  // No warm horizon
+                mat.SetFloat("_SunSize", 0.001f);
+                mat.SetFloat("_SunSizeConvergence", 20f);
+                mat.SetFloat("_SunDisk", 0f); // hide sun disk
+                mat.SetFloat("_AtmosphereThickness", 2.2f);
+                mat.SetFloat("_Exposure", 0.38f);
             });
 
             var storm = LoadOrCreateSkyboxMaterial("Assets/SmartFarm/WeatherSkyboxes/Skybox_Storm.mat", shader, (mat) =>
             {
-                mat.SetColor("_SkyTint", new Color(0.28f, 0.3f, 0.38f));  // Dark storm clouds
-                mat.SetColor("_GroundColor", new Color(0.18f, 0.19f, 0.24f));  // Dark horizon
-                mat.SetFloat("_SunSize", 0.005f);  // Sun hidden
-                mat.SetFloat("_SunSizeConvergence", 12f);
-                mat.SetFloat("_AtmosphereThickness", 2.2f);  // Heavy overcast
-                mat.SetFloat("_Exposure", 0.45f);
+                mat.SetColor("_SkyTint", new Color(0.18f, 0.22f, 0.30f));  // Dark cold storm
+                mat.SetColor("_GroundColor", new Color(0.06f, 0.07f, 0.10f));  // Almost black horizon
+                mat.SetFloat("_SunSize", 0.001f);
+                mat.SetFloat("_SunSizeConvergence", 20f);
+                mat.SetFloat("_SunDisk", 0f); // hide sun disk
+                mat.SetFloat("_AtmosphereThickness", 2.8f);
+                mat.SetFloat("_Exposure", 0.24f);
             });
 
             return (sunny, rainy, storm);
@@ -1227,6 +1229,14 @@ namespace SmartFarm.Editor
                 new[] { new GradientAlphaKey(0.5f, 0f), new GradientAlphaKey(0f, 1f) }
             );
             colorOverLifetime.color = grad;
+
+            // Wind-driven rain: sideways + downward for immediate visual direction.
+            var velocityOverLifetime = ps.velocityOverLifetime;
+            velocityOverLifetime.enabled = true;
+            velocityOverLifetime.space = ParticleSystemSimulationSpace.World;
+            velocityOverLifetime.x = 5f;
+            velocityOverLifetime.y = -10f;
+            velocityOverLifetime.z = 0f;
 
             return go;
         }

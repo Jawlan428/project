@@ -36,6 +36,10 @@ namespace SmartFarm
         [Header("Visuals - Skybox")]
         [SerializeField] [Tooltip("Sunny keeps your original scene sky. Rainy/Storm use weather skyboxes.")]
         private bool sunnyUsesOriginalSky = true;
+        [SerializeField] [Tooltip("Use solid overcast sky colors for Rainy/Storm to avoid procedural yellow horizon.")]
+        private bool useSolidSkyColorForRainAndStorm = true;
+        [SerializeField] private Color rainySolidSkyColor = new Color(0.36f, 0.41f, 0.48f);
+        [SerializeField] private Color stormSolidSkyColor = new Color(0.2f, 0.24f, 0.3f);
         [SerializeField] private Material sunnySkybox;
         [SerializeField] private Material rainySkybox;
         [SerializeField] private Material stormSkybox;
@@ -63,6 +67,12 @@ namespace SmartFarm
         [SerializeField] private ParticleSystem rainParticleSystem;
         [SerializeField] private float rainyEmissionRate = 1800f;
         [SerializeField] private float stormEmissionRate = 3500f;
+        [SerializeField] [Tooltip("Wind direction for rain. Keep Y negative so rain still falls.")]
+        private Vector3 rainDirection = new Vector3(1f, -2f, 0f);
+        [SerializeField] [Min(0f)] [Tooltip("Base speed multiplier for wind-driven rain direction.")]
+        private float rainStrength = 7f;
+        [SerializeField] [Min(1f)] [Tooltip("Storm multiplier for rainStrength.")]
+        private float stormRainStrengthMultiplier = 1.5f;
 
         [Header("Visuals - Lightning (optional)")]
         [SerializeField] private LightningEffect lightningEffect;
@@ -118,6 +128,8 @@ namespace SmartFarm
                 plantGrowthManager = FindFirstObjectByType<PlantGrowthManager>();
             if (directionalLight == null)
                 directionalLight = FindFirstObjectByType<Light>();
+            if (directionalLight != null)
+                RenderSettings.sun = directionalLight;
             _defaultSkybox = RenderSettings.skybox;
         }
 
@@ -184,6 +196,7 @@ namespace SmartFarm
             if (type == WeatherType.Sunny && sunnyUsesOriginalSky)
             {
                 RenderSettings.skybox = _defaultSkybox;
+                ApplyCameraSkyMode(type);
             }
             else
             {
@@ -195,7 +208,16 @@ namespace SmartFarm
                     _ => _defaultSkybox
                 };
                 if (sky != null)
+                {
                     RenderSettings.skybox = sky;
+
+                    // Ensure rainy/storm sky never keeps warm yellow horizon tones.
+                    if (type == WeatherType.Rainy)
+                        ApplyCoolSkyboxTone(RenderSettings.skybox, new Color(0.30f, 0.35f, 0.45f), new Color(0.14f, 0.16f, 0.20f), 0.38f, 2.2f, true);
+                    else if (type == WeatherType.Storm)
+                        ApplyCoolSkyboxTone(RenderSettings.skybox, new Color(0.18f, 0.22f, 0.30f), new Color(0.06f, 0.07f, 0.10f), 0.24f, 2.8f, true);
+                }
+                ApplyCameraSkyMode(type);
             }
 
             // Disable full-screen overlay by default in this mode to keep UI clear.
@@ -248,6 +270,7 @@ namespace SmartFarm
                 if (enable)
                 {
                     emission.rateOverTime = type == WeatherType.Storm ? stormEmissionRate : rainyEmissionRate;
+                    ApplyRainWind(type);
                 }
             }
 
@@ -304,6 +327,96 @@ namespace SmartFarm
         {
             ApplyWeatherVisuals(type);
             ApplyWeatherSimulation(type);
+        }
+
+        private void ApplyCameraSkyMode(WeatherType type)
+        {
+            var cameras = Camera.allCameras;
+            if (cameras == null || cameras.Length == 0) return;
+
+            bool solid = useSolidSkyColorForRainAndStorm && (type == WeatherType.Rainy || type == WeatherType.Storm);
+            Color skyColor = type == WeatherType.Storm ? stormSolidSkyColor : rainySolidSkyColor;
+
+            for (int i = 0; i < cameras.Length; i++)
+            {
+                var cam = cameras[i];
+                if (cam == null) continue;
+                if (solid)
+                {
+                    cam.clearFlags = CameraClearFlags.SolidColor;
+                    cam.backgroundColor = skyColor;
+                }
+                else
+                {
+                    cam.clearFlags = CameraClearFlags.Skybox;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Set rain wind direction from UI/tools/runtime. Y is forced downward for realism.
+        /// </summary>
+        public void SetRainDirection(Vector3 direction)
+        {
+            if (direction.sqrMagnitude < 0.0001f) return;
+            rainDirection = direction.normalized;
+            if (rainDirection.y > -0.15f)
+                rainDirection.y = -0.15f;
+            rainDirection.Normalize();
+
+            if (rainParticleSystem != null && (CurrentWeather == WeatherType.Rainy || CurrentWeather == WeatherType.Storm))
+                ApplyRainWind(CurrentWeather);
+        }
+
+        /// <summary>
+        /// Set base rain strength (wind speed). Applied immediately when raining.
+        /// </summary>
+        public void SetRainStrength(float strength)
+        {
+            rainStrength = Mathf.Max(0f, strength);
+            if (rainParticleSystem != null && (CurrentWeather == WeatherType.Rainy || CurrentWeather == WeatherType.Storm))
+                ApplyRainWind(CurrentWeather);
+        }
+
+        private void ApplyRainWind(WeatherType type)
+        {
+            if (rainParticleSystem == null) return;
+
+            // Keep rain physically believable: always some downward movement.
+            Vector3 dir = rainDirection.sqrMagnitude > 0.0001f ? rainDirection.normalized : new Vector3(1f, -2f, 0f).normalized;
+            if (dir.y > -0.15f)
+            {
+                dir.y = -0.15f;
+                dir.Normalize();
+            }
+
+            float speed = rainStrength * (type == WeatherType.Storm ? stormRainStrengthMultiplier : 1f);
+            Vector3 velocity = dir * speed;
+
+            var main = rainParticleSystem.main;
+            main.simulationSpace = ParticleSystemSimulationSpace.World;
+
+            var vol = rainParticleSystem.velocityOverLifetime;
+            vol.enabled = true;
+            vol.space = ParticleSystemSimulationSpace.World;
+            vol.x = velocity.x;
+            vol.y = velocity.y;
+            vol.z = velocity.z;
+        }
+
+        private static void ApplyCoolSkyboxTone(Material sky, Color skyTint, Color groundColor, float exposure, float atmosphereThickness, bool hideSunDisk)
+        {
+            if (sky == null) return;
+            if (sky.HasProperty("_SkyTint")) sky.SetColor("_SkyTint", skyTint);
+            if (sky.HasProperty("_GroundColor")) sky.SetColor("_GroundColor", groundColor);
+            if (sky.HasProperty("_Exposure")) sky.SetFloat("_Exposure", exposure);
+            if (sky.HasProperty("_AtmosphereThickness")) sky.SetFloat("_AtmosphereThickness", atmosphereThickness);
+            if (hideSunDisk)
+            {
+                if (sky.HasProperty("_SunDisk")) sky.SetFloat("_SunDisk", 0f); // 0=None in procedural skybox
+                if (sky.HasProperty("_SunSize")) sky.SetFloat("_SunSize", 0.001f);
+                if (sky.HasProperty("_SunSizeConvergence")) sky.SetFloat("_SunSizeConvergence", 20f);
+            }
         }
 
         private IEnumerator WeatherTickLoop()
