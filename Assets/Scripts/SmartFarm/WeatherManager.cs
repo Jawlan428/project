@@ -110,15 +110,7 @@ namespace SmartFarm
         private Coroutine _tickCoroutine;
         private Material _defaultSkybox;
 
-        private bool ShouldRunSimulation
-        {
-            get
-            {
-                if (Unity.Netcode.NetworkManager.Singleton == null || !Unity.Netcode.NetworkManager.Singleton.IsListening)
-                    return true;
-                return Unity.Netcode.NetworkManager.Singleton.IsServer;
-            }
-        }
+        private bool ShouldRunSimulation => NetworkHelper.IsSimulationAuthority;
 
         private void Awake()
         {

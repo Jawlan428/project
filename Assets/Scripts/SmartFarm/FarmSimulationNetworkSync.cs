@@ -11,20 +11,22 @@ namespace SmartFarm
     [RequireComponent(typeof(NetworkObject))]
     public class FarmSimulationNetworkSync : NetworkBehaviour, INetworkSyncInterface
     {
+        // Owner write permission: LocalOnly host owns scene objects (IsOwner = true for host).
+        // DA mode: session creator is assigned ownership of scene-placed NetworkObjects.
         private NetworkVariable<float> _soilMoisture = new NetworkVariable<float>(50f,
-            NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+            NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
         private NetworkVariable<float> _cropHealth = new NetworkVariable<float>(100f,
-            NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+            NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
         private NetworkVariable<float> _waterUsageToday = new NetworkVariable<float>(0f,
-            NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+            NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
         private NetworkVariable<float> _temperature = new NetworkVariable<float>(24f,
-            NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+            NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
         private NetworkVariable<int> _predictedYield = new NetworkVariable<int>(0,
-            NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+            NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
         private NetworkVariable<bool> _irrigationEnabled = new NetworkVariable<bool>(false,
-            NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+            NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
         private NetworkVariable<Unity.Collections.FixedString64Bytes> _activeAlerts = new NetworkVariable<Unity.Collections.FixedString64Bytes>(default,
-            NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+            NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
         public override void OnNetworkSpawn()
         {
@@ -57,7 +59,8 @@ namespace SmartFarm
         /// </summary>
         public void SetState(FarmSimulationState state)
         {
-            if (!IsServer) return;
+            // IsOwner = true for the LocalOnly host AND for the DA session creator
+            if (!IsOwner) return;
 
             _soilMoisture.Value = state.soilMoisturePercent;
             _cropHealth.Value = state.cropHealthPercent;

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 338996c2e1ab7c9428a86a9c484b8d10
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 288134
+  packageName: 'Wild Harvest: Grain Crops'
+  packageVersion: 2.2
+  assetPath: Assets/NV3D/Wild Harvest/Grains/Materials/M_Wheat.mat
+  uploadId: 787444

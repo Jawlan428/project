@@ -12,6 +12,8 @@ namespace PlantGrowth.Editor
         private const string DataPath = "Assets/PlantGrowth/Data";
         private const string StagePrefabsPath = "Assets/PlantGrowth/Prefabs/Stages";
         private const string MaterialsPath = "Assets/PlantGrowth/Materials";
+        private const string WildHarvestPlantsPath = "Assets/NV3D/Wild Harvest/Grains/Prefabs/Plants";
+        private const string WildHarvestOutputRoot = "Assets/PlantGrowth/WildHarvest";
 
         public static void ClearSaveData()
         {
@@ -66,6 +68,48 @@ namespace PlantGrowth.Editor
             FixPlantMaterials();
             FixPlantGrowth();
             AssetDatabase.Refresh();
+        }
+
+        /// <summary>
+        /// Creates Wild Harvest crop growth setup for Wheat and Corn:
+        /// - Stage assets (WheatStage.asset, CornStage.asset)
+        /// - Plant prefabs (PlantInstance_Wheat.prefab, PlantInstance_Corn.prefab)
+        /// This reuses the existing PlantController/PlantGrowthManager system.
+        /// </summary>
+        public static void SetupWildHarvestCrops()
+        {
+            EnsureDirectories();
+            EnsureFolder("Assets/PlantGrowth", "WildHarvest");
+            EnsureFolder("Assets/PlantGrowth/WildHarvest", "Data");
+            EnsureFolder("Assets/PlantGrowth/WildHarvest", "Prefabs");
+
+            var wheatAsset = CreateOrUpdateWildHarvestStageAsset(
+                "Assets/PlantGrowth/WildHarvest/Data/WheatStage.asset",
+                "WheatPlants",
+                new[] { 1, 5, 10, 15 },
+                new[] { 20f, 35f, 55f, 80f },
+                stageVisualScale: 1f);
+
+            var cornAsset = CreateOrUpdateWildHarvestStageAsset(
+                "Assets/PlantGrowth/WildHarvest/Data/CornStage.asset",
+                "CornPlant",
+                new[] { 1, 5, 10, 15 },
+                new[] { 20f, 35f, 55f, 80f },
+                stageVisualScale: 1f);
+
+            if (wheatAsset != null)
+                CreateOrUpdatePlantInstancePrefabForStageAsset(
+                    "Assets/PlantGrowth/WildHarvest/Prefabs/PlantInstance_Wheat.prefab",
+                    wheatAsset);
+
+            if (cornAsset != null)
+                CreateOrUpdatePlantInstancePrefabForStageAsset(
+                    "Assets/PlantGrowth/WildHarvest/Prefabs/PlantInstance_Corn.prefab",
+                    cornAsset);
+
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            Debug.Log("[Farm] Wild Harvest setup complete. Created Wheat/Corn stage assets and plant prefabs in Assets/PlantGrowth/WildHarvest.");
         }
 
         private static void EnsureFolder(string parent, string name)
@@ -192,6 +236,100 @@ namespace PlantGrowth.Editor
             so.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(stageAsset);
             AssetDatabase.SaveAssets();
+        }
+
+        private static PlantStageAsset CreateOrUpdateWildHarvestStageAsset(
+            string assetPath,
+            string wildHarvestPrefix,
+            int[] stageNumbers,
+            float[] stageDurations,
+            float stageVisualScale)
+        {
+            if (stageNumbers == null || stageDurations == null || stageNumbers.Length == 0 || stageNumbers.Length != stageDurations.Length)
+            {
+                Debug.LogError("[Farm] Invalid Wild Harvest stage config.");
+                return null;
+            }
+
+            var prefabs = new GameObject[stageNumbers.Length];
+            for (int i = 0; i < stageNumbers.Length; i++)
+            {
+                string prefabPath = $"{WildHarvestPlantsPath}/SM_{wildHarvestPrefix}_{stageNumbers[i]}.prefab";
+                prefabs[i] = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
+                if (prefabs[i] == null)
+                {
+                    Debug.LogError($"[Farm] Missing Wild Harvest prefab: {prefabPath}");
+                    return null;
+                }
+            }
+
+            var asset = AssetDatabase.LoadAssetAtPath<PlantStageAsset>(assetPath);
+            if (asset == null)
+            {
+                asset = ScriptableObject.CreateInstance<PlantStageAsset>();
+                AssetDatabase.CreateAsset(asset, assetPath);
+            }
+
+            var so = new SerializedObject(asset);
+            so.FindProperty("hasDeadStage").boolValue = false;
+            so.FindProperty("stageVisualScale").floatValue = stageVisualScale;
+            so.FindProperty("waterDecayPerSecond").floatValue = 0.5f;
+            so.FindProperty("fertilizerDecayPerSecond").floatValue = 0.2f;
+
+            var durationsProp = so.FindProperty("stageDurations");
+            durationsProp.arraySize = stageDurations.Length;
+            for (int i = 0; i < stageDurations.Length; i++)
+                durationsProp.GetArrayElementAtIndex(i).floatValue = stageDurations[i];
+
+            var prefabsProp = so.FindProperty("stagePrefabs");
+            prefabsProp.arraySize = prefabs.Length;
+            for (int i = 0; i < prefabs.Length; i++)
+                prefabsProp.GetArrayElementAtIndex(i).objectReferenceValue = prefabs[i];
+
+            so.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(asset);
+            return asset;
+        }
+
+        private static void CreateOrUpdatePlantInstancePrefabForStageAsset(string outputPrefabPath, PlantStageAsset stageAsset)
+        {
+            var basePrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/PlantGrowth/Prefabs/PlantInstance.prefab");
+            if (basePrefab == null)
+            {
+                Debug.LogError("[Farm] Base PlantInstance prefab not found at Assets/PlantGrowth/Prefabs/PlantInstance.prefab");
+                return;
+            }
+
+            string basePath = AssetDatabase.GetAssetPath(basePrefab);
+            var root = PrefabUtility.LoadPrefabContents(basePath);
+            if (root == null) return;
+
+            try
+            {
+                var controller = root.GetComponent<PlantController>();
+                if (controller == null)
+                    controller = root.AddComponent<PlantController>();
+
+                Transform stageHolder = root.transform.Find("StageHolder");
+                if (stageHolder == null)
+                {
+                    var holderGO = new GameObject("StageHolder");
+                    holderGO.transform.SetParent(root.transform, false);
+                    stageHolder = holderGO.transform;
+                }
+
+                var so = new SerializedObject(controller);
+                so.FindProperty("stageAsset").objectReferenceValue = stageAsset;
+                so.FindProperty("stageHolder").objectReferenceValue = stageHolder;
+                so.ApplyModifiedPropertiesWithoutUndo();
+
+                root.name = Path.GetFileNameWithoutExtension(outputPrefabPath);
+                PrefabUtility.SaveAsPrefabAsset(root, outputPrefabPath);
+            }
+            finally
+            {
+                PrefabUtility.UnloadPrefabContents(root);
+            }
         }
     }
 }

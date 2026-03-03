@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 84da01369b0b611449a392bbf2469a31
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 288134
+  packageName: 'Wild Harvest: Grain Crops'
+  packageVersion: 2.2
+  assetPath: Assets/NV3D/Wild Harvest/Shared/Shaders/WH_Foliage.shader
+  uploadId: 787444

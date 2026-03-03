@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: dc2de7a5a6214074497088f30c9968a7
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 288134
+  packageName: 'Wild Harvest: Grain Crops'
+  packageVersion: 2.2
+  assetPath: Assets/NV3D/Wild Harvest/Shared/Shaders/WH_Soil.shader
+  uploadId: 787444

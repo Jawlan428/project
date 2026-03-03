@@ -57,22 +57,13 @@ namespace SmartFarm
         private void Awake()
         {
             if (simulationManager == null) simulationManager = FindFirstObjectByType<FarmSimulationManager>();
-            if (networkSync == null) networkSync = FindFirstObjectByType<FarmSimulationNetworkSync>();
-            if (pollVoteManager == null) pollVoteManager = FindFirstObjectByType<PollVoteManager>();
+            if (networkSync == null)       networkSync       = FindFirstObjectByType<FarmSimulationNetworkSync>();
+            if (pollVoteManager == null)   pollVoteManager   = FindFirstObjectByType<PollVoteManager>();
         }
 
         private void OnEnable()
         {
-            if (simulationManager != null)
-                simulationManager.OnStateChanged += OnStateFromSimulation;
-            if (networkSync != null)
-                networkSync.OnStateUpdated += OnStateFromNetwork;
-            if (pollVoteManager != null)
-            {
-                pollVoteManager.OnVoteReceived.AddListener(OnPollEvent);
-                pollVoteManager.OnPollResultApplied.AddListener(OnPollResultApplied);
-            }
-
+            BindSources();
             EventLogger.OnEventLogged += OnEventLogged;
             _fallbackLoop = StartCoroutine(FallbackStateLoop());
             PublishCurrentState();
@@ -80,18 +71,42 @@ namespace SmartFarm
 
         private void OnDisable()
         {
+            UnbindSources();
+            EventLogger.OnEventLogged -= OnEventLogged;
+            if (_fallbackLoop != null) StopCoroutine(_fallbackLoop);
+        }
+
+        /// <summary>
+        /// Subscribe to all data sources. Safe to call multiple times (event handlers are idempotent).
+        /// </summary>
+        private void BindSources()
+        {
+            if (simulationManager != null)
+                simulationManager.OnStateChanged += OnStateFromSimulation;
+
+            if (networkSync != null)
+                networkSync.OnStateUpdated += OnStateFromNetwork;
+
+            if (pollVoteManager != null)
+            {
+                pollVoteManager.OnVoteReceived.AddListener(OnPollEvent);
+                pollVoteManager.OnPollResultApplied.AddListener(OnPollResultApplied);
+            }
+        }
+
+        private void UnbindSources()
+        {
             if (simulationManager != null)
                 simulationManager.OnStateChanged -= OnStateFromSimulation;
+
             if (networkSync != null)
                 networkSync.OnStateUpdated -= OnStateFromNetwork;
+
             if (pollVoteManager != null)
             {
                 pollVoteManager.OnVoteReceived.RemoveListener(OnPollEvent);
                 pollVoteManager.OnPollResultApplied.RemoveListener(OnPollResultApplied);
             }
-
-            EventLogger.OnEventLogged -= OnEventLogged;
-            if (_fallbackLoop != null) StopCoroutine(_fallbackLoop);
         }
 
         private IEnumerator FallbackStateLoop()
@@ -100,6 +115,19 @@ namespace SmartFarm
             while (true)
             {
                 yield return wait;
+
+                // Late-bind: if networkSync wasn't found at Awake (client joined after scene load),
+                // keep trying until it appears. Re-subscribe when found.
+                if (networkSync == null)
+                {
+                    var found = FindFirstObjectByType<FarmSimulationNetworkSync>();
+                    if (found != null)
+                    {
+                        networkSync = found;
+                        networkSync.OnStateUpdated += OnStateFromNetwork;
+                    }
+                }
+
                 PublishCurrentState();
             }
         }

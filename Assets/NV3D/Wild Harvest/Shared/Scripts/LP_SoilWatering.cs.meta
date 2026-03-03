@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 3f7b5fd72be26c642a27b2a6b421bba7
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 288134
+  packageName: 'Wild Harvest: Grain Crops'
+  packageVersion: 2.2
+  assetPath: Assets/NV3D/Wild Harvest/Shared/Scripts/LP_SoilWatering.cs
+  uploadId: 787444

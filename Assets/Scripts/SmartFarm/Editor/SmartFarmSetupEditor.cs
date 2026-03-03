@@ -92,6 +92,13 @@ namespace SmartFarm.Editor
                 AddPlantInstances();
             }
 
+            // 5b. Setup Wild Harvest crop assets/prefabs and spawn demo field if missing
+            PlantGrowth.Editor.PlantGrowthSetupWizard.SetupWildHarvestCrops();
+            CreateOrFindWildHarvestField();
+
+            // 5c. Setup CropGrowthController system (Wheat + Corn with weather + yield integration)
+            CropGrowthSetupEditor.RunSetup();
+
             // 6. Create tablet app + page system
             CreateOrFindTabletApp(hub);
 
@@ -535,27 +542,73 @@ namespace SmartFarm.Editor
 
         private static void BuildIrrigationPage(Transform page, out IrrigationUI irrigationUI)
         {
-            var status = CreateText(page, "IrrigationStatusText", "Irrigation: OFF", 24, TextAlignmentOptions.Center, Vector2.zero, new Vector2(0.05f, 0.72f), new Vector2(0.95f, 0.92f));
-            var toggle = CreateButton(page, "Toggle", new Vector2(-220, -220));
-            ResizeButton(toggle, 180, 50);
-            var toggleLabel = toggle.GetComponentInChildren<TMP_Text>();
-            toggleLabel.text = "Turn ON";
-            var boost = CreateButton(page, "Boost30", new Vector2(0, -220));
-            ResizeButton(boost, 220, 50);
+            // Status label
+            var status = CreateText(page, "IrrigationStatusText", "Irrigation: OFF", 24,
+                TextAlignmentOptions.Center, Vector2.zero,
+                new Vector2(0.05f, 0.72f), new Vector2(0.95f, 0.92f));
+
+            // Row 1 — Turn ON (green) and Turn OFF (red), side by side
+            var turnOn  = CreateButton(page, "TurnOn",  new Vector2(-120, -200));
+            var turnOff = CreateButton(page, "TurnOff", new Vector2( 120, -200));
+            ResizeButton(turnOn,  200, 54);
+            ResizeButton(turnOff, 200, 54);
+            turnOn.GetComponentInChildren<TMP_Text>().text  = "Turn ON";
+            turnOff.GetComponentInChildren<TMP_Text>().text = "Turn OFF";
+
+            // Row 2 — Boost centred
+            var boost = CreateButton(page, "Boost30", new Vector2(0, -280));
+            ResizeButton(boost, 240, 54);
             boost.GetComponentInChildren<TMP_Text>().text = "Boost 30 seconds";
-            var morning = CreateButton(page, "Morning", new Vector2(-220, -290));
-            var noon = CreateButton(page, "Noon", new Vector2(0, -290));
-            var evening = CreateButton(page, "Evening", new Vector2(220, -290));
-            ResizeButton(morning, 160, 42); ResizeButton(noon, 160, 42); ResizeButton(evening, 160, 42);
+
+            // Colour Turn OFF red to distinguish it
+            var turnOffImg = turnOff.GetComponent<Image>();
+            if (turnOffImg != null) turnOffImg.color = new Color(0.82f, 0.18f, 0.10f, 1f);
 
             irrigationUI = page.gameObject.AddComponent<IrrigationUI>();
             SetPrivateField(irrigationUI, "irrigationStatusText", status.GetComponent<TMP_Text>());
-            SetPrivateField(irrigationUI, "toggleButton", toggle.GetComponent<Button>());
-            SetPrivateField(irrigationUI, "toggleButtonText", toggleLabel);
+            SetPrivateField(irrigationUI, "turnOnButton",  turnOn.GetComponent<Button>());
+            SetPrivateField(irrigationUI, "turnOffButton", turnOff.GetComponent<Button>());
             SetPrivateField(irrigationUI, "boost30Button", boost.GetComponent<Button>());
-            SetPrivateField(irrigationUI, "morningPresetButton", morning.GetComponent<Button>());
-            SetPrivateField(irrigationUI, "noonPresetButton", noon.GetComponent<Button>());
-            SetPrivateField(irrigationUI, "eveningPresetButton", evening.GetComponent<Button>());
+        }
+
+        /// <summary>
+        /// Rebuilds the Irrigation page on the existing SmartFarmTablet in the scene.
+        /// Removes the old 5-button layout and replaces it with Turn ON / Turn OFF / Boost.
+        /// Menu: Tools > Smart Farm > Rebuild Irrigation Page
+        /// </summary>
+        public static void RebuildIrrigationPage()
+        {
+            if (Application.isPlaying)
+            {
+                Debug.LogWarning("[SmartFarm] Stop Play mode before rebuilding.");
+                return;
+            }
+
+            var existing = Object.FindFirstObjectByType<IrrigationUI>();
+            if (existing == null)
+            {
+                Debug.LogWarning("[SmartFarm] No IrrigationUI found. Run Full Platform Setup first.");
+                return;
+            }
+
+            var page    = existing.gameObject;
+            var dataMgr = Object.FindFirstObjectByType<FarmDataManager>();
+
+            // Remove all children (old buttons / labels)
+            while (page.transform.childCount > 0)
+                Object.DestroyImmediate(page.transform.GetChild(0).gameObject);
+
+            // Remove old component
+            Object.DestroyImmediate(existing);
+
+            // Rebuild with new 3-button layout
+            BuildIrrigationPage(page.transform, out var newUI);
+
+            if (dataMgr != null)
+                SetPrivateField(newUI, "dataManager", dataMgr);
+
+            EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+            Debug.Log("[SmartFarm] Irrigation page rebuilt — Turn ON / Turn OFF / Boost 30s.");
         }
 
         private static void BuildAlertsPage(Transform page, out AlertsUI alertsUI)
@@ -1353,6 +1406,46 @@ namespace SmartFarm.Editor
                 go.transform.position = positions[i];
             }
             Debug.Log("[SmartFarm] Added 3 PlantInstance prefabs. If PlantInstance prefab doesn't exist, add plants manually via Tools > Plant Growth.");
+        }
+
+        private static void CreateOrFindWildHarvestField()
+        {
+            if (GameObject.Find("WildHarvestField") != null) return;
+
+            var wheatPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/PlantGrowth/WildHarvest/Prefabs/PlantInstance_Wheat.prefab");
+            var cornPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/PlantGrowth/WildHarvest/Prefabs/PlantInstance_Corn.prefab");
+            if (wheatPrefab == null || cornPrefab == null)
+            {
+                Debug.LogWarning("[SmartFarm] Wild Harvest prefabs not found. Run Tools > Farm > Setup Wild Harvest Crops first.");
+                return;
+            }
+
+            var root = new GameObject("WildHarvestField");
+            Undo.RegisterCreatedObjectUndo(root, "Wild Harvest Field");
+            root.transform.position = new Vector3(6f, 0f, 0f);
+
+            const int cols = 3;
+            const float spacing = 1.4f;
+
+            for (int i = 0; i < cols; i++)
+            {
+                var wheat = (GameObject)PrefabUtility.InstantiatePrefab(wheatPrefab);
+                if (wheat == null) continue;
+                wheat.name = $"Wheat_{i + 1}";
+                wheat.transform.SetParent(root.transform);
+                wheat.transform.position = root.transform.position + new Vector3(i * spacing, 0f, 0f);
+            }
+
+            for (int i = 0; i < cols; i++)
+            {
+                var corn = (GameObject)PrefabUtility.InstantiatePrefab(cornPrefab);
+                if (corn == null) continue;
+                corn.name = $"Corn_{i + 1}";
+                corn.transform.SetParent(root.transform);
+                corn.transform.position = root.transform.position + new Vector3(i * spacing, 0f, spacing);
+            }
+
+            Debug.Log("[SmartFarm] Wild Harvest field spawned (3 Wheat + 3 Corn).");
         }
 
         private static bool IsSceneInBuildSettings(string scenePath)

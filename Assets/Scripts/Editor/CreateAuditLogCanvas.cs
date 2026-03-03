@@ -127,7 +127,7 @@ public class CreateAuditLogCanvas : EditorWindow
         logTextRT.sizeDelta = new Vector2(0, 0);
         
         TextMeshProUGUI logText = logTextGO.AddComponent<TextMeshProUGUI>();
-        logText.text = "<color=#00FF00>AUDIT LOG READY</color>\n<color=#FFFF00>▶ Events will appear here...</color>\n";
+        logText.text = "<color=#00FF00>AUDIT LOG READY</color>\n<color=#FFFF00>[*] Events will appear here...</color>\n";
         logText.fontSize = 14;
         logText.color = Color.white;
         logText.alignment = TextAlignmentOptions.TopLeft;

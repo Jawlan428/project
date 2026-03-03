@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: dc14beaa04000eb4d9dc04df21886f3c
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 288134
+  packageName: 'Wild Harvest: Grain Crops'
+  packageVersion: 2.2
+  assetPath: Assets/NV3D/Wild Harvest/Shared/Animations/Crops.controller
+  uploadId: 787444

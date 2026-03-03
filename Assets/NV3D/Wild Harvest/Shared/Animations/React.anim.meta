@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: a130c59730847b246b685f43a165bfa0
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 7400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 288134
+  packageName: 'Wild Harvest: Grain Crops'
+  packageVersion: 2.2
+  assetPath: Assets/NV3D/Wild Harvest/Shared/Animations/React.anim
+  uploadId: 787444

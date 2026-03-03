@@ -34,6 +34,8 @@ namespace SmartFarm
         [Header("References")]
         [SerializeField] private FarmSimulationNetworkSync networkSync;
         [SerializeField] private PlantGrowthManager plantGrowthManager;
+        [Tooltip("Auto-found at runtime. Leave empty — GrowthManager registers itself.")]
+        [SerializeField] private GrowthManager cropGrowthManager;
 
         private float _waterUsageToday;
         private float _lastDayResetTime;
@@ -46,17 +48,10 @@ namespace SmartFarm
         public IReadOnlyList<string> ActiveAlerts => _activeAlerts;
 
         /// <summary>
-        /// Whether this instance should run the simulation (host or single-player).
+        /// Whether this instance should run the simulation.
+        /// Uses NetworkHelper so it works in both LocalOnly (IsServer) and DA (IsSessionOwner) mode.
         /// </summary>
-        private bool ShouldRunSimulation
-        {
-            get
-            {
-                if (NetworkManager.Singleton == null || !NetworkManager.Singleton.IsListening)
-                    return true; // Single-player / editor
-                return NetworkManager.Singleton.IsServer;
-            }
-        }
+        private bool ShouldRunSimulation => NetworkHelper.IsSimulationAuthority;
 
         private void Awake()
         {
@@ -105,6 +100,9 @@ namespace SmartFarm
             if (networkSync == null)
                 networkSync = GetComponent<FarmSimulationNetworkSync>();
 
+            if (cropGrowthManager == null)
+                cropGrowthManager = FindFirstObjectByType<GrowthManager>();
+
             PlantController.OnStageChanged += OnPlantStageChanged;
 
             if (ShouldRunSimulation)
@@ -137,7 +135,13 @@ namespace SmartFarm
         private void SimulateTick(float deltaTime)
         {
             var plants = GetPlants();
-            if (plants.Count == 0) return;
+
+            if (cropGrowthManager == null)
+                cropGrowthManager = GrowthManager.Instance;
+
+            // Skip tick only when there is truly nothing to simulate
+            if (plants.Count == 0 && (cropGrowthManager == null || cropGrowthManager.TotalCropCount == 0))
+                return;
 
             // Reset daily water usage every 5 minutes (simplified "day")
             if (Time.time - _lastDayResetTime > 300f)
@@ -146,7 +150,7 @@ namespace SmartFarm
                 _lastDayResetTime = Time.time;
             }
 
-            // Apply irrigation
+            // Apply irrigation to PlantControllers
             if (irrigationEnabled)
             {
                 float waterPerPlant = irrigationWaterPerTick * deltaTime;
@@ -158,11 +162,23 @@ namespace SmartFarm
                 }
             }
 
+            // Apply irrigation to CropGrowthControllers
+            if (irrigationEnabled && cropGrowthManager != null)
+            {
+                float waterPerCrop = irrigationWaterPerTick * deltaTime;
+                foreach (var crop in cropGrowthManager.GetAllCrops())
+                {
+                    if (crop == null || crop.CurrentStage == CropStage.Dead) continue;
+                    crop.Water(waterPerCrop);
+                    _waterUsageToday += waterPerCrop;
+                }
+            }
+
             // Apply global temperature to plants (PlantGrowthManager does this in its tick, but we set our value)
             if (plantGrowthManager != null)
                 plantGrowthManager.SetGlobalTemperature(globalTemperature);
 
-            // Compute aggregates
+            // Compute aggregates from PlantControllers
             float soilSum = 0f, healthSum = 0f;
             int count = 0, matureHealthy = 0;
             foreach (var p in plants)
@@ -175,8 +191,20 @@ namespace SmartFarm
                     matureHealthy++;
             }
 
-            float soilMoisture = count > 0 ? soilSum / count : 50f;
-            float cropHealth = count > 0 ? healthSum / count : 100f;
+            float soilMoisture = count > 0 ? soilSum   / count : 50f;
+            float cropHealth   = count > 0 ? healthSum / count : 100f;
+
+            // Blend in CropGrowthController aggregates from GrowthManager
+            if (cropGrowthManager != null && cropGrowthManager.TotalCropCount > 0)
+            {
+                var (cropAvgHealth, cropAvgMoisture, cropMatureHealthy) = cropGrowthManager.GetAggregateStats();
+                int cropCount  = cropGrowthManager.TotalCropCount;
+                int totalCount = count + cropCount;
+
+                soilMoisture  = (soilMoisture * count + cropAvgMoisture * cropCount) / totalCount;
+                cropHealth    = (cropHealth   * count + cropAvgHealth   * cropCount) / totalCount;
+                matureHealthy += cropMatureHealthy;
+            }
 
             // Update alerts
             _activeAlerts.Clear();

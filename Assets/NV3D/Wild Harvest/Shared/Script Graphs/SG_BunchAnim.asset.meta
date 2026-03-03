@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: eb835e5477c0f984abf1786aa36a5e68
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 288134
+  packageName: 'Wild Harvest: Grain Crops'
+  packageVersion: 2.2
+  assetPath: Assets/NV3D/Wild Harvest/Shared/Script Graphs/SG_BunchAnim.asset
+  uploadId: 787444

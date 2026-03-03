@@ -115,7 +115,7 @@ public class SimpleAuditLogDisplay : MonoBehaviour
     void AddTestMessage()
     {
         // Add a visible test message
-        string testLine = "<color=#FFFF00>▶ AUDIT LOG READY - Events will appear below</color>";
+        string testLine = "<color=#FFFF00>[*] AUDIT LOG READY - Events will appear below</color>";
         _eventLines.Add(testLine);
         _needsUpdate = true;
         Debug.Log("[SimpleAuditLog] Added test message");
@@ -166,7 +166,7 @@ public class SimpleAuditLogDisplay : MonoBehaviour
         string time = evt.GetFormattedTime();
         string type = evt.eventType ?? "UNKNOWN";
         string player = evt.playerName ?? "Unknown";
-        string target = string.IsNullOrEmpty(evt.targetId) ? "" : $" → {evt.targetId}";
+        string target = string.IsNullOrEmpty(evt.targetId) ? "" : $" > {evt.targetId}";
         string zone = string.IsNullOrEmpty(evt.zoneName) ? "" : $" [{evt.zoneName}]";
         
         // Color-coded line
@@ -244,7 +244,7 @@ public class SimpleAuditLogDisplay : MonoBehaviour
         
         if (Random.value > 0.5f)
         {
-            line += $" <color=#AAAAAA>→ {testTargets[Random.Range(0, testTargets.Length)]}</color>";
+            line += $" <color=#AAAAAA>> {testTargets[Random.Range(0, testTargets.Length)]}</color>";
         }
         
         _eventLines.Insert(0, line);

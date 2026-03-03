@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: d07ead8ceb20e0e4093f2aac6e5e26d2
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 288134
+  packageName: 'Wild Harvest: Grain Crops'
+  packageVersion: 2.2
+  assetPath: Assets/NV3D/Wild Harvest/Shared/Materials/M_Soil.mat
+  uploadId: 787444

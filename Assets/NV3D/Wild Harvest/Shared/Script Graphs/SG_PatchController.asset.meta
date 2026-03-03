@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 569f5a00f37f5dc47b5578d340204eb0
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 288134
+  packageName: 'Wild Harvest: Grain Crops'
+  packageVersion: 2.2
+  assetPath: Assets/NV3D/Wild Harvest/Shared/Script Graphs/SG_PatchController.asset
+  uploadId: 787444

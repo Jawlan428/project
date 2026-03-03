@@ -91,24 +91,46 @@ namespace SmartFarm
             if (iconSprite == null) return;
             var buttonTransform = FindDeep(transform, buttonName);
             if (buttonTransform == null) return;
+
+            // Create or find the dedicated icon Image child
             var icon = buttonTransform.Find("Icon");
             if (icon == null)
             {
                 var iconGo = new GameObject("Icon", typeof(RectTransform), typeof(Image));
                 iconGo.transform.SetParent(buttonTransform, false);
                 icon = iconGo.transform;
-                var rt = (RectTransform)icon;
-                rt.anchorMin = new Vector2(0f, 0.2f);
-                rt.anchorMax = new Vector2(0f, 0.8f);
-                rt.pivot = new Vector2(0f, 0.5f);
-                rt.sizeDelta = new Vector2(18f, 18f);
-                rt.anchoredPosition = new Vector2(8f, 0f);
             }
 
+            // Centre the icon inside the button, sized to fill most of the button height
+            var rt = (RectTransform)icon;
+            rt.anchorMin        = new Vector2(0.5f, 0.5f);
+            rt.anchorMax        = new Vector2(0.5f, 0.5f);
+            rt.pivot            = new Vector2(0.5f, 0.5f);
+            rt.sizeDelta        = new Vector2(28f, 28f);
+            rt.anchoredPosition = Vector2.zero;
+
             var iconImage = icon.GetComponent<Image>();
-            iconImage.sprite = iconSprite;
-            iconImage.color = Color.white;
+            iconImage.sprite        = iconSprite;
+            iconImage.color         = Color.white;
             iconImage.preserveAspect = true;
+            iconImage.raycastTarget  = false; // button Image handles click, not the icon
+
+            // Hide the text label — icon replaces it
+            var textChild = buttonTransform.Find("Text");
+            if (textChild != null) textChild.gameObject.SetActive(false);
+        }
+
+        /// <summary>
+        /// Applies only the tab icons from the theme profile.
+        /// Right-click the component in Inspector → "Apply Tab Icons Only"
+        /// or use Tools → Farm → Apply Tab Icons.
+        /// </summary>
+        [ContextMenu("Apply Tab Icons Only")]
+        public void ApplyTabIconsOnly()
+        {
+            if (themeProfile == null && autoLoadDefaultProfile)
+                themeProfile = Resources.Load<TabletThemeProfile>(defaultProfilePath);
+            ApplyTabIcons();
         }
 
         private void ApplyTextTheme()

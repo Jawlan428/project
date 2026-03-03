@@ -25,6 +25,21 @@ public static class FarmMenu
         InvokeSmartFarm("ApplyTabletThemeAuto");
     }
 
+    [MenuItem("Tools/Farm/Apply Tab Icons")]
+    public static void ApplyTabIcons()
+    {
+        var applier = UnityEngine.Object.FindFirstObjectByType<SmartFarm.TabletThemeAutoApplier>();
+        if (applier == null)
+        {
+            UnityEngine.Debug.LogWarning("[Farm] TabletThemeAutoApplier not found. Run Full Platform Setup first.");
+            return;
+        }
+        applier.ApplyTabIconsOnly();
+        var scene = UnityEditor.SceneManagement.EditorSceneManager.GetActiveScene();
+        UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(scene);
+        UnityEngine.Debug.Log("[Farm] Tab icons applied. Assign sprites in DefaultTabletTheme asset first.");
+    }
+
     [MenuItem("Tools/Farm/Create Farm Dashboard")]
     public static void CreateFarmDashboard()
     {
@@ -72,6 +87,18 @@ public static class FarmMenu
     public static void FixPlantMaterials()
     {
         PlantGrowth.Editor.PlantGrowthSetupWizard.FixPlantMaterials();
+    }
+
+    [MenuItem("Tools/Farm/Setup Wild Harvest Crops")]
+    public static void SetupWildHarvestCrops()
+    {
+        PlantGrowth.Editor.PlantGrowthSetupWizard.SetupWildHarvestCrops();
+    }
+
+    [MenuItem("Tools/Farm/Rebuild Irrigation Page (3 buttons)")]
+    public static void RebuildIrrigationPage()
+    {
+        InvokeSmartFarm("RebuildIrrigationPage");
     }
 
     private static void InvokeSmartFarm(string methodName)
