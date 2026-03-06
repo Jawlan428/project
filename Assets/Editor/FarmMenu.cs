@@ -101,11 +101,27 @@ public static class FarmMenu
         InvokeSmartFarm("RebuildIrrigationPage");
     }
 
+    [MenuItem("Tools/Farm/Update Mature Stage to Bunch (Wheat + Corn)")]
+    public static void UpdateMatureStageToBunch()
+    {
+        InvokeCropSetup("UpdateMatureStageToBunch");
+    }
+
     private static void InvokeSmartFarm(string methodName)
+    {
+        InvokeType("SmartFarm.Editor.SmartFarmSetupEditor", methodName);
+    }
+
+    private static void InvokeCropSetup(string methodName)
+    {
+        InvokeType("SmartFarm.Editor.CropGrowthSetupEditor", methodName);
+    }
+
+    private static void InvokeType(string typeName, string methodName)
     {
         foreach (var asm in System.AppDomain.CurrentDomain.GetAssemblies())
         {
-            var type = asm.GetType("SmartFarm.Editor.SmartFarmSetupEditor");
+            var type = asm.GetType(typeName);
             if (type != null)
             {
                 var method = type.GetMethod(methodName, System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
@@ -116,6 +132,6 @@ public static class FarmMenu
                 }
             }
         }
-        Debug.LogError($"[Farm] SmartFarm.{methodName} not found. Check Console for compile errors.");
+        Debug.LogError($"[Farm] {typeName}.{methodName} not found. Check Console for compile errors.");
     }
 }

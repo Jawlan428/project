@@ -70,6 +70,11 @@ namespace SmartFarm
         [Tooltip("Health lost per second when temperature is outside the ideal range.")]
         public float healthDecayBadTemp = 2f;
 
+        [Header("Mature Stage Visual")]
+        [Tooltip("Extra uniform scale applied only to the Mature stage model. " +
+                 "Increase to make ripe wheat/corn look taller and more prominent. Default 1.5.")]
+        public float matureStageScaleMultiplier = 1.5f;
+
         [Header("Yield")]
         [Tooltip("Maximum yield units produced at 100% health.")]
         public float baseYield = 100f;

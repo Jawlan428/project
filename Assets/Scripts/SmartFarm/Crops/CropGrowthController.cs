@@ -390,7 +390,6 @@ namespace SmartFarm
         {
             if (cropData == null || stageHolder == null) return;
 
-            // Cancel any running scale coroutine before destroying the old object
             if (_scaleCoroutine != null) { StopCoroutine(_scaleCoroutine); _scaleCoroutine = null; }
             if (_activeStageObject != null) Destroy(_activeStageObject);
 
@@ -400,25 +399,34 @@ namespace SmartFarm
             GameObject prefab = cropData.stagePrefabs[index];
             if (prefab == null) return;
 
-            _activeStageObject = Instantiate(prefab, stageHolder.position, stageHolder.rotation, stageHolder);
-            _activeStageBaseScale = _activeStageObject.transform.localScale;
+            // Instantiate as child then force upright so models never tilt regardless of parent rotation
+            _activeStageObject = Instantiate(prefab, stageHolder);
+            _activeStageObject.transform.localPosition = Vector3.zero;
+            _activeStageObject.transform.localRotation = Quaternion.identity;
 
-            // Dead stage → no animation, just show it flat
+            // Mature stage gets the extra scale multiplier so ripe wheat looks tall and prominent
+            float extraScale = (stage == CropStage.Mature)
+                ? Mathf.Max(0.1f, cropData.matureStageScaleMultiplier)
+                : 1f;
+            _activeStageBaseScale = _activeStageObject.transform.localScale * extraScale;
+
+            // Dead stage: show flat, no animation
             if (stage == CropStage.Dead)
             {
                 _activeStageObject.transform.localScale = _activeStageBaseScale;
                 return;
             }
 
-            // Start at a small scale and animate up to the stage-start fraction
-            float startFrac = (stage == CropStage.Seed) ? 0f : stageStartScaleFraction * 0.5f;
+            float startFrac  = (stage == CropStage.Seed)   ? 0f                  : stageStartScaleFraction * 0.5f;
+            float targetFrac = (stage == CropStage.Mature) ? 1f                  : stageStartScaleFraction;
+
             _activeStageObject.transform.localScale = _activeStageBaseScale * startFrac;
 
-            // Transition animation: scale to stageStartScaleFraction over stageTransitionDuration
-            float targetFrac = (stage == CropStage.Mature) ? 1f : stageStartScaleFraction;
             _scaleCoroutine = StartCoroutine(AnimateScale(
-                _activeStageObject, _activeStageBaseScale * startFrac,
-                _activeStageBaseScale * targetFrac, stageTransitionDuration));
+                _activeStageObject,
+                _activeStageBaseScale * startFrac,
+                _activeStageBaseScale * targetFrac,
+                stageTransitionDuration));
         }
 
         private IEnumerator AnimateScale(GameObject target, Vector3 from, Vector3 to, float duration)

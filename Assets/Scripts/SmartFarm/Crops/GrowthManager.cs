@@ -222,32 +222,13 @@ namespace SmartFarm
         {
             if (!ShouldRunSimulation) return;
 
-            // Mature crops are permanently grown — they stay as full healthy plants.
-            // Only still-growing (Seed/Sprout/Young) or dead crops are reset to Seed.
-            int resetCount  = 0;
-            int matureCount = 0;
-
-            for (int i = _crops.Count - 1; i >= 0; i--)
-            {
-                var crop = _crops[i];
-                if (crop == null) { _crops.RemoveAt(i); continue; }
-
-                if (crop.CurrentStage == CropStage.Mature)
-                {
-                    matureCount++;
-                }
-                else
-                {
-                    crop.ResetToSeed();
-                    resetCount++;
-                }
-            }
-
-            _cropNetworkSync?.SetCropData(_crops);
+            // Reset every crop — including mature ones — so a new growth cycle starts
+            // under the new weather. This way the demo always reacts visually to every
+            // weather button press.
+            ResetAllCrops();
 
             EventLogger.LogEvent(
-                $"Weather changed to {newWeather} — " +
-                $"{resetCount} growing crop(s) reset, {matureCount} mature crop(s) preserved");
+                $"Weather changed to {newWeather} — all {_crops.Count} crop(s) reset to Seed stage");
         }
 
         private void HandleCropHarvested(CropGrowthController crop, float yield)

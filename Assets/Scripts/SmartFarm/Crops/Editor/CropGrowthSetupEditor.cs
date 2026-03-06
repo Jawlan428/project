@@ -103,6 +103,60 @@ namespace SmartFarm.Editor
             EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
         }
 
+        [MenuItem("Tools/Smart Farm/Crops/Update Mature Stage to Bunch")]
+        public static void UpdateMatureStageToBunch()
+        {
+            if (Application.isPlaying) { Debug.LogWarning("[SmartFarm Crops] Stop Play mode first."); return; }
+
+            // P_WheatBunch / P_CornBunch are the pre-made cluster prefabs in Wild Harvest.
+            // They show a full group of mature plants with drooping grain heads —
+            // exactly what "ready to harvest" should look like.
+            const string wheatBunchPath = "Assets/NV3D/Wild Harvest/Grains/Prefabs/P_WheatBunch.prefab";
+            const string cornBunchPath  = "Assets/NV3D/Wild Harvest/Grains/Prefabs/P_CornBunch.prefab";
+
+            var wheatBunch = AssetDatabase.LoadAssetAtPath<GameObject>(wheatBunchPath);
+            var cornBunch  = AssetDatabase.LoadAssetAtPath<GameObject>(cornBunchPath);
+
+            if (wheatBunch == null)
+                Debug.LogWarning($"[SmartFarm Crops] Not found: {wheatBunchPath}");
+            if (cornBunch == null)
+                Debug.LogWarning($"[SmartFarm Crops] Not found: {cornBunchPath}");
+
+            int updated = 0;
+            updated += ApplyBunchToMatureStage("Assets/SmartFarm/CropData/Wheat_CropData.asset", wheatBunch);
+            updated += ApplyBunchToMatureStage("Assets/SmartFarm/CropData/Corn_CropData.asset",  cornBunch);
+
+            AssetDatabase.SaveAssets();
+            EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+
+            Debug.Log($"[SmartFarm Crops] Mature stage updated to bunch prefabs on {updated} CropData asset(s). " +
+                      "Press Play (or change weather) to see the full cluster appear at harvest.");
+        }
+
+        private static int ApplyBunchToMatureStage(string dataAssetPath, GameObject bunchPrefab)
+        {
+            var data = AssetDatabase.LoadAssetAtPath<CropData>(dataAssetPath);
+            if (data == null)
+            {
+                Debug.LogWarning($"[SmartFarm Crops] {dataAssetPath} not found — run Setup Crop Growth System first.");
+                return 0;
+            }
+
+            var so = new SerializedObject(data);
+
+            // Assign the bunch prefab to slot 3 (Mature = index 3)
+            var prefabsProp = so.FindProperty("stagePrefabs");
+            if (prefabsProp.arraySize >= 4 && bunchPrefab != null)
+                prefabsProp.GetArrayElementAtIndex(3).objectReferenceValue = bunchPrefab;
+
+            // Bunch prefab is already correctly sized — no extra scale needed
+            so.FindProperty("matureStageScaleMultiplier").floatValue = 1.0f;
+
+            so.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(data);
+            return 1;
+        }
+
         [MenuItem("Tools/Smart Farm/Crops/Repair Crop Wiring")]
         private static void RepairCropWiring()
         {
