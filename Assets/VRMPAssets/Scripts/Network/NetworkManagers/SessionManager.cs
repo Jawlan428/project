@@ -346,12 +346,32 @@ namespace XRMultiplayer
             {
                 AuditLogger.Instance.Log(AuditEventType.LEAVE_MEETING);
             }
-            
+
             if (m_CurrentSession != null)
             {
                 m_CurrentSession.SessionPropertiesChanged -= OnSessionPropertiesChanged;
-                await m_CurrentSession.LeaveAsync();
-                m_CurrentSession = null;
+                try
+                {
+                    await m_CurrentSession.LeaveAsync();
+                }
+                catch (System.ObjectDisposedException)
+                {
+                    // The Wire/Lobby subscription was already disposed (common during
+                    // application quit or editor stop). The session will be cleaned up
+                    // server-side when the socket closes — safe to ignore.
+                }
+                catch (System.OperationCanceledException)
+                {
+                    // Shutdown was cancelled mid-flight — safe to ignore.
+                }
+                catch (System.Exception ex)
+                {
+                    UnityEngine.Debug.LogWarning($"[LeaveSession] Warning (safe on quit): {ex.Message}");
+                }
+                finally
+                {
+                    m_CurrentSession = null;
+                }
             }
             else
             {

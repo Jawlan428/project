@@ -295,7 +295,14 @@ namespace XRMultiplayer
         /// </summary>
         private void OnApplicationQuit()
         {
-            ShutDown();
+            // Mark the flag immediately so OnDestroy (called right after) is a no-op.
+            // Do NOT run the full async LeaveSession chain here — Unity services are
+            // already being torn down and the async operations will encounter
+            // ObjectDisposedException / NetworkManager shutdown timeouts.
+            // The session is cleaned up server-side when the socket closes.
+            m_IsShuttingDown = true;
+            if (NetworkManager.Singleton != null)
+                NetworkManager.Singleton.OnClientStopped -= LocalClientStopped;
         }
 
         async void ShutDown()
@@ -309,7 +316,22 @@ namespace XRMultiplayer
                 NetworkManager.Singleton.OnClientStopped -= LocalClientStopped;
             }
 
-            await m_SessionManager.LeaveSession();
+            try
+            {
+                await m_SessionManager.LeaveSession();
+            }
+            catch (System.ObjectDisposedException)
+            {
+                // Unity services were already disposed — safe to ignore.
+            }
+            catch (System.OperationCanceledException)
+            {
+                // Shutdown was cancelled — safe to ignore.
+            }
+            catch (System.Exception ex)
+            {
+                UnityEngine.Debug.LogWarning($"[ShutDown] Session leave warning (safe on quit): {ex.Message}");
+            }
         }
 
         public bool IsAuthenticated()

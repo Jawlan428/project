@@ -202,6 +202,15 @@ namespace SmartFarm.Editor
                 var existingTemp = existing.GetComponent<RealTemperatureService>();
                 if (existingTemp == null) existingTemp = existing.AddComponent<RealTemperatureService>();
                 if (mgr != null) SetPrivateField(existingTemp, "simulationManager", mgr);
+
+                // Ensure Smart Irrigation components exist on existing hub
+                var existingIrrigMgr = existing.GetComponent<SmartIrrigationManager>();
+                if (existingIrrigMgr == null) existingIrrigMgr = existing.AddComponent<SmartIrrigationManager>();
+                var existingScheduler = existing.GetComponent<IrrigationScheduler>();
+                if (existingScheduler == null) existingScheduler = existing.AddComponent<IrrigationScheduler>();
+                if (mgr != null) SetPrivateField(existingIrrigMgr, "simulationManager", mgr);
+                SetPrivateField(existingIrrigMgr, "scheduler", existingScheduler);
+
                 return existing;
             }
 
@@ -226,6 +235,12 @@ namespace SmartFarm.Editor
             // Real temperature service (disabled by default; configure API key in Inspector)
             var realTemp = hub.AddComponent<RealTemperatureService>();
             SetPrivateField(realTemp, "simulationManager", simMgr);
+
+            // Smart Irrigation System (WeatherManager ref is wired later by CreateOrFindWeatherManager)
+            var irrigMgr      = hub.AddComponent<SmartIrrigationManager>();
+            var irrigScheduler = hub.AddComponent<IrrigationScheduler>();
+            SetPrivateField(irrigMgr, "simulationManager", simMgr);
+            SetPrivateField(irrigMgr, "scheduler",         irrigScheduler);
 
             return hub;
         }
@@ -501,11 +516,19 @@ namespace SmartFarm.Editor
             var polls = tablet.GetComponentInChildren<PollPageUI>(true);
             var irrigation = tablet.GetComponentInChildren<IrrigationUI>(true);
             var history = tablet.GetComponentInChildren<HistoryUI>(true);
-            if (overview != null) SetPrivateField(overview, "dataManager", dataMgr);
-            if (alerts != null) SetPrivateField(alerts, "dataManager", dataMgr);
-            if (polls != null) SetPrivateField(polls, "dataManager", dataMgr);
-            if (irrigation != null) SetPrivateField(irrigation, "dataManager", dataMgr);
-            if (history != null) SetPrivateField(history, "dataManager", dataMgr);
+            if (overview   != null) SetPrivateField(overview,   "dataManager", dataMgr);
+            if (alerts     != null) SetPrivateField(alerts,     "dataManager", dataMgr);
+            if (polls      != null) SetPrivateField(polls,      "dataManager", dataMgr);
+            if (history    != null) SetPrivateField(history,    "dataManager", dataMgr);
+            if (irrigation != null)
+            {
+                SetPrivateField(irrigation, "dataManager", dataMgr);
+                // Wire SmartIrrigationManager — find on hub or anywhere in scene
+                var irrigMgr = tablet.GetComponentInParent<SmartIrrigationManager>(true)
+                               ?? Object.FindFirstObjectByType<SmartIrrigationManager>();
+                if (irrigMgr != null)
+                    SetPrivateField(irrigation, "irrigationManager", irrigMgr);
+            }
             var theme = tablet.GetComponent<TabletThemeAutoApplier>();
             if (theme == null) theme = tablet.AddComponent<TabletThemeAutoApplier>();
             SetPrivateField(theme, "themeProfile", EnsureDefaultTabletThemeAsset());
@@ -542,33 +565,9 @@ namespace SmartFarm.Editor
 
         private static void BuildIrrigationPage(Transform page, out IrrigationUI irrigationUI)
         {
-            // Status label
-            var status = CreateText(page, "IrrigationStatusText", "Irrigation: OFF", 24,
-                TextAlignmentOptions.Center, Vector2.zero,
-                new Vector2(0.05f, 0.72f), new Vector2(0.95f, 0.92f));
-
-            // Row 1 — Turn ON (green) and Turn OFF (red), side by side
-            var turnOn  = CreateButton(page, "TurnOn",  new Vector2(-120, -200));
-            var turnOff = CreateButton(page, "TurnOff", new Vector2( 120, -200));
-            ResizeButton(turnOn,  200, 54);
-            ResizeButton(turnOff, 200, 54);
-            turnOn.GetComponentInChildren<TMP_Text>().text  = "Turn ON";
-            turnOff.GetComponentInChildren<TMP_Text>().text = "Turn OFF";
-
-            // Row 2 — Boost centred
-            var boost = CreateButton(page, "Boost30", new Vector2(0, -280));
-            ResizeButton(boost, 240, 54);
-            boost.GetComponentInChildren<TMP_Text>().text = "Boost 30 seconds";
-
-            // Colour Turn OFF red to distinguish it
-            var turnOffImg = turnOff.GetComponent<Image>();
-            if (turnOffImg != null) turnOffImg.color = new Color(0.82f, 0.18f, 0.10f, 1f);
-
-            irrigationUI = page.gameObject.AddComponent<IrrigationUI>();
-            SetPrivateField(irrigationUI, "irrigationStatusText", status.GetComponent<TMP_Text>());
-            SetPrivateField(irrigationUI, "turnOnButton",  turnOn.GetComponent<Button>());
-            SetPrivateField(irrigationUI, "turnOffButton", turnOff.GetComponent<Button>());
-            SetPrivateField(irrigationUI, "boost30Button", boost.GetComponent<Button>());
+            // Delegates to the Smart Irrigation setup builder so full-platform setup
+            // always produces the 3-mode (Manual / Scheduled / AI) irrigation tab.
+            SmartIrrigationSetupEditor.BuildSmartIrrigationPage(page, out irrigationUI);
         }
 
         /// <summary>
@@ -601,53 +600,121 @@ namespace SmartFarm.Editor
             // Remove old component
             Object.DestroyImmediate(existing);
 
-            // Rebuild with new 3-button layout
+            // Rebuild with Smart Irrigation 3-mode layout
             BuildIrrigationPage(page.transform, out var newUI);
 
-            if (dataMgr != null)
-                SetPrivateField(newUI, "dataManager", dataMgr);
+            var irrigMgr = Object.FindFirstObjectByType<SmartIrrigationManager>();
+            if (dataMgr  != null) SetPrivateField(newUI, "dataManager",       dataMgr);
+            if (irrigMgr != null) SetPrivateField(newUI, "irrigationManager", irrigMgr);
 
             EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
-            Debug.Log("[SmartFarm] Irrigation page rebuilt — Turn ON / Turn OFF / Boost 30s.");
+            Debug.Log("[SmartFarm] Smart Irrigation page rebuilt — Manual / Scheduled / AI modes.");
         }
 
         private static void BuildAlertsPage(Transform page, out AlertsUI alertsUI)
         {
-            var badgeRoot = CreatePanel(page, "BadgeRoot", new Vector2(0, 0), new Vector2(0.92f, 0.9f), new Vector2(0.98f, 0.98f), new Color(0.85f, 0.2f, 0.2f, 0.95f));
-            var badgeText = CreateText(badgeRoot.transform, "BadgeCountText", "0", 16, TextAlignmentOptions.Center, Vector2.zero, Vector2.zero, Vector2.one);
-            var listRoot = new GameObject("ListRoot", typeof(RectTransform)).transform;
-            listRoot.SetParent(page, false);
-            var lr = (RectTransform)listRoot;
-            lr.anchorMin = new Vector2(0.03f, 0.08f);
-            lr.anchorMax = new Vector2(0.97f, 0.86f);
-            lr.offsetMin = lr.offsetMax = Vector2.zero;
-            var emptyState = CreateText(page, "EmptyState", "No alerts right now", 24, TextAlignmentOptions.Center, Vector2.zero, new Vector2(0.03f, 0.2f), new Vector2(0.97f, 0.8f));
+            // ── Badge (top-right corner of the Alerts page) ───────────────────────
+            var badgeRoot = CreatePanel(page, "BadgeRoot", new Vector2(0, 0),
+                new Vector2(0.90f, 0.91f), new Vector2(0.98f, 0.99f),
+                new Color(0.85f, 0.15f, 0.15f, 1f));
+            var badgeText = CreateText(badgeRoot.transform, "BadgeCountText", "0", 15,
+                TextAlignmentOptions.Center, Vector2.zero, Vector2.zero, Vector2.one);
 
-            var template = CreatePanel(page, "AlertItemTemplate", new Vector2(0, 0), new Vector2(0.03f, 0.75f), new Vector2(0.97f, 0.9f), new Color(0.2f, 0.35f, 0.55f, 0.95f));
-            var severity = CreateText(template.transform, "SeverityText", "INFO", 16, TextAlignmentOptions.Left, new Vector2(8, 0), new Vector2(0f, 0f), new Vector2(0.2f, 1f));
-            var timestamp = CreateText(template.transform, "TimestampText", "00:00:00", 16, TextAlignmentOptions.Left, new Vector2(8, 0), new Vector2(0.2f, 0f), new Vector2(0.45f, 1f));
-            var message = CreateText(template.transform, "MessageText", "message", 16, TextAlignmentOptions.Left, new Vector2(8, 0), new Vector2(0.45f, 0f), new Vector2(0.8f, 1f));
-            var ackBtn = CreateButton(template.transform, "Ack", new Vector2(0, -8));
-            var ackRt = ackBtn.GetComponent<RectTransform>();
-            ackRt.anchorMin = new Vector2(0.82f, 0.15f);
-            ackRt.anchorMax = new Vector2(0.98f, 0.85f);
-            ackRt.sizeDelta = Vector2.zero;
-            ackRt.anchoredPosition = Vector2.zero;
-            ackBtn.GetComponentInChildren<TMP_Text>().text = "Acknowledge";
+            // ── Empty-state label ─────────────────────────────────────────────────
+            var emptyState = CreateText(page, "EmptyState", "No alerts right now", 22,
+                TextAlignmentOptions.Center, Vector2.zero,
+                new Vector2(0.05f, 0.3f), new Vector2(0.95f, 0.7f));
+
+            // ── Scroll area → viewport → listRoot (content) ───────────────────────
+            // ScrollRect wrapper
+            var scrollGO = new GameObject("AlertsScrollView", typeof(RectTransform));
+            scrollGO.transform.SetParent(page, false);
+            var scrollRect = (RectTransform)scrollGO.transform;
+            scrollRect.anchorMin = new Vector2(0.01f, 0.06f);
+            scrollRect.anchorMax = new Vector2(0.99f, 0.90f);
+            scrollRect.offsetMin = scrollRect.offsetMax = Vector2.zero;
+            var sr = scrollGO.AddComponent<ScrollRect>();
+            sr.horizontal = false;
+            sr.vertical   = true;
+            sr.scrollSensitivity = 30f;
+            scrollGO.AddComponent<Image>().color = new Color(0f, 0f, 0f, 0f); // transparent mask bg
+
+            // Mask / viewport
+            var viewportGO = new GameObject("Viewport", typeof(RectTransform));
+            viewportGO.transform.SetParent(scrollGO.transform, false);
+            var vpRect = (RectTransform)viewportGO.transform;
+            vpRect.anchorMin = Vector2.zero;
+            vpRect.anchorMax = Vector2.one;
+            vpRect.offsetMin = vpRect.offsetMax = Vector2.zero;
+            viewportGO.AddComponent<Image>().color = new Color(0f, 0f, 0f, 0f);
+            var mask = viewportGO.AddComponent<Mask>();
+            mask.showMaskGraphic = false;
+
+            // Content (listRoot) — VerticalLayoutGroup stacks rows top-to-bottom
+            var contentGO = new GameObject("ListRoot", typeof(RectTransform));
+            contentGO.transform.SetParent(viewportGO.transform, false);
+            var contentRect = (RectTransform)contentGO.transform;
+            contentRect.anchorMin = new Vector2(0f, 1f);
+            contentRect.anchorMax = new Vector2(1f, 1f);
+            contentRect.pivot     = new Vector2(0.5f, 1f);
+            contentRect.offsetMin = contentRect.offsetMax = Vector2.zero;
+
+            var vlg = contentGO.AddComponent<VerticalLayoutGroup>();
+            vlg.spacing              = 8;
+            vlg.padding              = new RectOffset(6, 6, 6, 6);
+            vlg.childAlignment       = TextAnchor.UpperCenter;
+            vlg.childControlWidth    = true;
+            vlg.childControlHeight   = true;
+            vlg.childForceExpandWidth  = true;
+            vlg.childForceExpandHeight = false;
+
+            var csf = contentGO.AddComponent<ContentSizeFitter>();
+            csf.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
+            csf.verticalFit   = ContentSizeFitter.FitMode.PreferredSize;
+
+            sr.content  = contentRect;
+            sr.viewport = vpRect;
+
+            // ── Alert row template (hidden, cloned at runtime) ────────────────────
+            var template = new GameObject("AlertItemTemplate", typeof(RectTransform));
+            template.transform.SetParent(page, false);  // parented to page, NOT listRoot
+            var tRect = (RectTransform)template.transform;
+            tRect.anchorMin = Vector2.zero;
+            tRect.anchorMax = new Vector2(1f, 0f);
+            tRect.pivot     = new Vector2(0.5f, 0f);
+            tRect.sizeDelta = new Vector2(0f, 56f);
+
+            var tBg = template.AddComponent<Image>();
+            tBg.color = new Color(0.15f, 0.28f, 0.52f, 0.95f);
+
+            // Ensure LayoutElement so VLG honours row height
+            var tLe = template.AddComponent<LayoutElement>();
+            tLe.preferredHeight = 56;
+            tLe.minHeight       = 46;
+
+            var sevText  = CreateText(template.transform, "SeverityText",  "INFO",     16, TextAlignmentOptions.Left,  new Vector2(8, 0), new Vector2(0f,   0f), new Vector2(0.22f, 1f));
+            var tsText   = CreateText(template.transform, "TimestampText", "00:00",    16, TextAlignmentOptions.Left,  new Vector2(4, 0), new Vector2(0.22f, 0f), new Vector2(0.40f, 1f));
+            var msgText  = CreateText(template.transform, "MessageText",   "message",  15, TextAlignmentOptions.Left,  new Vector2(4, 0), new Vector2(0.40f, 0f), new Vector2(0.84f, 1f));
+
+            // "▶" details arrow
+            var arrowGO  = CreateText(template.transform, "ArrowText", "▶", 18, TextAlignmentOptions.Center, Vector2.zero, new Vector2(0.86f, 0.1f), new Vector2(1f, 0.9f));
+            arrowGO.GetComponent<TMP_Text>().color = new Color(0.7f, 0.85f, 1f, 0.9f);
+
             var itemUI = template.AddComponent<AlertListItemUI>();
-            SetPrivateField(itemUI, "severityText", severity.GetComponent<TMP_Text>());
-            SetPrivateField(itemUI, "timestampText", timestamp.GetComponent<TMP_Text>());
-            SetPrivateField(itemUI, "messageText", message.GetComponent<TMP_Text>());
-            SetPrivateField(itemUI, "acknowledgeButton", ackBtn.GetComponent<Button>());
-            SetPrivateField(itemUI, "background", template.GetComponent<Image>());
+            SetPrivateField(itemUI, "severityText",       sevText.GetComponent<TMP_Text>());
+            SetPrivateField(itemUI, "timestampText",      tsText.GetComponent<TMP_Text>());
+            SetPrivateField(itemUI, "messageText",        msgText.GetComponent<TMP_Text>());
+            SetPrivateField(itemUI, "background",         tBg);
             template.SetActive(false);
 
+            // ── Wire AlertsUI ─────────────────────────────────────────────────────
             alertsUI = page.gameObject.AddComponent<AlertsUI>();
             SetPrivateField(alertsUI, "badgeCountText", badgeText.GetComponent<TMP_Text>());
-            SetPrivateField(alertsUI, "badgeRoot", badgeRoot);
-            SetPrivateField(alertsUI, "listRoot", listRoot);
-            SetPrivateField(alertsUI, "itemPrefab", itemUI);
+            SetPrivateField(alertsUI, "badgeRoot",      badgeRoot);
+            SetPrivateField(alertsUI, "listRoot",       contentGO.transform);
+            SetPrivateField(alertsUI, "itemPrefab",     itemUI);
             SetPrivateField(alertsUI, "emptyStateRoot", emptyState);
+            // detailPanel is left null — AlertsUI.Awake() creates it automatically
         }
 
         private static void BuildPollsPage(Transform page, out PollPageUI pollPageUI)
@@ -959,8 +1026,14 @@ namespace SmartFarm.Editor
             if (mgr == null) mgr = hub.AddComponent<WeatherManager>();
             var simMgr = hub.GetComponent<FarmSimulationManager>();
             var plantMgr = Object.FindFirstObjectByType<PlantGrowth.PlantGrowthManager>();
-            SetPrivateField(mgr, "simulationManager", simMgr);
+            SetPrivateField(mgr, "simulationManager",  simMgr);
             SetPrivateField(mgr, "plantGrowthManager", plantMgr);
+
+            // Wire WeatherManager into SmartIrrigationManager now that it exists
+            var irrigMgr = hub.GetComponent<SmartIrrigationManager>();
+            if (irrigMgr != null)
+                SetPrivateField(irrigMgr, "weatherManager", mgr);
+
             return mgr;
         }
 
@@ -1312,9 +1385,14 @@ namespace SmartFarm.Editor
             if (weatherMgr == null) weatherMgr = hub.AddComponent<WeatherManager>();
             var simMgr = hub.GetComponent<FarmSimulationManager>();
             var plantMgr = Object.FindFirstObjectByType<PlantGrowth.PlantGrowthManager>();
-            SetPrivateField(weatherMgr, "simulationManager", simMgr);
+            SetPrivateField(weatherMgr, "simulationManager",  simMgr);
             SetPrivateField(weatherMgr, "plantGrowthManager", plantMgr);
             if (uiCtrl != null) SetPrivateField(uiCtrl, "weatherManager", weatherMgr);
+
+            // Ensure SmartIrrigationManager also gets the WeatherManager reference
+            var irrigMgr = hub.GetComponent<SmartIrrigationManager>();
+            if (irrigMgr != null) SetPrivateField(irrigMgr, "weatherManager", weatherMgr);
+
             CreateFullWeatherSetup(hub);
         }
 

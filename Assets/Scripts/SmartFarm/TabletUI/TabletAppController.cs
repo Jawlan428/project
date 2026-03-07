@@ -93,11 +93,11 @@ namespace SmartFarm
 
         private void WireButtons()
         {
-            if (overviewTabButton != null) overviewTabButton.onClick.AddListener(() => SetPage(overviewPage));
+            if (overviewTabButton   != null) overviewTabButton.onClick.AddListener(()   => SetPage(overviewPage));
             if (irrigationTabButton != null) irrigationTabButton.onClick.AddListener(() => SetPage(irrigationPage));
-            if (alertsTabButton != null) alertsTabButton.onClick.AddListener(() => SetPage(alertsPage));
-            if (pollsTabButton != null) pollsTabButton.onClick.AddListener(() => SetPage(pollsPage));
-            if (historyTabButton != null) historyTabButton.onClick.AddListener(() => SetPage(historyPage));
+            if (alertsTabButton     != null) alertsTabButton.onClick.AddListener(()     => SetPage(alertsPage));
+            if (pollsTabButton      != null) pollsTabButton.onClick.AddListener(()      => SetPage(pollsPage));
+            if (historyTabButton    != null) historyTabButton.onClick.AddListener(()    => SetPage(historyPage));
 
             if (pinToggleButton != null) pinToggleButton.onClick.AddListener(TogglePin);
             if (wristModeButton != null) wristModeButton.onClick.AddListener(() => SetPinMode(TabletPinMode.Wrist));
