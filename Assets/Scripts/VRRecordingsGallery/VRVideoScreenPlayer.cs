@@ -156,11 +156,30 @@ namespace VRRecordings
             }
             else if (videoDisplayRenderer != null)
             {
-                // Create a new material instance to avoid modifying shared material
-                Material mat = new Material(Shader.Find("Unlit/Texture"));
-                mat.mainTexture = renderTexture;
+                // Create a material instance that works for both URP and Built-In pipeline
+                Shader shader = Shader.Find("Universal Render Pipeline/Unlit")
+                             ?? Shader.Find("Unlit/Texture");
+                Material mat = new Material(shader);
+                ApplyRenderTextureToMaterial(mat, renderTexture);
                 videoDisplayRenderer.material = mat;
             }
+        }
+
+        /// <summary>
+        /// Applies a RenderTexture to a material regardless of whether the project
+        /// uses URP (_BaseMap) or the Built-In pipeline (_MainTex / mainTexture).
+        /// </summary>
+        private static void ApplyRenderTextureToMaterial(Material mat, RenderTexture rt)
+        {
+            if (mat == null || rt == null) return;
+            // URP Unlit / Lit shaders use _BaseMap
+            if (mat.HasProperty("_BaseMap"))
+                mat.SetTexture("_BaseMap", rt);
+            // Built-In pipeline fallback
+            if (mat.HasProperty("_MainTex"))
+                mat.SetTexture("_MainTex", rt);
+            // Unity's mat.mainTexture maps to [MainTexture] attribute — set as final safety net
+            mat.mainTexture = rt;
         }
 
         /// <summary>
@@ -341,10 +360,16 @@ namespace VRRecordings
             }
             else if (videoDisplayRenderer != null)
             {
-                if (videoDisplayRenderer.material.mainTexture != renderTexture)
+                var mat = videoDisplayRenderer.material;
+                // Check using _BaseMap (URP) first, then _MainTex (Built-In)
+                Texture currentTex = mat.HasProperty("_BaseMap")
+                    ? mat.GetTexture("_BaseMap")
+                    : mat.mainTexture;
+
+                if (currentTex != renderTexture)
                 {
-                    videoDisplayRenderer.material.mainTexture = renderTexture;
-                    Debug.Log("[VRVideoScreenPlayer] Fixed: Re-assigned RenderTexture to MeshRenderer");
+                    ApplyRenderTextureToMaterial(mat, renderTexture);
+                    Debug.Log("[VRVideoScreenPlayer] Fixed: Re-assigned RenderTexture to MeshRenderer (URP-aware)");
                 }
             }
             else

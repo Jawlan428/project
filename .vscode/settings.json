@@ -1,64 +1,29 @@
 {
-  "git.autoRepositoryDetection": false,
-  "git.scanRepositories": [
-    "."
-  ],
-  "git.detectSubmodules": false,
-  "git.detectNestedRepos": false,
-  "git.enabled": true,
-  "git.ignoreLegacyWarning": true,
-  "git.ignoreWindowsGit27Warning": true,
-  "files.exclude": {
-    "../**": true,
-    "**/../**": true,
-    "**/.gradle/**": true,
-    "**/*.db": true,
-    "**/*.db-*": true,
-    "**/adbkey*": true,
-    "**/debug.keystore*": true,
-    "**/sdkbin-*": true,
-    "**/jetified-*": true,
-    "**/analytics.settings": true,
-    "**/metadata.bin": true,
-    "**/results.bin": true,
-    "**/IconCache.db": true,
-    "**/ActivitiesCache.db*": true,
-    "**/ai-code-tracking.db*": true
-  },
-  "search.exclude": {
-    "../**": true,
-    "**/.gradle/**": true,
-    "**/*.db": true,
-    "**/*.db-*": true
-  },
-  "files.watcherExclude": {
-    "../**": true,
-    "**/.gradle/**": true,
-    "**/*.db": true,
-    "**/*.db-*": true
-  },
     "git.autoRepositoryDetection": false,
     "git.scanRepositories": [
-      "."
+        "."
     ],
     "git.detectSubmodules": false,
     "git.detectNestedRepos": false,
+    "git.enabled": true,
+    "git.ignoreLegacyWarning": true,
+    "git.ignoreWindowsGit27Warning": true,
+    "files.exclude": {
+        "../**": true,
+        "**/../**": true
+    },
+    "search.exclude": {
+        "../**": true
+    },
+    "files.watcherExclude": {
+        "../**": true
+    },
     "git.ignoredRepositories": [
-      "..",
-      "../",
-      "C:\\Users\\ASUS"
+        "..",
+        "../",
+        "C:\\Users\\ASUS"
     ],
     "git.ignoreLimitWarning": true,
     "git.openRepositoryInParentFolders": "never",
-    "files.exclude": {
-      "../**": true,
-      "**/../**": true
-    },
-    "search.exclude": {
-      "../**": true
-    },
-    "files.watcherExclude": {
-      "../**": true
-    }
+    "dotnet.defaultSolution": "My project.slnx"
 }
-
