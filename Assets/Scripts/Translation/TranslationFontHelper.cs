@@ -82,10 +82,27 @@ namespace Translation
         // ── Public API ─────────────────────────────────────────────────────────
 
         /// <summary>
-        /// Apply the correct font and text direction to a TMP_Text component
-        /// based on the TranslationLanguage it will display.
+        /// Apply font + direction to a text that contains a Latin label prefix
+        /// (e.g. "Hebrew: שלום"). isRightToLeftText is kept false so the Latin
+        /// prefix is not reversed; Unicode Bidi handles the RTL characters inside.
         /// </summary>
         public static void Apply(TMP_Text text, TranslationLanguage language)
+        {
+            if (text == null) return;
+
+            text.isRightToLeftText = false;
+            text.alignment = TextAlignmentOptions.MidlineLeft;
+
+            var font = GetFont(language);
+            if (font != null) text.font = font;
+        }
+
+        /// <summary>
+        /// Apply font + direction to a content-only text (no Latin prefix).
+        /// RTL languages (Arabic, Hebrew) get isRightToLeftText = true and
+        /// right-alignment so the text flows correctly from right to left.
+        /// </summary>
+        public static void ApplyContent(TMP_Text text, TranslationLanguage language)
         {
             if (text == null) return;
 

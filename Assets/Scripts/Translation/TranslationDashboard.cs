@@ -72,6 +72,13 @@ namespace Translation
         [Tooltip("Shows the most recent error message in red — stays until a translation succeeds")]
         [SerializeField] private TMP_Text errorLabel;
 
+        [Header("API Key Setup")]
+        [Tooltip("Overlay panel shown when the user taps the API Key button — hidden by default")]
+        [SerializeField] private GameObject      apiKeyPanel;
+        [SerializeField] private TMP_InputField  apiKeyInputField;
+        [SerializeField] private Button          apiKeyConfirmButton;
+        [SerializeField] private Button          apiKeyToggleButton;
+
         [Header("Microphone Indicator")]
         [Tooltip("Fill Image used as a live microphone level bar")]
         [SerializeField] private Image  micLevelBar;
@@ -188,6 +195,8 @@ namespace Translation
             if (saveNowButton        != null) saveNowButton.onClick.AddListener(OnSaveNow);
             if (closeButton          != null) closeButton.onClick.AddListener(Hide);
             if (testButton           != null) testButton.onClick.AddListener(OnTestTranslation);
+            if (apiKeyToggleButton   != null) apiKeyToggleButton.onClick.AddListener(OnApiKeyToggle);
+            if (apiKeyConfirmButton  != null) apiKeyConfirmButton.onClick.AddListener(OnApiKeyConfirm);
         }
 
         // ── Handlers ─────────────────────────────────────────────────────────
@@ -251,6 +260,28 @@ namespace Translation
             if (statusText != null) statusText.text = "Sending test phrase…";
         }
 
+        private void OnApiKeyToggle()
+        {
+            if (apiKeyPanel == null) return;
+            bool nowVisible = !apiKeyPanel.activeSelf;
+            apiKeyPanel.SetActive(nowVisible);
+            if (nowVisible && apiKeyInputField != null)
+                apiKeyInputField.ActivateInputField();
+        }
+
+        private void OnApiKeyConfirm()
+        {
+            if (apiKeyInputField == null || translationManager == null) return;
+            string key = apiKeyInputField.text.Trim();
+            if (string.IsNullOrEmpty(key)) return;
+
+            translationManager.SetWhisperApiKey(key);
+            apiKeyInputField.text = "";
+            if (apiKeyPanel != null) apiKeyPanel.SetActive(false);
+            if (statusText != null) statusText.text = "Whisper API key saved ✓";
+            if (errorLabel != null) { errorLabel.gameObject.SetActive(false); errorLabel.text = ""; }
+        }
+
         // ── Manager event callbacks ───────────────────────────────────────────
 
         private void OnTranslationReceived(TranslationEntry entry) => SpawnRow(entry);
@@ -303,7 +334,7 @@ namespace Translation
 
         // ── Transcript rows ───────────────────────────────────────────────────
 
-        private const float RowHeight = 76f;
+        private const float RowHeight = 118f;
         private const float RowGap   = 5f;
 
         private void SpawnRow(TranslationEntry entry)
@@ -362,28 +393,42 @@ namespace Translation
                 _                           => new Color(0.10f, 0.14f, 0.24f, 0.90f)
             };
 
-            // ── Speaker + timestamp (always LTR) ──────────────────────────────
+            // ── Header: timestamp + speaker (always LTR) ─────────────────────
             var header = MakeText(go.transform, "Header",
                 $"[{entry.timestampUtc.ToLocalTime():HH:mm:ss}]  {entry.speakerName}",
-                13, TextAlignmentOptions.Left,
-                new Vector2(0.01f, 0.64f), new Vector2(0.99f, 0.97f));
+                11, TextAlignmentOptions.Left,
+                new Vector2(0.01f, 0.84f), new Vector2(0.99f, 0.99f));
             header.color = new Color(0.70f, 0.88f, 1f, 1f);
 
-            // ── Original text (language-aware font + direction) ───────────────
-            var originalTxt = MakeText(go.transform, "Original",
-                $"{entry.sourceLanguage.ToDisplayName()}: {entry.originalText}",
-                13, TextAlignmentOptions.Left,
-                new Vector2(0.01f, 0.34f), new Vector2(0.99f, 0.64f));
-            originalTxt.color = new Color(0.82f, 0.82f, 0.82f, 1f);
-            TranslationFontHelper.Apply(originalTxt, entry.sourceLanguage);
+            // ── Source label (always LTR — just the language name) ────────────
+            var srcLabel = MakeText(go.transform, "SrcLabel",
+                $"{entry.sourceLanguage.ToDisplayName()}:",
+                10, TextAlignmentOptions.Left,
+                new Vector2(0.01f, 0.67f), new Vector2(0.99f, 0.83f));
+            srcLabel.color = new Color(0.65f, 0.72f, 0.85f, 0.80f);
 
-            // ── Translated text (language-aware font + direction) ─────────────
-            var translatedTxt = MakeText(go.transform, "Translated",
-                $"{entry.targetLanguage.ToDisplayName()}: {entry.translatedText}",
-                14, TextAlignmentOptions.Left,
-                new Vector2(0.01f, 0.03f), new Vector2(0.99f, 0.35f));
-            translatedTxt.color = Color.white;
-            TranslationFontHelper.Apply(translatedTxt, entry.targetLanguage);
+            // ── Source content (RTL-aware — handles Arabic/Hebrew source) ─────
+            var srcContent = MakeText(go.transform, "SrcContent",
+                entry.originalText,
+                12, TextAlignmentOptions.Left,
+                new Vector2(0.01f, 0.50f), new Vector2(0.99f, 0.67f));
+            srcContent.color = new Color(0.78f, 0.78f, 0.78f, 1f);
+            TranslationFontHelper.ApplyContent(srcContent, entry.sourceLanguage);
+
+            // ── Target label (always LTR) ─────────────────────────────────────
+            var tgtLabel = MakeText(go.transform, "TgtLabel",
+                $"{entry.targetLanguage.ToDisplayName()}:",
+                10, TextAlignmentOptions.Left,
+                new Vector2(0.01f, 0.32f), new Vector2(0.99f, 0.49f));
+            tgtLabel.color = new Color(0.65f, 0.80f, 1f, 0.85f);
+
+            // ── Target content (RTL-aware — handles Arabic/Hebrew translation) ─
+            var tgtContent = MakeText(go.transform, "TgtContent",
+                entry.translatedText,
+                13, TextAlignmentOptions.Left,
+                new Vector2(0.01f, 0.02f), new Vector2(0.99f, 0.32f));
+            tgtContent.color = Color.white;
+            TranslationFontHelper.ApplyContent(tgtContent, entry.targetLanguage);
 
             return go;
         }

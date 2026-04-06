@@ -266,17 +266,78 @@ namespace Translation.Editor
             float ctrl2Bot = ctrl2Top - 0.072f;
 
             var clearBtn = MakeAbsButton(root.transform, "ClearBtn", "Clear",
-                new Vector2(0.01f, ctrl2Bot), new Vector2(0.28f, ctrl2Top),
+                new Vector2(0.01f, ctrl2Bot), new Vector2(0.23f, ctrl2Top),
                 new Color(0.40f, 0.18f, 0.18f, 1f), 13);
 
             var saveNowBtn = MakeAbsButton(root.transform, "SaveNowBtn", "Save Transcript",
-                new Vector2(0.30f, ctrl2Bot), new Vector2(0.58f, ctrl2Top),
+                new Vector2(0.25f, ctrl2Bot), new Vector2(0.48f, ctrl2Top),
                 new Color(0.18f, 0.44f, 0.72f, 1f), 13);
 
-            // Test button — sends a hardcoded Arabic phrase, bypasses STT
+            // Test button — sends a hardcoded phrase, bypasses STT
             var testBtn = MakeAbsButton(root.transform, "TestBtn", "⬤ Test",
-                new Vector2(0.60f, ctrl2Bot), new Vector2(0.88f, ctrl2Top),
+                new Vector2(0.50f, ctrl2Bot), new Vector2(0.71f, ctrl2Top),
                 new Color(0.55f, 0.28f, 0.08f, 1f), 13);
+
+            // API Key button — opens the API key entry overlay
+            var apiKeyToggleBtn = MakeAbsButton(root.transform, "ApiKeyBtn", "🔑 API Key",
+                new Vector2(0.73f, ctrl2Bot), new Vector2(0.99f, ctrl2Top),
+                new Color(0.22f, 0.18f, 0.45f, 1f), 12);
+
+            // ── API Key overlay panel (hidden by default) ─────────────────────
+            // Floats over the transcript area; toggled by the 🔑 API Key button.
+            var apiKeyPanelGO = new GameObject("ApiKeyPanel", typeof(RectTransform));
+            apiKeyPanelGO.transform.SetParent(root.transform, false);
+            var apRt = (RectTransform)apiKeyPanelGO.transform;
+            apRt.anchorMin = new Vector2(0.04f, 0.04f);
+            apRt.anchorMax = new Vector2(0.96f, ctrl2Bot - 0.01f);
+            apRt.offsetMin = apRt.offsetMax = Vector2.zero;
+            apiKeyPanelGO.AddComponent<Image>().color = new Color(0.07f, 0.08f, 0.16f, 0.98f);
+
+            // Title
+            var apTitle = new GameObject("ApiKeyTitle", typeof(RectTransform));
+            apTitle.transform.SetParent(apiKeyPanelGO.transform, false);
+            var apTitleRt = (RectTransform)apTitle.transform;
+            apTitleRt.anchorMin = new Vector2(0.03f, 0.72f); apTitleRt.anchorMax = new Vector2(0.97f, 0.95f);
+            apTitleRt.offsetMin = apTitleRt.offsetMax = Vector2.zero;
+            var apTitleTxt = apTitle.AddComponent<TextMeshProUGUI>();
+            apTitleTxt.text = "OpenAI Whisper API Key";
+            apTitleTxt.fontSize = 15; apTitleTxt.fontStyle = FontStyles.Bold;
+            apTitleTxt.color = new Color(0.75f, 0.88f, 1f, 1f);
+            apTitleTxt.alignment = TextAlignmentOptions.Center;
+            apTitleTxt.raycastTarget = false;
+
+            // Hint
+            var apHint = new GameObject("ApiKeyHint", typeof(RectTransform));
+            apHint.transform.SetParent(apiKeyPanelGO.transform, false);
+            var apHintRt = (RectTransform)apHint.transform;
+            apHintRt.anchorMin = new Vector2(0.03f, 0.56f); apHintRt.anchorMax = new Vector2(0.97f, 0.73f);
+            apHintRt.offsetMin = apHintRt.offsetMax = Vector2.zero;
+            var apHintTxt = apHint.AddComponent<TextMeshProUGUI>();
+            apHintTxt.text = "Get yours at  platform.openai.com/api-keys";
+            apHintTxt.fontSize = 11;
+            apHintTxt.color = new Color(0.60f, 0.72f, 0.90f, 0.85f);
+            apHintTxt.alignment = TextAlignmentOptions.Center;
+            apHintTxt.raycastTarget = false;
+
+            // Input field
+            var apiKeyInputGO = MakeInputField(apiKeyPanelGO.transform, "ApiKeyInput",
+                "Paste your sk-... key here",
+                new Vector2(0.03f, 0.34f), new Vector2(0.97f, 0.56f));
+
+            // Confirm button
+            var apiKeyConfirmBtn = MakeAbsButton(apiKeyPanelGO.transform, "ApiKeyConfirmBtn", "✓  Save Key",
+                new Vector2(0.55f, 0.06f), new Vector2(0.97f, 0.32f),
+                new Color(0.10f, 0.58f, 0.22f, 1f), 13);
+
+            // Cancel button (calls the same toggle to close)
+            var apiKeyCancelBtn = MakeAbsButton(apiKeyPanelGO.transform, "ApiKeyCancelBtn", "✕  Cancel",
+                new Vector2(0.03f, 0.06f), new Vector2(0.45f, 0.32f),
+                new Color(0.38f, 0.16f, 0.16f, 1f), 13);
+
+            // Wire the cancel button to call the toggle via UnityEvent
+            apiKeyCancelBtn.GetComponent<Button>().onClick.AddListener(() => apiKeyPanelGO.SetActive(false));
+
+            apiKeyPanelGO.SetActive(false); // hidden by default
 
             // ── Transcript section ────────────────────────────────────────────
             float transcriptLabelTop = ctrl2Bot - 0.012f;
@@ -376,6 +437,10 @@ namespace Translation.Editor
             SetField(db, "clearButton",          clearBtn.GetComponent<Button>());
             SetField(db, "saveNowButton",        saveNowBtn.GetComponent<Button>());
             SetField(db, "testButton",           testBtn.GetComponent<Button>());
+            SetField(db, "apiKeyToggleButton",   apiKeyToggleBtn.GetComponent<Button>());
+            SetField(db, "apiKeyPanel",          apiKeyPanelGO);
+            SetField(db, "apiKeyInputField",     apiKeyInputGO.GetComponent<TMP_InputField>());
+            SetField(db, "apiKeyConfirmButton",  apiKeyConfirmBtn.GetComponent<Button>());
             SetField(db, "micLevelBar",          micFillImg);
             SetField(db, "micLevelRoot",         micBgGO);
 
@@ -493,6 +558,69 @@ namespace Translation.Editor
             t.text = value; t.fontSize = size; t.alignment = align;
             t.color = Color.white; t.raycastTarget = false; t.enableWordWrapping = true;
             return t;
+        }
+
+        private static GameObject MakeInputField(Transform parent, string name, string placeholder,
+            Vector2 anchorMin, Vector2 anchorMax)
+        {
+            var go = new GameObject(name, typeof(RectTransform));
+            go.transform.SetParent(parent, false);
+            var rt = (RectTransform)go.transform;
+            rt.anchorMin = anchorMin; rt.anchorMax = anchorMax;
+            rt.offsetMin = rt.offsetMax = Vector2.zero;
+
+            var bg = go.AddComponent<Image>();
+            bg.color = new Color(0.10f, 0.12f, 0.22f, 1f);
+
+            var field = go.AddComponent<TMP_InputField>();
+            field.contentType = TMP_InputField.ContentType.Password;
+
+            // Text Area (masked)
+            var taGO = new GameObject("Text Area", typeof(RectTransform));
+            taGO.transform.SetParent(go.transform, false);
+            var taRt = (RectTransform)taGO.transform;
+            taRt.anchorMin = Vector2.zero; taRt.anchorMax = Vector2.one;
+            taRt.offsetMin = new Vector2(8f, 4f); taRt.offsetMax = new Vector2(-8f, -4f);
+            taGO.AddComponent<RectMask2D>();
+
+            // Placeholder
+            var phGO = new GameObject("Placeholder", typeof(RectTransform));
+            phGO.transform.SetParent(taGO.transform, false);
+            var phRt = (RectTransform)phGO.transform;
+            phRt.anchorMin = Vector2.zero; phRt.anchorMax = Vector2.one;
+            phRt.offsetMin = phRt.offsetMax = Vector2.zero;
+            var phTxt = phGO.AddComponent<TextMeshProUGUI>();
+            phTxt.text = placeholder;
+            phTxt.fontSize = 13;
+            phTxt.color = new Color(0.50f, 0.55f, 0.65f, 0.75f);
+            phTxt.alignment = TextAlignmentOptions.MidlineLeft;
+            phTxt.enableWordWrapping = false;
+            phTxt.raycastTarget = false;
+
+            // Text
+            var txtGO = new GameObject("Text", typeof(RectTransform));
+            txtGO.transform.SetParent(taGO.transform, false);
+            var txtRt = (RectTransform)txtGO.transform;
+            txtRt.anchorMin = Vector2.zero; txtRt.anchorMax = Vector2.one;
+            txtRt.offsetMin = txtRt.offsetMax = Vector2.zero;
+            var txt = txtGO.AddComponent<TextMeshProUGUI>();
+            txt.text = "";
+            txt.fontSize = 13;
+            txt.color = Color.white;
+            txt.alignment = TextAlignmentOptions.MidlineLeft;
+            txt.enableWordWrapping = false;
+            txt.raycastTarget = false;
+
+            field.textViewport      = taRt;
+            field.textComponent     = txt;
+            field.placeholder       = phTxt;
+            field.targetGraphic     = bg;
+            field.caretWidth        = 2;
+            field.customCaretColor  = true;
+            field.caretColor        = Color.white;
+            field.selectionColor    = new Color(0.25f, 0.50f, 1f, 0.40f);
+
+            return go;
         }
 
         private static GameObject MakeAbsButton(Transform parent, string name, string label,
