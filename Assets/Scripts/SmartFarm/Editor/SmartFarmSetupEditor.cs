@@ -106,6 +106,9 @@ namespace SmartFarm.Editor
             CreateOrFindWeatherPanel(hub);
             CreateFullWeatherSetup(hub);
 
+            // 8. Create the Crop Growth Monitor (terminal + manager + alert system)
+            CropGrowthMonitorSetupEditor.RunSetup();
+
             EditorSceneManager.MarkSceneDirty(scene);
             Selection.activeGameObject = hub;
 
@@ -376,6 +379,12 @@ namespace SmartFarm.Editor
             return dataHub;
         }
 
+        // World-space size of the tablet, matched to the WeatherControlPanel so both
+        // panels feel similarly sized in VR. Combined with the 900x620 sizeDelta below
+        // this gives roughly a 4.5m x 3.1m tablet (weather panel is ~4m x 3.8m).
+        private const float TabletDefaultScale = 0.005f;
+        private const float TabletLegacyScale  = 0.0014f;
+
         private static GameObject CreateOrFindTabletApp(GameObject hub)
         {
             var existing = GameObject.Find("SmartFarmTablet");
@@ -383,6 +392,11 @@ namespace SmartFarm.Editor
             var dataMgr = dataHub.GetComponent<FarmDataManager>();
             if (existing != null)
             {
+                if (Mathf.Approximately(existing.transform.localScale.x, TabletLegacyScale))
+                {
+                    Undo.RecordObject(existing.transform, "Resize Smart Farm Tablet");
+                    existing.transform.localScale = new Vector3(TabletDefaultScale, TabletDefaultScale, TabletDefaultScale);
+                }
                 LinkTabletToHub(existing, dataMgr);
                 return existing;
             }
@@ -392,7 +406,7 @@ namespace SmartFarm.Editor
             Undo.RegisterCreatedObjectUndo(tablet, "Farm Setup");
             tablet.transform.position = new Vector3(0.5f, 1.35f, 1.4f);
             tablet.transform.rotation = Quaternion.Euler(12f, 160f, 0f);
-            tablet.transform.localScale = new Vector3(0.0014f, 0.0014f, 0.0014f);
+            tablet.transform.localScale = new Vector3(TabletDefaultScale, TabletDefaultScale, TabletDefaultScale);
 
             var canvas = tablet.AddComponent<Canvas>();
             canvas.renderMode = RenderMode.WorldSpace;

@@ -56,6 +56,12 @@ namespace SmartFarm
         /// <summary>Total number of individual harvest events.</summary>
         public int   TotalHarvestCount   { get; private set; }
 
+        /// <summary>Multiplier applied to every crop's tick deltaTime. Used by the Crop Monitor to compute accurate harvest ETAs.</summary>
+        public float GlobalGrowthSpeed   => Mathf.Max(0.0001f, globalGrowthSpeed);
+
+        /// <summary>Tick interval (seconds) so external systems can align polling cadence.</summary>
+        public float TickInterval        => Mathf.Max(0.05f, tickInterval);
+
         // ── Events ────────────────────────────────────────────────────────────
 
         /// <summary>Fired after any harvest. Parameter is the new cumulative yield total.</summary>

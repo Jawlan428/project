@@ -107,6 +107,23 @@ public static class FarmMenu
         InvokeCropSetup("UpdateMatureStageToBunch");
     }
 
+    [MenuItem("Tools/Farm/Setup Crop Growth Monitor")]
+    public static void SetupCropGrowthMonitor()
+    {
+        InvokeMonitorSetup("SetupCropGrowthMonitor");
+    }
+
+    [MenuItem("Tools/Farm/Rebuild Crop Growth Monitor")]
+    public static void RebuildCropGrowthMonitor()
+    {
+        InvokeMonitorSetup("RebuildCropGrowthMonitor");
+    }
+
+    private static void InvokeMonitorSetup(string methodName)
+    {
+        InvokeType("SmartFarm.Editor.CropGrowthMonitorSetupEditor", methodName);
+    }
+
     private static void InvokeSmartFarm(string methodName)
     {
         InvokeType("SmartFarm.Editor.SmartFarmSetupEditor", methodName);
