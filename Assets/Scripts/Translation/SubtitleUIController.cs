@@ -133,7 +133,7 @@ namespace Translation
             var subText = MakeText(go.transform, "SubtitleText", "", 24,
                 TextAlignmentOptions.Center, new Vector2(0.02f, 0.06f), new Vector2(0.98f, 0.72f));
             subText.color = Color.white;
-            subText.enableWordWrapping = true;
+            subText.textWrappingMode = TextWrappingModes.Normal;
 
             var display = go.AddComponent<SubtitleDisplay>();
             display.Initialise(subText, labelGO, subtitleDuration);

@@ -79,7 +79,6 @@ namespace Translation.Providers
                 int depth = 0;
                 bool inString = false;
                 bool escape   = false;
-                int segmentCount = 0; // counts how deep we are in outer arrays
 
                 var current = new System.Text.StringBuilder();
                 bool collectingTranslation = false;

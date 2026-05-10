@@ -492,8 +492,8 @@ namespace Translation
             t.fontSize         = size;
             t.alignment        = align;
             t.color            = Color.white;
-            t.raycastTarget    = false;
-            t.enableWordWrapping = true;
+            t.raycastTarget     = false;
+            t.textWrappingMode  = TextWrappingModes.Normal;
             return t;
         }
 

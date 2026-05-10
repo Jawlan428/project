@@ -149,7 +149,7 @@ namespace SmartFarm
             detailMessageText = MakeText(panel.transform, "DetailMessage",
                 "", 18, TextAlignmentOptions.TopLeft,
                 new Vector2(0.05f, 0.26f), new Vector2(0.95f, 0.82f));
-            detailMessageText.enableWordWrapping = true;
+            detailMessageText.textWrappingMode = TextWrappingModes.Normal;
 
             // Buttons row
             var ackBtn = MakeButton(panel.transform, "DetailAcknowledge", "Acknowledge",
