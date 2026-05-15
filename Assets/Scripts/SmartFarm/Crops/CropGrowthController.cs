@@ -201,6 +201,17 @@ namespace SmartFarm
         }
 
         /// <summary>
+        /// Destroys and re-instantiates the current stage's visual using the
+        /// latest <see cref="CropData.stagePrefabs"/> reference. Useful for
+        /// editor tooling that swaps the Mature-stage prefab and wants every
+        /// already-mature crop in the scene to refresh immediately.
+        /// </summary>
+        public void RefreshStageVisual()
+        {
+            ApplyStageVisual(CurrentStage);
+        }
+
+        /// <summary>
         /// Harvest this crop (VR grab or tablet button).
         /// Returns the yield amount; resets the crop to Seed stage.
         /// Returns 0 if not yet harvestable.

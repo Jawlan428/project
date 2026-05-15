@@ -367,9 +367,17 @@ namespace TrainingRoom.Editor
 
             var canvas = uiRoot.AddComponent<Canvas>();
             canvas.renderMode = RenderMode.WorldSpace;
+            var mainCam = Camera.main != null ? Camera.main : Object.FindFirstObjectByType<Camera>();
+            if (mainCam != null) canvas.worldCamera = mainCam;
             var scaler = uiRoot.AddComponent<CanvasScaler>();
             scaler.dynamicPixelsPerUnit = 100f;
             uiRoot.AddComponent<GraphicRaycaster>();
+            // XR raycaster so VR controller rays + pokes can click this button
+            var trackedType = System.Type.GetType(
+                "UnityEngine.XR.Interaction.Toolkit.UI.TrackedDeviceGraphicRaycaster, Unity.XR.Interaction.Toolkit");
+            if (trackedType != null) uiRoot.AddComponent(trackedType);
+            int uiLayerForCanvas = LayerMask.NameToLayer("UI");
+            if (uiLayerForCanvas >= 0) uiRoot.layer = uiLayerForCanvas;
 
             var rootRT = uiRoot.GetComponent<RectTransform>();
             rootRT.sizeDelta = new Vector2(520f, 140f);

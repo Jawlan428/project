@@ -100,9 +100,17 @@ namespace SmartFarm.MeetingRoom
                         var toCam = headTransform.position - doc.transform.position;
                         if (toCam.sqrMagnitude > 0.0001f)
                         {
-                            // The page's local "up" is the canvas normal (we built the canvas rotated 90° on X).
-                            Quaternion look = Quaternion.LookRotation(-toCam.normalized, Vector3.up);
-                            Quaternion target = look * Quaternion.Euler(90f, 0f, 0f);
+                            // The canvas was built with localRotation = Euler(90, 0, 0).
+                            // For the page to billboard toward the camera with text
+                            // upright, the canvas's WORLD rotation must equal
+                            // LookRotation(camFwd, camUp). So the doc must undo the
+                            // canvas's local 90° tilt:
+                            //   doc.rotation = LookRotation(camFwd, up) * Euler(-90, 0, 0)
+                            // Using +90 here (the previous version) made the page
+                            // appear upside-down in front of the user.
+                            Vector3 camFwd = -toCam.normalized; // direction from camera toward doc
+                            Quaternion look = Quaternion.LookRotation(camFwd, Vector3.up);
+                            Quaternion target = look * Quaternion.Euler(-90f, 0f, 0f);
                             doc.transform.rotation = Quaternion.Slerp(doc.transform.rotation, target, Time.deltaTime * faceLerpSpeed);
                         }
                     }

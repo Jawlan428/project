@@ -31,12 +31,14 @@ namespace SmartFarm.Irrigation.UI
         [SerializeField] private Button zonesTabButton;
         [SerializeField] private Button analyticsTabButton;
         [SerializeField] private Button alertsTabButton;
+        [SerializeField] private Button sustainabilityTabButton;
 
         [Header("Pages")]
         [SerializeField] private GameObject overviewPage;
         [SerializeField] private GameObject zonesPage;
         [SerializeField] private GameObject analyticsPage;
         [SerializeField] private GameObject alertsPage;
+        [SerializeField] private GameObject sustainabilityPage;
 
         [Header("Tab Colours")]
         [SerializeField] private Color activeTabColor   = new Color(0.20f, 0.78f, 0.45f, 1f);
@@ -90,10 +92,11 @@ namespace SmartFarm.Irrigation.UI
 
         private void WireButtons()
         {
-            if (overviewTabButton  != null) overviewTabButton.onClick.AddListener(()  => SetActivePage(overviewPage));
-            if (zonesTabButton     != null) zonesTabButton.onClick.AddListener(()     => SetActivePage(zonesPage));
-            if (analyticsTabButton != null) analyticsTabButton.onClick.AddListener(() => SetActivePage(analyticsPage));
-            if (alertsTabButton    != null) alertsTabButton.onClick.AddListener(()    => SetActivePage(alertsPage));
+            if (overviewTabButton       != null) overviewTabButton.onClick.AddListener(()       => SetActivePage(overviewPage));
+            if (zonesTabButton          != null) zonesTabButton.onClick.AddListener(()          => SetActivePage(zonesPage));
+            if (analyticsTabButton      != null) analyticsTabButton.onClick.AddListener(()      => SetActivePage(analyticsPage));
+            if (alertsTabButton         != null) alertsTabButton.onClick.AddListener(()         => SetActivePage(alertsPage));
+            if (sustainabilityTabButton != null) sustainabilityTabButton.onClick.AddListener(() => SetActivePage(sustainabilityPage));
         }
 
         // ─────────────────────────────────────────────────────────────────────
@@ -105,10 +108,11 @@ namespace SmartFarm.Irrigation.UI
             if (page == null) return;
             if (_activePage == page) return;
 
-            if (overviewPage  != null) overviewPage.SetActive(page == overviewPage);
-            if (zonesPage     != null) zonesPage.SetActive(page == zonesPage);
-            if (analyticsPage != null) analyticsPage.SetActive(page == analyticsPage);
-            if (alertsPage    != null) alertsPage.SetActive(page == alertsPage);
+            if (overviewPage       != null) overviewPage.SetActive(page == overviewPage);
+            if (zonesPage          != null) zonesPage.SetActive(page == zonesPage);
+            if (analyticsPage      != null) analyticsPage.SetActive(page == analyticsPage);
+            if (alertsPage         != null) alertsPage.SetActive(page == alertsPage);
+            if (sustainabilityPage != null) sustainabilityPage.SetActive(page == sustainabilityPage);
 
             _activePage = page;
             UpdateTabColors();
@@ -116,10 +120,11 @@ namespace SmartFarm.Irrigation.UI
 
         private void UpdateTabColors()
         {
-            SetButtonTint(overviewTabButton,  _activePage == overviewPage);
-            SetButtonTint(zonesTabButton,     _activePage == zonesPage);
-            SetButtonTint(analyticsTabButton, _activePage == analyticsPage);
-            SetButtonTint(alertsTabButton,    _activePage == alertsPage);
+            SetButtonTint(overviewTabButton,       _activePage == overviewPage);
+            SetButtonTint(zonesTabButton,          _activePage == zonesPage);
+            SetButtonTint(analyticsTabButton,      _activePage == analyticsPage);
+            SetButtonTint(alertsTabButton,         _activePage == alertsPage);
+            SetButtonTint(sustainabilityTabButton, _activePage == sustainabilityPage);
         }
 
         private void SetButtonTint(Button button, bool active)

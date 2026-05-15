@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -85,6 +84,17 @@ namespace SmartFarm.MeetingRoom
         [Tooltip("Tint applied to the page when the document is hovered by a hand.")]
         [SerializeField] private Color hoverTint = new Color(1f, 0.95f, 0.65f, 1f);
 
+        [Header("Paper Look")]
+        [Tooltip("Once populated, ignore live-data updates so the document reads like a printed snapshot " +
+                 "instead of a live screen. The initial values are still pulled from SmartFarmReportManager on Start.")]
+        [SerializeField] private bool freezeContent = true;
+
+        [Tooltip("Author shown above the signature line on the printed report.")]
+        [SerializeField] private string reportAuthor = "Farm Operations";
+
+        [Tooltip("Department / company name shown in the letterhead.")]
+        [SerializeField] private string organizationName = "SMART FARM AGRO";
+
         public SmartFarmReportData Report => report;
         public XRGrabInteractable Grab { get; private set; }
         public bool IsHeld => Grab != null && Grab.isSelected;
@@ -98,8 +108,14 @@ namespace SmartFarm.MeetingRoom
         private TMP_Text _subtitleText;
         private TMP_Text _bodyText;
         private TMP_Text _recsText;
-        private RectTransform _metricsContainer;
-        private readonly List<MetricBarUI> _metricBars = new List<MetricBarUI>();
+        private TMP_Text _dateText;
+        private TMP_Text _refText;
+        private TMP_Text _orgText;
+        private TMP_Text _metricsText;
+        private TMP_Text _authorText;
+        private Image    _headerRule;
+        private Image    _footerRule;
+        private bool     _hasBeenPopulated;
 
         private Vector3 _restPosition;
         private Quaternion _restRotation;
@@ -258,9 +274,15 @@ namespace SmartFarm.MeetingRoom
             Vector3 up = _cameraTransform.up;
             Vector3 targetPos = _cameraTransform.position + fwd * inspectDistance + up * inspectVerticalOffset;
 
-            // The page's local +Y points "out of the page" because we built the canvas
-            // rotated 90° on X. We want that to face the camera.
-            Quaternion targetRot = Quaternion.LookRotation(fwd, up) * Quaternion.Euler(90f, 0f, 0f);
+            // The canvas was built with localRotation = Euler(90, 0, 0) so the page
+            // lies flat on the table when the document is upright. To billboard it
+            // toward the camera with text upright we want the canvas's WORLD
+            // rotation to equal LookRotation(camera.forward, camera.up). So the
+            // document's rotation must "undo" the canvas's local 90° tilt:
+            //   doc.rotation = LookRotation(fwd, up) * Euler(-90, 0, 0)
+            // Using +90 instead of -90 (the previous version) results in the page
+            // being flipped 180° — exactly the "upside-down" symptom.
+            Quaternion targetRot = Quaternion.LookRotation(fwd, up) * Quaternion.Euler(-90f, 0f, 0f);
 
             transform.position = Vector3.Lerp(transform.position, targetPos, Time.deltaTime * inspectLerpSpeed);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * inspectLerpSpeed);
@@ -368,76 +390,198 @@ namespace SmartFarm.MeetingRoom
             _basePageScale = new Vector3(pageWidth / 512f, pageHeight / 720f, 1f);
             _pageRoot.localScale = _basePageScale;
 
-            _pageBg = CreateImage(_pageRoot, "PageBackground", Color.white);
+            // ── Page paper (cream tint, slight inset margin frame) ───────────
+            _pageBg = CreateImage(_pageRoot, "PageBackground", new Color(0.96f, 0.94f, 0.86f));
             FillParent(_pageBg.rectTransform, 0);
 
-            // Header bar
-            var header = CreateImage(_pageRoot, "Header", new Color(0.15f, 0.45f, 0.25f));
-            var headerRT = header.rectTransform;
-            headerRT.anchorMin = new Vector2(0, 1);
-            headerRT.anchorMax = new Vector2(1, 1);
-            headerRT.pivot = new Vector2(0.5f, 1);
-            headerRT.anchoredPosition = Vector2.zero;
-            headerRT.sizeDelta = new Vector2(0, 90);
+            // Subtle thin border to suggest a printed margin
+            var border = CreateImage(_pageRoot, "Margin", new Color(0.78f, 0.72f, 0.55f, 0.55f));
+            var borderRT = border.rectTransform;
+            borderRT.anchorMin = Vector2.zero;
+            borderRT.anchorMax = Vector2.one;
+            borderRT.offsetMin = new Vector2(20, 20);
+            borderRT.offsetMax = new Vector2(-20, -20);
+            var borderHole = CreateImage(border.rectTransform, "MarginHole", _pageBg.color);
+            FillParent(borderHole.rectTransform, 2);
 
-            _titleText = CreateText(headerRT, "Title", "REPORT", 36, FontStyles.Bold, Color.white, TextAlignmentOptions.Left);
+            // ── Letterhead (organisation + date + ref number) ────────────────
+            _orgText = CreateText(_pageRoot, "Letterhead",
+                organizationName,
+                16, FontStyles.Bold | FontStyles.UpperCase,
+                new Color(0.20f, 0.30f, 0.20f),
+                TextAlignmentOptions.Left);
+            var orgRT = _orgText.rectTransform;
+            orgRT.anchorMin = new Vector2(0, 1);
+            orgRT.anchorMax = new Vector2(0.55f, 1);
+            orgRT.pivot     = new Vector2(0, 1);
+            orgRT.anchoredPosition = new Vector2(32, -32);
+            orgRT.sizeDelta = new Vector2(0, 24);
+
+            _dateText = CreateText(_pageRoot, "DateText",
+                "DATE: " + System.DateTime.Now.ToString("yyyy-MM-dd"),
+                12, FontStyles.Normal,
+                new Color(0.25f, 0.20f, 0.15f),
+                TextAlignmentOptions.Right);
+            var dateRT = _dateText.rectTransform;
+            dateRT.anchorMin = new Vector2(0.55f, 1);
+            dateRT.anchorMax = new Vector2(1, 1);
+            dateRT.pivot     = new Vector2(1, 1);
+            dateRT.anchoredPosition = new Vector2(-32, -32);
+            dateRT.sizeDelta = new Vector2(0, 18);
+
+            _refText = CreateText(_pageRoot, "RefText",
+                "REF / —",
+                12, FontStyles.Normal,
+                new Color(0.25f, 0.20f, 0.15f),
+                TextAlignmentOptions.Right);
+            var refRT = _refText.rectTransform;
+            refRT.anchorMin = new Vector2(0.55f, 1);
+            refRT.anchorMax = new Vector2(1, 1);
+            refRT.pivot     = new Vector2(1, 1);
+            refRT.anchoredPosition = new Vector2(-32, -52);
+            refRT.sizeDelta = new Vector2(0, 18);
+
+            // Top horizontal rule (under the letterhead)
+            _headerRule = CreateImage(_pageRoot, "HeaderRule", new Color(0.20f, 0.18f, 0.14f, 0.85f));
+            var headerRuleRT = _headerRule.rectTransform;
+            headerRuleRT.anchorMin = new Vector2(0, 1);
+            headerRuleRT.anchorMax = new Vector2(1, 1);
+            headerRuleRT.pivot     = new Vector2(0.5f, 1);
+            headerRuleRT.anchoredPosition = new Vector2(0, -80);
+            headerRuleRT.sizeDelta = new Vector2(-64, 2);
+
+            // ── Title block ─────────────────────────────────────────────────
+            _titleText = CreateText(_pageRoot, "Title",
+                "REPORT",
+                32, FontStyles.Bold | FontStyles.UpperCase,
+                new Color(0.12f, 0.12f, 0.12f),
+                TextAlignmentOptions.Center);
             var titleRT = _titleText.rectTransform;
-            titleRT.anchorMin = new Vector2(0, 0);
+            titleRT.anchorMin = new Vector2(0, 1);
             titleRT.anchorMax = new Vector2(1, 1);
-            titleRT.offsetMin = new Vector2(24, 30);
-            titleRT.offsetMax = new Vector2(-24, -6);
+            titleRT.pivot     = new Vector2(0.5f, 1);
+            titleRT.anchoredPosition = new Vector2(0, -94);
+            titleRT.sizeDelta = new Vector2(-64, 46);
 
-            _subtitleText = CreateText(headerRT, "Subtitle", "summary", 18, FontStyles.Italic, new Color(1f, 1f, 1f, 0.85f), TextAlignmentOptions.Left);
+            _subtitleText = CreateText(_pageRoot, "Subtitle",
+                "summary",
+                15, FontStyles.Italic,
+                new Color(0.35f, 0.30f, 0.20f),
+                TextAlignmentOptions.Center);
             var subRT = _subtitleText.rectTransform;
-            subRT.anchorMin = new Vector2(0, 0);
-            subRT.anchorMax = new Vector2(1, 0);
-            subRT.pivot = new Vector2(0.5f, 0);
-            subRT.offsetMin = new Vector2(24, 6);
-            subRT.offsetMax = new Vector2(-24, 36);
+            subRT.anchorMin = new Vector2(0, 1);
+            subRT.anchorMax = new Vector2(1, 1);
+            subRT.pivot     = new Vector2(0.5f, 1);
+            subRT.anchoredPosition = new Vector2(0, -140);
+            subRT.sizeDelta = new Vector2(-64, 22);
 
-            // Body
-            _bodyText = CreateText(_pageRoot, "Body", "—", 20, FontStyles.Normal, new Color(0.1f, 0.12f, 0.1f), TextAlignmentOptions.TopLeft);
+            // Title underline rule
+            var titleRule = CreateImage(_pageRoot, "TitleRule", new Color(0.20f, 0.18f, 0.14f, 0.60f));
+            var titleRuleRT = titleRule.rectTransform;
+            titleRuleRT.anchorMin = new Vector2(0, 1);
+            titleRuleRT.anchorMax = new Vector2(1, 1);
+            titleRuleRT.pivot     = new Vector2(0.5f, 1);
+            titleRuleRT.anchoredPosition = new Vector2(0, -168);
+            titleRuleRT.sizeDelta = new Vector2(-160, 1);
+
+            // ── Body paragraph (justified prose) ─────────────────────────────
+            _bodyText = CreateText(_pageRoot, "Body",
+                "—",
+                15, FontStyles.Normal,
+                new Color(0.10f, 0.10f, 0.10f),
+                TextAlignmentOptions.TopJustified);
             var bodyRT = _bodyText.rectTransform;
             bodyRT.anchorMin = new Vector2(0, 1);
             bodyRT.anchorMax = new Vector2(1, 1);
-            bodyRT.pivot = new Vector2(0.5f, 1);
-            bodyRT.anchoredPosition = new Vector2(0, -100);
-            bodyRT.sizeDelta = new Vector2(-48, 140);
+            bodyRT.pivot     = new Vector2(0.5f, 1);
+            bodyRT.anchoredPosition = new Vector2(0, -188);
+            bodyRT.sizeDelta = new Vector2(-72, 130);
 
-            // Metrics container
-            var metricsGO = new GameObject("Metrics", typeof(RectTransform), typeof(VerticalLayoutGroup));
-            metricsGO.transform.SetParent(_pageRoot, false);
-            _metricsContainer = metricsGO.GetComponent<RectTransform>();
-            _metricsContainer.anchorMin = new Vector2(0, 1);
-            _metricsContainer.anchorMax = new Vector2(1, 1);
-            _metricsContainer.pivot = new Vector2(0.5f, 1);
-            _metricsContainer.anchoredPosition = new Vector2(0, -260);
-            _metricsContainer.sizeDelta = new Vector2(-48, 280);
+            // ── Measurements section header + dotted-leader metric table ────
+            var measLabel = CreateText(_pageRoot, "MeasurementsHeading",
+                "MEASUREMENTS",
+                12, FontStyles.Bold | FontStyles.UpperCase,
+                new Color(0.25f, 0.20f, 0.10f),
+                TextAlignmentOptions.Left);
+            var measLabelRT = measLabel.rectTransform;
+            measLabelRT.anchorMin = new Vector2(0, 1);
+            measLabelRT.anchorMax = new Vector2(1, 1);
+            measLabelRT.pivot     = new Vector2(0.5f, 1);
+            measLabelRT.anchoredPosition = new Vector2(0, -324);
+            measLabelRT.sizeDelta = new Vector2(-72, 16);
 
-            var vlg = metricsGO.GetComponent<VerticalLayoutGroup>();
-            vlg.spacing = 10;
-            vlg.padding = new RectOffset(0, 0, 0, 0);
-            vlg.childAlignment = TextAnchor.UpperCenter;
-            vlg.childControlHeight = false;
-            vlg.childControlWidth = true;
-            vlg.childForceExpandHeight = false;
-            vlg.childForceExpandWidth = true;
+            _metricsText = CreateText(_pageRoot, "MetricsBody",
+                "—",
+                14, FontStyles.Normal,
+                new Color(0.10f, 0.10f, 0.10f),
+                TextAlignmentOptions.TopLeft);
+            // Use a monospaced font feel via fixed-width digits + tabs to help dots align
+            _metricsText.enableWordWrapping = false;
+            _metricsText.overflowMode       = TextOverflowModes.Truncate;
+            var metricsBodyRT = _metricsText.rectTransform;
+            metricsBodyRT.anchorMin = new Vector2(0, 1);
+            metricsBodyRT.anchorMax = new Vector2(1, 1);
+            metricsBodyRT.pivot     = new Vector2(0.5f, 1);
+            metricsBodyRT.anchoredPosition = new Vector2(0, -344);
+            metricsBodyRT.sizeDelta = new Vector2(-72, 150);
 
-            // Recommendations footer
-            var footerBG = CreateImage(_pageRoot, "Footer", new Color(0.92f, 0.94f, 0.88f));
-            var footerRT = footerBG.rectTransform;
-            footerRT.anchorMin = new Vector2(0, 0);
-            footerRT.anchorMax = new Vector2(1, 0);
-            footerRT.pivot = new Vector2(0.5f, 0);
-            footerRT.anchoredPosition = new Vector2(0, 0);
-            footerRT.sizeDelta = new Vector2(0, 150);
+            // ── Recommendations section ─────────────────────────────────────
+            var recLabel = CreateText(_pageRoot, "RecommendationsHeading",
+                "RECOMMENDATIONS",
+                12, FontStyles.Bold | FontStyles.UpperCase,
+                new Color(0.25f, 0.20f, 0.10f),
+                TextAlignmentOptions.Left);
+            var recLabelRT = recLabel.rectTransform;
+            recLabelRT.anchorMin = new Vector2(0, 1);
+            recLabelRT.anchorMax = new Vector2(1, 1);
+            recLabelRT.pivot     = new Vector2(0.5f, 1);
+            recLabelRT.anchoredPosition = new Vector2(0, -500);
+            recLabelRT.sizeDelta = new Vector2(-72, 16);
 
-            _recsText = CreateText(footerRT, "Recommendations", "—", 18, FontStyles.Normal, new Color(0.1f, 0.12f, 0.1f), TextAlignmentOptions.TopLeft);
+            _recsText = CreateText(_pageRoot, "Recommendations",
+                "—",
+                14, FontStyles.Normal,
+                new Color(0.10f, 0.10f, 0.10f),
+                TextAlignmentOptions.TopLeft);
             var recsRT = _recsText.rectTransform;
-            recsRT.anchorMin = new Vector2(0, 0);
+            recsRT.anchorMin = new Vector2(0, 1);
             recsRT.anchorMax = new Vector2(1, 1);
-            recsRT.offsetMin = new Vector2(16, 12);
-            recsRT.offsetMax = new Vector2(-16, -12);
+            recsRT.pivot     = new Vector2(0.5f, 1);
+            recsRT.anchoredPosition = new Vector2(0, -520);
+            recsRT.sizeDelta = new Vector2(-72, 120);
+
+            // ── Footer: signature line + author ─────────────────────────────
+            _footerRule = CreateImage(_pageRoot, "FooterRule", new Color(0.20f, 0.18f, 0.14f, 0.55f));
+            var footerRuleRT = _footerRule.rectTransform;
+            footerRuleRT.anchorMin = new Vector2(0, 0);
+            footerRuleRT.anchorMax = new Vector2(1, 0);
+            footerRuleRT.pivot     = new Vector2(0.5f, 0);
+            footerRuleRT.anchoredPosition = new Vector2(0, 78);
+            footerRuleRT.sizeDelta = new Vector2(-64, 1);
+
+            _authorText = CreateText(_pageRoot, "Author",
+                "Signed:  ____________________________   " + reportAuthor,
+                12, FontStyles.Italic,
+                new Color(0.25f, 0.20f, 0.15f),
+                TextAlignmentOptions.Left);
+            var authorRT = _authorText.rectTransform;
+            authorRT.anchorMin = new Vector2(0, 0);
+            authorRT.anchorMax = new Vector2(1, 0);
+            authorRT.pivot     = new Vector2(0.5f, 0);
+            authorRT.anchoredPosition = new Vector2(0, 56);
+            authorRT.sizeDelta = new Vector2(-64, 18);
+
+            var pageNumber = CreateText(_pageRoot, "PageNumber",
+                "Page 1 of 1",
+                10, FontStyles.Italic,
+                new Color(0.40f, 0.32f, 0.20f),
+                TextAlignmentOptions.Center);
+            var pageRT = pageNumber.rectTransform;
+            pageRT.anchorMin = new Vector2(0, 0);
+            pageRT.anchorMax = new Vector2(1, 0);
+            pageRT.pivot     = new Vector2(0.5f, 0);
+            pageRT.anchoredPosition = new Vector2(0, 32);
+            pageRT.sizeDelta = new Vector2(-64, 16);
 
             _baseColor = _pageBg.color;
         }
@@ -445,28 +589,116 @@ namespace SmartFarm.MeetingRoom
         private void RefreshUI()
         {
             if (_pageBg == null) return;
+
+            // Once populated, behave like a printed snapshot — live data ticks
+            // no longer redraw the page so it stops looking like a screen.
+            if (freezeContent && _hasBeenPopulated) return;
+
             if (report == null)
             {
-                _titleText.text = "No Report Assigned";
+                _titleText.text = "NO REPORT ASSIGNED";
                 _subtitleText.text = "";
-                _bodyText.text = "Assign a SmartFarmReportData asset.";
-                _recsText.text = "";
+                _bodyText.text     = "Assign a SmartFarmReportData asset.";
+                if (_metricsText != null) _metricsText.text = "";
+                _recsText.text     = "";
                 return;
             }
 
+            // Keep the cream paper colour even if the asset specifies something
+            // brighter — the goal is a printed look.
             _pageBg.color = report.pageColor;
-            _baseColor = report.pageColor;
+            _baseColor    = report.pageColor;
 
-            _titleText.text = report.title;
+            _titleText.text    = string.IsNullOrEmpty(report.title) ? "REPORT" : report.title.ToUpperInvariant();
             _subtitleText.text = report.subtitle;
-            _bodyText.text = FormatBody(report.body);
-            _recsText.text = "Recommendations:\n" + FormatBody(report.recommendations);
+            _bodyText.text     = FormatBody(report.body);
+            _recsText.text     = FormatBody(report.recommendations);
 
-            // Header tint follows accent colour.
-            var header = _titleText.transform.parent.GetComponent<Image>();
-            if (header != null) header.color = report.accentColor;
+            if (_orgText != null)
+                _orgText.text = string.IsNullOrEmpty(organizationName) ? "SMART FARM" : organizationName;
+            if (_dateText != null)
+                _dateText.text = "DATE:  " + System.DateTime.Now.ToString("yyyy-MM-dd");
+            if (_refText != null)
+                _refText.text = "REF / " + ShortRef(report.reportId, report.reportType);
+            if (_authorText != null)
+                _authorText.text = "Signed:  ____________________________   "
+                                   + (string.IsNullOrEmpty(reportAuthor) ? "Farm Operations" : reportAuthor);
 
-            BuildMetricBars();
+            BuildMetricsText();
+
+            _hasBeenPopulated = true;
+        }
+
+        private void BuildMetricsText()
+        {
+            if (_metricsText == null) return;
+            if (report == null || report.metrics == null || report.metrics.Count == 0)
+            {
+                _metricsText.text = "<i>— no measurements recorded —</i>";
+                return;
+            }
+
+            // Print classic "dotted-leader" rows: label ............... value.
+            // Using TMP's mono-space tag to keep dot count aligned for any font.
+            var sb = new System.Text.StringBuilder(256);
+            for (int i = 0; i < report.metrics.Count; i++)
+            {
+                var m = report.metrics[i];
+                if (string.IsNullOrWhiteSpace(m.label)) continue;
+
+                string label   = m.label.Trim();
+                string valueStr = $"{m.value:0.##}{m.unit}";
+
+                // ~38 mono-space columns for the dotted row, value right-aligned.
+                int columns = 38;
+                int gap     = Mathf.Max(2, columns - label.Length - valueStr.Length);
+                string dots = new string('.', gap);
+
+                if (m.isCritical)
+                {
+                    sb.Append("<color=#9C2A20>");
+                    sb.Append("<mspace=8.8>");
+                    sb.Append(label);
+                    sb.Append(' ');
+                    sb.Append(dots);
+                    sb.Append(' ');
+                    sb.Append(valueStr);
+                    sb.Append("</mspace>");
+                    sb.Append("</color>");
+                }
+                else
+                {
+                    sb.Append("<mspace=8.8>");
+                    sb.Append(label);
+                    sb.Append(' ');
+                    sb.Append(dots);
+                    sb.Append(' ');
+                    sb.Append(valueStr);
+                    sb.Append("</mspace>");
+                }
+
+                if (i < report.metrics.Count - 1) sb.Append('\n');
+            }
+            _metricsText.text = sb.ToString();
+        }
+
+        private static string ShortRef(string reportId, SmartFarmReportType type)
+        {
+            string prefix = type switch
+            {
+                SmartFarmReportType.CropHealth      => "CH",
+                SmartFarmReportType.Irrigation      => "IR",
+                SmartFarmReportType.WeatherForecast => "WF",
+                SmartFarmReportType.HarvestPlanning => "HP",
+                SmartFarmReportType.SoilAnalysis    => "SA",
+                SmartFarmReportType.WaterUsage      => "WU",
+                _                                   => "RP"
+            };
+            string suffix = string.IsNullOrEmpty(reportId)
+                ? System.Guid.NewGuid().ToString("N").Substring(0, 4).ToUpperInvariant()
+                : reportId.Replace("-", "").ToUpperInvariant();
+            if (suffix.Length > 6) suffix = suffix.Substring(0, 6);
+            return $"{prefix}-{System.DateTime.Now:yy}-{suffix}";
         }
 
         private static string FormatBody(string raw)
@@ -480,12 +712,13 @@ namespace SmartFarm.MeetingRoom
                 if (line.StartsWith("!"))
                 {
                     string clean = line.Substring(1).TrimStart();
-                    sb.Append("<color=#B5302A><b>• ");
+                    sb.Append("<b>•  ");
                     sb.Append(clean);
-                    sb.Append("</b></color>");
+                    sb.Append("</b>");
                 }
-                else
+                else if (!string.IsNullOrEmpty(line))
                 {
+                    sb.Append("•  ");
                     sb.Append(line);
                 }
                 if (i < lines.Length - 1) sb.Append('\n');
@@ -493,74 +726,12 @@ namespace SmartFarm.MeetingRoom
             return sb.ToString();
         }
 
-        private void BuildMetricBars()
-        {
-            int needed = report != null && report.metrics != null ? report.metrics.Count : 0;
-
-            while (_metricBars.Count < needed)
-            {
-                _metricBars.Add(CreateMetricBar(_metricsContainer, _metricBars.Count));
-            }
-
-            for (int i = 0; i < _metricBars.Count; i++)
-            {
-                bool active = i < needed;
-                _metricBars[i].Root.gameObject.SetActive(active);
-                if (active) _metricBars[i].Apply(report.metrics[i]);
-            }
-        }
-
-        private static MetricBarUI CreateMetricBar(RectTransform parent, int index)
-        {
-            var rowGO = new GameObject($"Metric_{index}", typeof(RectTransform), typeof(LayoutElement));
-            rowGO.transform.SetParent(parent, false);
-            var rowRT = rowGO.GetComponent<RectTransform>();
-            rowRT.sizeDelta = new Vector2(0, 38);
-            rowGO.GetComponent<LayoutElement>().preferredHeight = 38;
-
-            var label = CreateText(rowRT, "Label", "Label", 18, FontStyles.Bold, new Color(0.1f, 0.12f, 0.1f), TextAlignmentOptions.Left);
-            var lblRT = label.rectTransform;
-            lblRT.anchorMin = new Vector2(0, 0);
-            lblRT.anchorMax = new Vector2(0.45f, 1);
-            lblRT.offsetMin = Vector2.zero;
-            lblRT.offsetMax = Vector2.zero;
-
-            var trackBG = CreateImage(rowRT, "Track", new Color(0.85f, 0.86f, 0.78f));
-            var trackRT = trackBG.rectTransform;
-            trackRT.anchorMin = new Vector2(0.46f, 0.18f);
-            trackRT.anchorMax = new Vector2(0.88f, 0.82f);
-            trackRT.offsetMin = Vector2.zero;
-            trackRT.offsetMax = Vector2.zero;
-
-            var fillImg = CreateImage(trackRT, "Fill", new Color(0.27f, 0.7f, 0.35f));
-            var fillRT = fillImg.rectTransform;
-            fillRT.anchorMin = new Vector2(0, 0);
-            fillRT.anchorMax = new Vector2(0, 1);
-            fillRT.pivot = new Vector2(0, 0.5f);
-            fillRT.offsetMin = Vector2.zero;
-            fillRT.offsetMax = Vector2.zero;
-            fillRT.sizeDelta = new Vector2(0, 0);
-
-            var valueText = CreateText(rowRT, "Value", "0", 18, FontStyles.Bold, new Color(0.1f, 0.12f, 0.1f), TextAlignmentOptions.Right);
-            var valRT = valueText.rectTransform;
-            valRT.anchorMin = new Vector2(0.88f, 0);
-            valRT.anchorMax = new Vector2(1f, 1f);
-            valRT.offsetMin = Vector2.zero;
-            valRT.offsetMax = Vector2.zero;
-
-            return new MetricBarUI
-            {
-                Root = rowRT,
-                Label = label,
-                Fill = fillImg,
-                Track = trackBG,
-                Value = valueText
-            };
-        }
-
         private void OnReportUpdated(SmartFarmReportData updated)
         {
             if (updated == null || updated != report) return;
+            // Honour the printed-snapshot setting — once we've drawn the page,
+            // ignore further live-data ticks.
+            if (freezeContent && _hasBeenPopulated) return;
             RefreshUI();
         }
 
@@ -707,23 +878,5 @@ namespace SmartFarm.MeetingRoom
             rt.offsetMax = new Vector2(-padding, -padding);
         }
 
-        private class MetricBarUI
-        {
-            public RectTransform Root;
-            public TMP_Text Label;
-            public Image Fill;
-            public Image Track;
-            public TMP_Text Value;
-
-            public void Apply(ReportMetric m)
-            {
-                Label.text = m.label;
-                Fill.color = m.isCritical ? new Color(0.85f, 0.25f, 0.2f) : m.color;
-                float pct = m.maxValue <= 0f ? 0f : Mathf.Clamp01(m.value / m.maxValue);
-                Fill.rectTransform.anchorMax = new Vector2(pct, 1f);
-                Value.text = $"{m.value:0.##}{m.unit}";
-                Value.color = m.isCritical ? new Color(0.7f, 0.15f, 0.1f) : new Color(0.1f, 0.12f, 0.1f);
-            }
-        }
     }
 }

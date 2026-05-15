@@ -19,17 +19,30 @@ namespace SmartFarm.Irrigation.UI
 
         public void Bind(IrrigationAlert alert)
         {
-            if (titleText     != null) titleText.text     = alert.title;
-            if (messageText   != null) messageText.text   = alert.message;
-            if (timestampText != null) timestampText.text = alert.timestampUtc.ToLocalTime().ToString("HH:mm:ss");
+            BindRaw(alert.title, alert.message, alert.timestampUtc, alert.GetColor());
+        }
 
-            Color color = alert.GetColor();
-            if (accent != null) accent.color = color;
+        /// <summary>
+        /// Generic bind path so the Alerts tab can display rows from either the
+        /// <see cref="IrrigationAlertManager"/> (operational alerts) or the
+        /// <c>EcoAlertManager</c> (eco / sustainability popups) with one item type.
+        /// </summary>
+        public void BindRaw(string title, string message, System.DateTime timestampUtc, Color tint)
+        {
+            if (titleText     != null) titleText.text     = title ?? string.Empty;
+            if (messageText   != null) messageText.text   = message ?? string.Empty;
+            if (timestampText != null) timestampText.text = timestampUtc.ToLocalTime().ToString("HH:mm:ss");
+
+            if (accent != null) accent.color = tint;
             if (background != null)
             {
-                Color bg = color;
-                bg.r *= 0.18f; bg.g *= 0.22f; bg.b *= 0.32f; bg.a = 0.95f;
-                background.color = new Color(0.07f, 0.12f, 0.17f, 0.95f);
+                // Subtle dark tint with a hint of the alert colour — keeps the
+                // row legible against the tablet's dark theme.
+                background.color = new Color(
+                    0.07f + tint.r * 0.06f,
+                    0.12f + tint.g * 0.06f,
+                    0.17f + tint.b * 0.06f,
+                    0.95f);
             }
         }
 

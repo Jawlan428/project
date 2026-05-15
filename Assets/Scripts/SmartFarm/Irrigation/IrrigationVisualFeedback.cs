@@ -34,10 +34,11 @@ namespace SmartFarm.Irrigation
 
         private class ZoneRuntime
         {
-            public Renderer[]      pipeRenderers;
-            public ParticleSystem[] sprinklers;
-            public AudioSource     audioSource;
-            public float           displayedFlow; // 0..1 smoothed
+            public Renderer[]            pipeRenderers;
+            public ParticleSystem[]      sprinklers;
+            public IrrigationSprayLayer[] sprayLayers; // parallel to sprinklers, null entries allowed
+            public AudioSource           audioSource;
+            public float                 displayedFlow; // 0..1 smoothed
         }
 
         // ─────────────────────────────────────────────────────────────────────
@@ -119,8 +120,14 @@ namespace SmartFarm.Irrigation
 
             if (rt.sprinklers != null)
             {
+                rt.sprayLayers = new IrrigationSprayLayer[rt.sprinklers.Length];
                 for (int s = 0; s < rt.sprinklers.Length; s++)
-                    IrrigationSprayMaterial.ApplyTo(rt.sprinklers[s]);
+                {
+                    var ps = rt.sprinklers[s];
+                    if (ps == null) continue;
+                    IrrigationSprayMaterial.ApplyTo(ps);
+                    rt.sprayLayers[s] = ps.GetComponent<IrrigationSprayLayer>();
+                }
             }
 
             if (zone.sprinklerRoot != null)
@@ -172,13 +179,25 @@ namespace SmartFarm.Irrigation
                 {
                     var ps = rt.sprinklers[i];
                     if (ps == null) continue;
+
+                    var layer = rt.sprayLayers != null ? rt.sprayLayers[i] : null;
+
+                    // Splash sub-emitters are driven entirely by parent particle
+                    // Death events — leave them alone so they don't double-emit.
+                    if (layer != null && !layer.driveEmissionRate)
+                        continue;
+
                     var emission = ps.emission;
                     emission.enabled = active;
+
                     if (active)
                     {
+                        float baseRate = layer != null ? layer.baseRatePerSecond : 420f;
+                        float minRate  = layer != null ? layer.minRateWhenActive : 120f;
                         var rate = emission.rateOverTime;
-                        rate.constant     = Mathf.Max(120f, 420f * flow);
+                        rate.constant         = Mathf.Max(minRate, baseRate * flow);
                         emission.rateOverTime = rate;
+
                         if (!ps.isPlaying) ps.Play(true);
                     }
                     else if (ps.isPlaying)

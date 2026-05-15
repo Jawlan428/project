@@ -1013,11 +1013,23 @@ namespace TrainingRoom.Editor
 
             var canvas = go.AddComponent<Canvas>();
             canvas.renderMode = RenderMode.WorldSpace;
+            var mainCam = Camera.main != null ? Camera.main : Object.FindFirstObjectByType<Camera>();
+            if (mainCam != null) canvas.worldCamera = mainCam;
 
             var cs = go.AddComponent<CanvasScaler>();
             cs.dynamicPixelsPerUnit = 100f;
 
             go.AddComponent<GraphicRaycaster>();
+
+            // XR Interaction Toolkit raycaster — REQUIRED for VR controllers
+            // (ray + poke) to be able to click UI buttons in world space.
+            var trackedType = System.Type.GetType(
+                "UnityEngine.XR.Interaction.Toolkit.UI.TrackedDeviceGraphicRaycaster, Unity.XR.Interaction.Toolkit");
+            if (trackedType != null) go.AddComponent(trackedType);
+
+            // Tag the canvas with the UI layer so default XR raycast masks include it.
+            int uiLayer = LayerMask.NameToLayer("UI");
+            if (uiLayer >= 0) go.layer = uiLayer;
 
             var rt = go.GetComponent<RectTransform>();
             rt.sizeDelta = sizeDelta;
