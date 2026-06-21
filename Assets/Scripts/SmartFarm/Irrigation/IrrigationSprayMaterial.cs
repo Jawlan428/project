@@ -92,7 +92,9 @@ namespace SmartFarm.Irrigation
             if (sh == null) return null;
 
             _cached = new Material(sh) { name = "SmartFarm_WaterSpray_Runtime" };
-            ConfigureTransparent(_cached, new Color(0.55f, 0.85f, 1f, 0.85f));
+            // Whiter + more translucent than before so the spray reads as real
+            // water rather than solid blue paint.
+            ConfigureTransparent(_cached, new Color(0.78f, 0.90f, 1f, 0.65f));
             return _cached;
         }
 
@@ -131,8 +133,55 @@ namespace SmartFarm.Irrigation
             if (m.HasProperty("_Color"))     m.SetColor("_Color",     color);
             m.color = color;
 
+            // ── Soft round droplet texture ─────────────────────────────────
+            // Without a texture URP/built-in particle shaders render solid
+            // squares, which is why the spray looked like blocky blue blobs.
+            // A soft radial-alpha sprite turns every particle into a rounded,
+            // feathered water droplet.
+            var droplet = GetDropletTexture();
+            if (droplet != null)
+            {
+                if (m.HasProperty("_BaseMap")) m.SetTexture("_BaseMap", droplet);
+                if (m.HasProperty("_MainTex")) m.SetTexture("_MainTex", droplet);
+            }
+
             // Transparent render queue
             m.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent; // 3000
+        }
+
+        // ── Soft droplet texture (generated once, cached) ──────────────────────
+        private static Texture2D _droplet;
+
+        private static Texture2D GetDropletTexture()
+        {
+            if (_droplet != null) return _droplet;
+
+            const int size = 128;
+            _droplet = new Texture2D(size, size, TextureFormat.RGBA32, true)
+            {
+                name = "SmartFarm_WaterDroplet",
+                wrapMode = TextureWrapMode.Clamp,
+                filterMode = FilterMode.Bilinear,
+            };
+
+            float r = size * 0.5f;
+            var center = new Vector2(r, r);
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    float d = Vector2.Distance(new Vector2(x + 0.5f, y + 0.5f), center) / r; // 0..~1
+                    // Smooth feathered falloff with a slightly brighter core so it
+                    // looks like a lit water droplet.
+                    float a = Mathf.Clamp01(1f - d);
+                    a = a * a;                              // soft edge
+                    float core = Mathf.Clamp01(1f - d * 1.8f);
+                    float lum = 0.85f + 0.15f * core;       // bright centre
+                    _droplet.SetPixel(x, y, new Color(lum, lum, lum, a));
+                }
+            }
+            _droplet.Apply(true);
+            return _droplet;
         }
     }
 }

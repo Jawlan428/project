@@ -34,6 +34,7 @@ public class AppleGrabHandler : MonoBehaviour
     private FixedJoint fixedJoint;
     private UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable grabInteractable;
     private Rigidbody rb;
+    private SmartFarm.Harvest.AppleHarvest harvestStatus;
     private bool hasBeenGrabbed = false;
     private Vector3 originalPosition;
     private bool isOriginalPositionSet = false;
@@ -46,6 +47,7 @@ public class AppleGrabHandler : MonoBehaviour
         fixedJoint = GetComponent<FixedJoint>();
         grabInteractable = GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
         rb = GetComponent<Rigidbody>();
+        harvestStatus = GetComponent<SmartFarm.Harvest.AppleHarvest>();
         if (behaviorLogger == null)
             behaviorLogger = FindFirstObjectByType<PlayerBehaviorLogger>();
         
@@ -175,6 +177,15 @@ public class AppleGrabHandler : MonoBehaviour
     
     void OnGrabbed(SelectEnterEventArgs args)
     {
+        // HARVEST GATING: unripe apples must stay on the tree. AppleHarvest will
+        // force-release the interactor; here we simply refuse to break the joint
+        // or alter physics so the apple never detaches.
+        if (harvestStatus != null && !harvestStatus.IsReady)
+        {
+            Debug.Log($"{gameObject.name} grab rejected - apple is not ready for harvesting.");
+            return;
+        }
+
         isBeingGrabbed = true;
         
         // Log which interactor is grabbing (for debugging)

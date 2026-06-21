@@ -22,35 +22,37 @@ namespace SmartFarm.Irrigation
     public static class IrrigationSprayBuilder
     {
         // Tuned defaults so the spray reads as "real water" from a few metres away.
-        // Sized large + dense + bright so droplets are clearly visible at Quest
-        // resolution. Billboard mode for maximum URP/VR compatibility.
-        private const float StreamLifetime    = 1.10f;
-        private const float StreamSpeedMin    = 3.5f;
-        private const float StreamSpeedMax    = 5.5f;
-        private const float StreamSizeMin     = 0.10f;
-        private const float StreamSizeMax     = 0.20f;
-        private const float StreamRate        = 380f;
-        private const float StreamConeAngle   = 28f;
+        // Fine, dense, motion-stretched droplets (not fat blobs). The stream uses
+        // Stretched-Billboard so droplets streak along their velocity like real
+        // sprinkler jets; mist + splash stay soft billboards. Quest/URP friendly.
+        private const float StreamLifetime    = 1.30f;
+        private const float StreamSpeedMin    = 4.5f;
+        private const float StreamSpeedMax    = 7.0f;
+        private const float StreamSizeMin     = 0.035f;
+        private const float StreamSizeMax     = 0.075f;
+        private const float StreamRate        = 600f;
+        private const float StreamConeAngle   = 22f;
 
-        private const float MistLifetime      = 0.55f;
-        private const float MistSpeedMin      = 1.4f;
-        private const float MistSpeedMax      = 2.4f;
-        private const float MistSizeMin       = 0.12f;
-        private const float MistSizeMax       = 0.22f;
-        private const float MistRate          = 140f;
-        private const float MistConeAngle     = 38f;
+        private const float MistLifetime      = 0.70f;
+        private const float MistSpeedMin      = 1.2f;
+        private const float MistSpeedMax      = 2.2f;
+        private const float MistSizeMin       = 0.06f;
+        private const float MistSizeMax       = 0.14f;
+        private const float MistRate          = 120f;
+        private const float MistConeAngle     = 34f;
 
         private const int   SplashBurstMin    = 2;
-        private const int   SplashBurstMax    = 4;
-        private const float SplashLifetime    = 0.50f;
-        private const float SplashSpeedMin    = 0.6f;
-        private const float SplashSpeedMax    = 1.4f;
-        private const float SplashSizeMin     = 0.05f;
-        private const float SplashSizeMax     = 0.10f;
-        private const float SplashConeAngle   = 75f;
+        private const int   SplashBurstMax    = 5;
+        private const float SplashLifetime    = 0.45f;
+        private const float SplashSpeedMin    = 0.7f;
+        private const float SplashSpeedMax    = 1.8f;
+        private const float SplashSizeMin     = 0.025f;
+        private const float SplashSizeMax     = 0.06f;
+        private const float SplashConeAngle   = 70f;
 
-        private static readonly Color WaterBright = new Color(0.75f, 0.92f, 1.00f, 0.95f);
-        private static readonly Color WaterDeep   = new Color(0.30f, 0.65f, 0.95f, 0.95f);
+        // Translucent, mostly-white water with a faint blue tint — not solid paint.
+        private static readonly Color WaterBright = new Color(0.90f, 0.96f, 1.00f, 0.80f);
+        private static readonly Color WaterDeep   = new Color(0.62f, 0.82f, 0.98f, 0.55f);
 
         // ─────────────────────────────────────────────────────────────────────
         //  Public entry
@@ -99,8 +101,8 @@ namespace SmartFarm.Irrigation
             main.startSpeed       = new ParticleSystem.MinMaxCurve(StreamSpeedMin, StreamSpeedMax);
             main.startSize        = new ParticleSystem.MinMaxCurve(StreamSizeMin, StreamSizeMax);
             main.startColor       = BuildWaterGradient(WaterBright, WaterDeep);
-            main.gravityModifier  = 2.4f;
-            main.maxParticles     = 1500;
+            main.gravityModifier  = 2.0f;
+            main.maxParticles     = 2000;
             main.simulationSpace  = ParticleSystemSimulationSpace.World;
             main.playOnAwake      = false;
             main.scalingMode      = ParticleSystemScalingMode.Local;
@@ -112,9 +114,17 @@ namespace SmartFarm.Irrigation
             var shape = ps.shape;
             shape.shapeType = ParticleSystemShapeType.Cone;
             shape.angle     = StreamConeAngle;
-            shape.radius    = 0.06f;
-            shape.radiusThickness = 0.7f;
+            shape.radius    = 0.04f;
+            shape.radiusThickness = 0.85f;
             shape.rotation  = new Vector3(180f, 0f, 0f); // emit downward
+
+            // A touch of turbulence so the jet isn't a perfectly uniform fan.
+            var noise = ps.noise;
+            noise.enabled    = true;
+            noise.strength   = 0.18f;
+            noise.frequency  = 0.6f;
+            noise.scrollSpeed = 0.4f;
+            noise.damping    = true;
 
             var col = ps.colorOverLifetime;
             col.enabled = true;
@@ -150,16 +160,18 @@ namespace SmartFarm.Irrigation
                     ParticleSystemSubEmitterProperties.InheritColor);
             }
 
-            // Billboard works reliably in URP / Quest VR. We pad sizes a bit so
-            // droplets read as water from gameplay distance.
+            // Stretched billboards make each droplet streak along its velocity,
+            // exactly like fast water from a real sprinkler nozzle.
             var renderer = ps.GetComponent<ParticleSystemRenderer>();
             if (renderer != null)
             {
-                renderer.renderMode      = ParticleSystemRenderMode.Billboard;
-                renderer.alignment       = ParticleSystemRenderSpace.View;
-                renderer.minParticleSize = 0f;
-                renderer.maxParticleSize = 2f;
-                renderer.sortingFudge    = 0f;
+                renderer.renderMode         = ParticleSystemRenderMode.Stretch;
+                renderer.velocityScale      = 0.10f; // stretch with speed
+                renderer.lengthScale        = 1.8f;  // base elongation
+                renderer.cameraVelocityScale = 0f;
+                renderer.minParticleSize    = 0f;
+                renderer.maxParticleSize    = 2f;
+                renderer.sortingFudge       = 0f;
                 IrrigationSprayMaterial.ApplyTo(ps);
                 if (renderer.sharedMaterial != null)
                     renderer.material    = renderer.sharedMaterial;

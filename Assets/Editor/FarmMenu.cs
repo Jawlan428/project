@@ -113,6 +113,12 @@ public static class FarmMenu
         InvokeMonitorSetup("SetupCropGrowthMonitor");
     }
 
+    [MenuItem("Tools/Farm/Setup Apple Harvest System")]
+    public static void SetupAppleHarvestSystem()
+    {
+        InvokeType("SmartFarm.HarvestEditor.AppleHarvestSetupEditor", "SetupAppleHarvestSystem");
+    }
+
     [MenuItem("Tools/Farm/Rebuild Crop Growth Monitor")]
     public static void RebuildCropGrowthMonitor()
     {
