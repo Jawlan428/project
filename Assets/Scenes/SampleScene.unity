@@ -119,6 +119,117 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &992269
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 992273}
+  - component: {fileID: 992272}
+  - component: {fileID: 992271}
+  - component: {fileID: 992270}
+  m_Layer: 0
+  m_Name: NavGround
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!65 &992270
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 992269}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!23 &992271
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 992269}
+  m_Enabled: 0
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &992272
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 992269}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &992273
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 992269}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 15.13411, y: -0.24, z: 7.439294}
+  m_LocalScale: {x: 150, y: 0.1, z: 150}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2499842
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -774,11 +885,6 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 5920611166848448842, guid: 8b33f71f7fc7de347b67ac35de192fb3, type: 3}
   m_PrefabInstance: {fileID: 1510094191}
-  m_PrefabAsset: {fileID: 0}
---- !u!108 &14071240 stripped
-Light:
-  m_CorrespondingSourceObject: {fileID: 8254729079026295609, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
-  m_PrefabInstance: {fileID: 98134833}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &14842723
 GameObject:
@@ -7034,6 +7140,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 36731400}
   m_CullTransparentMesh: 1
+--- !u!108 &36826654 stripped
+Light:
+  m_CorrespondingSourceObject: {fileID: 8254729079026295609, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
+  m_PrefabInstance: {fileID: 2037346917}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &38198347
 GameObject:
   m_ObjectHideFlags: 0
@@ -7230,6 +7341,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 38681939}
   m_CullTransparentMesh: 1
+--- !u!108 &40284128 stripped
+Light:
+  m_CorrespondingSourceObject: {fileID: 8254729079026295609, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
+  m_PrefabInstance: {fileID: 720214538}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &42187166
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7891,8 +8007,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 470368, guid: cb953df031bf5744c9021189056c179e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1945315042}
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 179680, guid: cb953df031bf5744c9021189056c179e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 266311527}
   m_SourcePrefab: {fileID: 100100000, guid: cb953df031bf5744c9021189056c179e, type: 3}
 --- !u!1001 &47885558
 PrefabInstance:
@@ -10699,17 +10821,13 @@ PrefabInstance:
       propertyPath: m_BounceIntensity
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8254729079026295609, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
-      propertyPath: m_Shadows.m_Resolution
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 121418290699475107, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 375918033}
+      addedObject: {fileID: 1586396714}
   m_SourcePrefab: {fileID: 100100000, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
 --- !u!1001 &99206302
 PrefabInstance:
@@ -11800,6 +11918,37 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1 &115810367 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4904380416175107781, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
+  m_PrefabInstance: {fileID: 776162798}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &115810368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 115810367}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9fc9298833488b438f4fc26c50d3da6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SmartFarm.DayNight.StreetLamp
+  lampLight: {fileID: 784506430}
+  bulbRenderer: {fileID: 115810370}
+  bulbMaterialIndex: 0
+  onIntensity: 2.5
+  offIntensity: 0
+  warmColor: {r: 1, g: 0.78, b: 0.42, a: 1}
+  bulbEmissionOn: {r: 2, g: 1.2, b: 0.55, a: 1}
+  flickerStrength: 0.45
+  flickerSpeed: 11
+--- !u!23 &115810370 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 6643664929220844057, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
+  m_PrefabInstance: {fileID: 776162798}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &116734312
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12072,17 +12221,13 @@ PrefabInstance:
       propertyPath: m_BounceIntensity
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8254729079026295609, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
-      propertyPath: m_Shadows.m_Resolution
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 121418290699475107, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1932165684}
+      addedObject: {fileID: 563390178}
   m_SourcePrefab: {fileID: 100100000, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
 --- !u!1001 &122025663
 PrefabInstance:
@@ -17963,11 +18108,6 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
---- !u!108 &153155121 stripped
-Light:
-  m_CorrespondingSourceObject: {fileID: 8254729079026295609, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
-  m_PrefabInstance: {fileID: 720214538}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &156204669
 GameObject:
   m_ObjectHideFlags: 0
@@ -18193,37 +18333,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b3d53c5a755c25a4db88d89375243572, type: 3}
---- !u!1 &156611361 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4904380416175107781, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
-  m_PrefabInstance: {fileID: 1812453939}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &156611362
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 156611361}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b9fc9298833488b438f4fc26c50d3da6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SmartFarm.DayNight.StreetLamp
-  lampLight: {fileID: 1908921824}
-  bulbRenderer: {fileID: 156611364}
-  bulbMaterialIndex: 0
-  onIntensity: 2.5
-  offIntensity: 0
-  warmColor: {r: 1, g: 0.78, b: 0.42, a: 1}
-  bulbEmissionOn: {r: 2, g: 1.2, b: 0.55, a: 1}
-  flickerStrength: 0.45
-  flickerSpeed: 11
---- !u!23 &156611364 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 6643664929220844057, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
-  m_PrefabInstance: {fileID: 1812453939}
-  m_PrefabAsset: {fileID: 0}
 --- !u!21 &158067546
 Material:
   serializedVersion: 8
@@ -18769,37 +18878,6 @@ MonoBehaviour:
 Transform:
   m_CorrespondingSourceObject: {fileID: 5920611166848448842, guid: 8b33f71f7fc7de347b67ac35de192fb3, type: 3}
   m_PrefabInstance: {fileID: 6924946}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &167812190 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 121418290699475107, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
-  m_PrefabInstance: {fileID: 720214538}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &167812191
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 167812190}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b9fc9298833488b438f4fc26c50d3da6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SmartFarm.DayNight.StreetLamp
-  lampLight: {fileID: 153155121}
-  bulbRenderer: {fileID: 167812193}
-  bulbMaterialIndex: 0
-  onIntensity: 2.5
-  offIntensity: 0
-  warmColor: {r: 1, g: 0.78, b: 0.42, a: 1}
-  bulbEmissionOn: {r: 2, g: 1.2, b: 0.55, a: 1}
-  flickerStrength: 0.45
-  flickerSpeed: 11
---- !u!23 &167812193 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 1842969807233920127, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
-  m_PrefabInstance: {fileID: 720214538}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &169854266
 GameObject:
@@ -20781,37 +20859,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5920611166848448842, guid: 8b33f71f7fc7de347b67ac35de192fb3, type: 3}
   m_PrefabInstance: {fileID: 1235237191}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &194716540 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 121418290699475107, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
-  m_PrefabInstance: {fileID: 1472469065}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &194716541
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 194716540}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b9fc9298833488b438f4fc26c50d3da6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SmartFarm.DayNight.StreetLamp
-  lampLight: {fileID: 738661159}
-  bulbRenderer: {fileID: 194716543}
-  bulbMaterialIndex: 0
-  onIntensity: 2.5
-  offIntensity: 0
-  warmColor: {r: 1, g: 0.78, b: 0.42, a: 1}
-  bulbEmissionOn: {r: 2, g: 1.2, b: 0.55, a: 1}
-  flickerStrength: 0.45
-  flickerSpeed: 11
---- !u!23 &194716543 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 1842969807233920127, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
-  m_PrefabInstance: {fileID: 1472469065}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &195353867
 GameObject:
   m_ObjectHideFlags: 0
@@ -21178,6 +21225,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 201720786}
   m_CullTransparentMesh: 1
+--- !u!108 &205974477 stripped
+Light:
+  m_CorrespondingSourceObject: {fileID: 8254729079026295609, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
+  m_PrefabInstance: {fileID: 120053173}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &206514653
 GameObject:
   m_ObjectHideFlags: 0
@@ -27147,17 +27199,13 @@ PrefabInstance:
       propertyPath: m_BounceIntensity
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8254729079026295609, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
-      propertyPath: m_Shadows.m_Resolution
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 121418290699475107, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 644377039}
+      addedObject: {fileID: 590780695}
   m_SourcePrefab: {fileID: 100100000, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
 --- !u!1 &232574435
 GameObject:
@@ -28268,17 +28316,13 @@ PrefabInstance:
       propertyPath: m_BounceIntensity
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8254729079026295609, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
-      propertyPath: m_Shadows.m_Resolution
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 121418290699475107, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1144668761}
+      addedObject: {fileID: 497124568}
   m_SourcePrefab: {fileID: 100100000, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
 --- !u!1001 &258970888
 PrefabInstance:
@@ -28631,6 +28675,53 @@ MonoBehaviour:
   dayColor: {r: 0.1, g: 0.85, b: 0.55, a: 0.65}
   nightColor: {r: 0.4, g: 1.85, b: 0.95, a: 1}
   nightBoost: 1
+--- !u!1 &263269890
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 263269891}
+  - component: {fileID: 263269892}
+  m_Layer: 0
+  m_Name: TrainingRoomTarget
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &263269891
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 263269890}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 39.89, y: -0.2021141, z: 3.4392943}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 941840196}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &263269892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 263269890}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b62fcf58426fc8f488d35e71b6d1aff6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SmartFarm.GuideNPC.GuideDestination
+  area: 3
+  label: 
+  lookAtOnArrival: {fileID: 0}
 --- !u!21 &263719975
 Material:
   serializedVersion: 8
@@ -28753,6 +28844,42 @@ Material:
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
+--- !u!1 &266311526 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 179680, guid: cb953df031bf5744c9021189056c179e, type: 3}
+  m_PrefabInstance: {fileID: 47692598}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &266311527
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 266311526}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9fc9298833488b438f4fc26c50d3da6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SmartFarm.DayNight.StreetLamp
+  lampLight: {fileID: 1945315043}
+  bulbRenderer: {fileID: 266311528}
+  bulbMaterialIndex: 0
+  onIntensity: 2.5
+  offIntensity: 0
+  warmColor: {r: 1, g: 0.78, b: 0.42, a: 1}
+  bulbEmissionOn: {r: 2, g: 1.2, b: 0.55, a: 1}
+  flickerStrength: 0.45
+  flickerSpeed: 11
+--- !u!23 &266311528 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 2316772, guid: cb953df031bf5744c9021189056c179e, type: 3}
+  m_PrefabInstance: {fileID: 47692598}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &266311529 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 470368, guid: cb953df031bf5744c9021189056c179e, type: 3}
+  m_PrefabInstance: {fileID: 47692598}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &266988653
 GameObject:
   m_ObjectHideFlags: 0
@@ -30333,6 +30460,60 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 290084896}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &293770724
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 293770726}
+  - component: {fileID: 293770725}
+  m_Layer: 0
+  m_Name: GuideMenu
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &293770725
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 293770724}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd6907ab3b5105a4aaee9ca8da8371ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SmartFarm.GuideNPC.GuideMenuUI
+  localOffset: {x: 0.7, y: 1.4, z: 0.2}
+  menuWidthMeters: 0.6
+  buttonHeight: 130
+  billboard: 1
+  panelColor: {r: 0.04, g: 0.12, b: 0.1, a: 0.96}
+  headerColor: {r: 0.06, g: 0.2, b: 0.16, a: 1}
+  buttonColor: {r: 0.12, g: 0.42, b: 0.3, a: 1}
+  buttonHover: {r: 0.2, g: 0.65, b: 0.45, a: 1}
+  textColor: {r: 0.95, g: 1, b: 0.97, a: 1}
+  accentColor: {r: 0.3, g: 1, b: 0.66, a: 1}
+--- !u!4 &293770726
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 293770724}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1565325331}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &294060538
 GameObject:
   m_ObjectHideFlags: 0
@@ -32186,10 +32367,6 @@ PrefabInstance:
       propertyPath: m_BounceIntensity
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3976169497670997343, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
-      propertyPath: m_Shadows.m_Resolution
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 4904380416175107781, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
       propertyPath: m_Name
       value: StreetLamp1_ShortDouble (Wood) (3)
@@ -32240,7 +32417,7 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 4904380416175107781, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 740189802}
+      addedObject: {fileID: 732360532}
   m_SourcePrefab: {fileID: 100100000, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
 --- !u!1 &314194318
 GameObject:
@@ -32605,6 +32782,37 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8b33f71f7fc7de347b67ac35de192fb3, type: 3}
+--- !u!1 &318227529 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 121418290699475107, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
+  m_PrefabInstance: {fileID: 1409324670}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &318227530
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 318227529}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9fc9298833488b438f4fc26c50d3da6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SmartFarm.DayNight.StreetLamp
+  lampLight: {fileID: 1293290788}
+  bulbRenderer: {fileID: 318227532}
+  bulbMaterialIndex: 0
+  onIntensity: 2.5
+  offIntensity: 0
+  warmColor: {r: 1, g: 0.78, b: 0.42, a: 1}
+  bulbEmissionOn: {r: 2, g: 1.2, b: 0.55, a: 1}
+  flickerStrength: 0.45
+  flickerSpeed: 11
+--- !u!23 &318227532 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 1842969807233920127, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
+  m_PrefabInstance: {fileID: 1409324670}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &323447226
 GameObject:
   m_ObjectHideFlags: 0
@@ -34073,37 +34281,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 344283481}
   m_CullTransparentMesh: 1
---- !u!1 &345544471 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 121418290699475107, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
-  m_PrefabInstance: {fileID: 687098074}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &345544472
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 345544471}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b9fc9298833488b438f4fc26c50d3da6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SmartFarm.DayNight.StreetLamp
-  lampLight: {fileID: 1910225492}
-  bulbRenderer: {fileID: 345544474}
-  bulbMaterialIndex: 0
-  onIntensity: 2.5
-  offIntensity: 0
-  warmColor: {r: 1, g: 0.78, b: 0.42, a: 1}
-  bulbEmissionOn: {r: 2, g: 1.2, b: 0.55, a: 1}
-  flickerStrength: 0.45
-  flickerSpeed: 11
---- !u!23 &345544474 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 1842969807233920127, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
-  m_PrefabInstance: {fileID: 687098074}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &348032710
 GameObject:
   m_ObjectHideFlags: 0
@@ -45674,37 +45851,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 373933807}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &375918032 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 121418290699475107, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
-  m_PrefabInstance: {fileID: 98134833}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &375918033
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 375918032}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b9fc9298833488b438f4fc26c50d3da6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SmartFarm.DayNight.StreetLamp
-  lampLight: {fileID: 14071240}
-  bulbRenderer: {fileID: 375918035}
-  bulbMaterialIndex: 0
-  onIntensity: 2.5
-  offIntensity: 0
-  warmColor: {r: 1, g: 0.78, b: 0.42, a: 1}
-  bulbEmissionOn: {r: 2, g: 1.2, b: 0.55, a: 1}
-  flickerStrength: 0.45
-  flickerSpeed: 11
---- !u!23 &375918035 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 1842969807233920127, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
-  m_PrefabInstance: {fileID: 98134833}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &376566519
 GameObject:
   m_ObjectHideFlags: 0
@@ -60480,23 +60626,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SmartFarm.DayNight.StreetLampManager
   manager: {fileID: 435959853}
   lamps:
-  - {fileID: 1932165684}
-  - {fileID: 1441991774}
-  - {fileID: 375918033}
-  - {fileID: 345544472}
-  - {fileID: 1236357680}
-  - {fileID: 156611362}
-  - {fileID: 194716541}
-  - {fileID: 1319534302}
-  - {fileID: 1733008367}
-  - {fileID: 1229905275}
-  - {fileID: 848522698}
-  - {fileID: 1990137405}
-  - {fileID: 929600985}
-  - {fileID: 740189802}
-  - {fileID: 644377039}
-  - {fileID: 167812191}
-  - {fileID: 1144668761}
+  - {fileID: 2085911874}
+  - {fileID: 115810368}
+  - {fileID: 1451412759}
+  - {fileID: 318227530}
+  - {fileID: 266311527}
+  - {fileID: 1233727545}
+  - {fileID: 1165699741}
+  - {fileID: 1927388994}
+  - {fileID: 760524998}
+  - {fileID: 1586396714}
+  - {fileID: 590780695}
+  - {fileID: 762698200}
+  - {fileID: 732360532}
+  - {fileID: 497124568}
+  - {fileID: 761849818}
+  - {fileID: 1046196867}
+  - {fileID: 563390178}
+  - {fileID: 1697335002}
   autoDiscoverOnAwake: 1
   includeInactive: 1
   nightToOnCurve:
@@ -68158,63 +68305,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1001 &489769888
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 43.72
-      objectReference: {fileID: 0}
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 4.09
-      objectReference: {fileID: 0}
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -2.68
-      objectReference: {fileID: 0}
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.69465846
-      objectReference: {fileID: 0}
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0.7193398
-      objectReference: {fileID: 0}
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: -92
-      objectReference: {fileID: 0}
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2888545007160614275, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_Name
-      value: SolarPanel (4)
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
 --- !u!1 &490877569
 GameObject:
   m_ObjectHideFlags: 0
@@ -68859,6 +68949,37 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 23e23e350dec5274bb2acba2dbe26449, type: 3}
+--- !u!1 &497124567 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 121418290699475107, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
+  m_PrefabInstance: {fileID: 258035871}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &497124568
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 497124567}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9fc9298833488b438f4fc26c50d3da6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SmartFarm.DayNight.StreetLamp
+  lampLight: {fileID: 836296359}
+  bulbRenderer: {fileID: 497124570}
+  bulbMaterialIndex: 0
+  onIntensity: 2.5
+  offIntensity: 0
+  warmColor: {r: 1, g: 0.78, b: 0.42, a: 1}
+  bulbEmissionOn: {r: 2, g: 1.2, b: 0.55, a: 1}
+  flickerStrength: 0.45
+  flickerSpeed: 11
+--- !u!23 &497124570 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 1842969807233920127, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
+  m_PrefabInstance: {fileID: 258035871}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &498805385
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -69756,6 +69877,70 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 507882458}
   m_CullTransparentMesh: 1
+--- !u!1 &509753165
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 509753167}
+  - component: {fileID: 509753166}
+  m_Layer: 0
+  m_Name: NavMeshSurface
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &509753166
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 509753165}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshSurface
+  m_SerializedVersion: 0
+  m_AgentTypeID: 0
+  m_CollectObjects: 0
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_UseGeometry: 1
+  m_DefaultArea: 0
+  m_GenerateLinks: 0
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.16666667
+  m_MinRegionArea: 2
+  m_NavMeshData: {fileID: 23800000, guid: 39a1729ed10e5e946927ce74d5dcf019, type: 2}
+  m_BuildHeightMesh: 0
+--- !u!4 &509753167
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 509753165}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &510497754
 GameObject:
   m_ObjectHideFlags: 0
@@ -71260,63 +71445,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 459c54d343c8b534aaf9895609b36e36, type: 3}
---- !u!1001 &544705084
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 43.51
-      objectReference: {fileID: 0}
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 4.09
-      objectReference: {fileID: 0}
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 3.57
-      objectReference: {fileID: 0}
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.69465846
-      objectReference: {fileID: 0}
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0.7193398
-      objectReference: {fileID: 0}
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: -92
-      objectReference: {fileID: 0}
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2888545007160614275, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_Name
-      value: SolarPanel (1)
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
 --- !u!4 &544796325 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5920611166848448842, guid: 8b33f71f7fc7de347b67ac35de192fb3, type: 3}
@@ -77412,6 +77540,37 @@ Transform:
   - {fileID: 877669753}
   m_Father: {fileID: 1446915302}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &563390177 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 121418290699475107, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
+  m_PrefabInstance: {fileID: 120053173}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &563390178
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 563390177}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9fc9298833488b438f4fc26c50d3da6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SmartFarm.DayNight.StreetLamp
+  lampLight: {fileID: 205974477}
+  bulbRenderer: {fileID: 563390180}
+  bulbMaterialIndex: 0
+  onIntensity: 2.5
+  offIntensity: 0
+  warmColor: {r: 1, g: 0.78, b: 0.42, a: 1}
+  bulbEmissionOn: {r: 2, g: 1.2, b: 0.55, a: 1}
+  flickerStrength: 0.45
+  flickerSpeed: 11
+--- !u!23 &563390180 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 1842969807233920127, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
+  m_PrefabInstance: {fileID: 120053173}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &563701808
 GameObject:
   m_ObjectHideFlags: 0
@@ -79409,6 +79568,37 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8b33f71f7fc7de347b67ac35de192fb3, type: 3}
+--- !u!1 &590780694 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 121418290699475107, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
+  m_PrefabInstance: {fileID: 231394839}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &590780695
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 590780694}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9fc9298833488b438f4fc26c50d3da6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SmartFarm.DayNight.StreetLamp
+  lampLight: {fileID: 1057323047}
+  bulbRenderer: {fileID: 590780697}
+  bulbMaterialIndex: 0
+  onIntensity: 2.5
+  offIntensity: 0
+  warmColor: {r: 1, g: 0.78, b: 0.42, a: 1}
+  bulbEmissionOn: {r: 2, g: 1.2, b: 0.55, a: 1}
+  flickerStrength: 0.45
+  flickerSpeed: 11
+--- !u!23 &590780697 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 1842969807233920127, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
+  m_PrefabInstance: {fileID: 231394839}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &593607605 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2595333245518502035, guid: 23e23e350dec5274bb2acba2dbe26449, type: 3}
@@ -80582,11 +80772,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!108 &609045329 stripped
-Light:
-  m_CorrespondingSourceObject: {fileID: 8254729079026295609, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
-  m_PrefabInstance: {fileID: 1386499974}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &611072658
 GameObject:
   m_ObjectHideFlags: 0
@@ -92389,11 +92574,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 636451642}
   m_CullTransparentMesh: 1
---- !u!108 &637146892 stripped
-Light:
-  m_CorrespondingSourceObject: {fileID: 8254729079026295609, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
-  m_PrefabInstance: {fileID: 120053173}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &637433458
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -92889,37 +93069,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 644102068}
   m_CullTransparentMesh: 1
---- !u!1 &644377038 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 121418290699475107, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
-  m_PrefabInstance: {fileID: 231394839}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &644377039
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 644377038}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b9fc9298833488b438f4fc26c50d3da6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SmartFarm.DayNight.StreetLamp
-  lampLight: {fileID: 1695246087}
-  bulbRenderer: {fileID: 644377041}
-  bulbMaterialIndex: 0
-  onIntensity: 2.5
-  offIntensity: 0
-  warmColor: {r: 1, g: 0.78, b: 0.42, a: 1}
-  bulbEmissionOn: {r: 2, g: 1.2, b: 0.55, a: 1}
-  flickerStrength: 0.45
-  flickerSpeed: 11
---- !u!23 &644377041 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 1842969807233920127, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
-  m_PrefabInstance: {fileID: 231394839}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &650501018
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -99218,6 +99367,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8b33f71f7fc7de347b67ac35de192fb3, type: 3}
+--- !u!108 &682525164 stripped
+Light:
+  m_CorrespondingSourceObject: {fileID: 3976169497670997343, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
+  m_PrefabInstance: {fileID: 1812453939}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &683324291
 GameObject:
   m_ObjectHideFlags: 0
@@ -99428,11 +99582,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 683368640}
   m_CullTransparentMesh: 1
---- !u!108 &686025004 stripped
-Light:
-  m_CorrespondingSourceObject: {fileID: 3976169497670997343, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
-  m_PrefabInstance: {fileID: 1935951300}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &687098074
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -99489,17 +99638,13 @@ PrefabInstance:
       propertyPath: m_BounceIntensity
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8254729079026295609, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
-      propertyPath: m_Shadows.m_Resolution
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 121418290699475107, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 345544472}
+      addedObject: {fileID: 1927388994}
   m_SourcePrefab: {fileID: 100100000, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
 --- !u!1 &687430546
 GameObject:
@@ -100058,6 +100203,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 23e23e350dec5274bb2acba2dbe26449, type: 3}
+--- !u!108 &693104444 stripped
+Light:
+  m_CorrespondingSourceObject: {fileID: 8254729079026295609, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
+  m_PrefabInstance: {fileID: 1472469065}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &694592117 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5920611166848448842, guid: 8b33f71f7fc7de347b67ac35de192fb3, type: 3}
@@ -107024,17 +107174,13 @@ PrefabInstance:
       propertyPath: m_BounceIntensity
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8254729079026295609, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
-      propertyPath: m_Shadows.m_Resolution
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 121418290699475107, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 167812191}
+      addedObject: {fileID: 1697335002}
   m_SourcePrefab: {fileID: 100100000, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
 --- !u!1 &720247405
 GameObject:
@@ -107626,6 +107772,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5920611166848448842, guid: 8b33f71f7fc7de347b67ac35de192fb3, type: 3}
   m_PrefabInstance: {fileID: 1149455367}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &732360531 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4904380416175107781, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
+  m_PrefabInstance: {fileID: 312988731}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &732360532
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 732360531}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9fc9298833488b438f4fc26c50d3da6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SmartFarm.DayNight.StreetLamp
+  lampLight: {fileID: 2051513927}
+  bulbRenderer: {fileID: 732360534}
+  bulbMaterialIndex: 0
+  onIntensity: 2.5
+  offIntensity: 0
+  warmColor: {r: 1, g: 0.78, b: 0.42, a: 1}
+  bulbEmissionOn: {r: 2, g: 1.2, b: 0.55, a: 1}
+  flickerStrength: 0.45
+  flickerSpeed: 11
+--- !u!23 &732360534 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 6643664929220844057, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
+  m_PrefabInstance: {fileID: 312988731}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &734825611
 GameObject:
   m_ObjectHideFlags: 0
@@ -107837,11 +108014,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 23e23e350dec5274bb2acba2dbe26449, type: 3}
---- !u!108 &738661159 stripped
-Light:
-  m_CorrespondingSourceObject: {fileID: 8254729079026295609, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
-  m_PrefabInstance: {fileID: 1472469065}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &739771493
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -107907,37 +108079,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1a55dc23d69e2b242b5c493de8b9829d, type: 3}
---- !u!1 &740189801 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4904380416175107781, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
-  m_PrefabInstance: {fileID: 312988731}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &740189802
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 740189801}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b9fc9298833488b438f4fc26c50d3da6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SmartFarm.DayNight.StreetLamp
-  lampLight: {fileID: 933731442}
-  bulbRenderer: {fileID: 740189804}
-  bulbMaterialIndex: 0
-  onIntensity: 2.5
-  offIntensity: 0
-  warmColor: {r: 1, g: 0.78, b: 0.42, a: 1}
-  bulbEmissionOn: {r: 2, g: 1.2, b: 0.55, a: 1}
-  flickerStrength: 0.45
-  flickerSpeed: 11
---- !u!23 &740189804 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 6643664929220844057, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
-  m_PrefabInstance: {fileID: 312988731}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &742356177
 GameObject:
   m_ObjectHideFlags: 0
@@ -114274,6 +114415,99 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 760116127}
   m_CullTransparentMesh: 1
+--- !u!1 &760524997 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 121418290699475107, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
+  m_PrefabInstance: {fileID: 1386499974}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &760524998
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 760524997}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9fc9298833488b438f4fc26c50d3da6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SmartFarm.DayNight.StreetLamp
+  lampLight: {fileID: 1198054554}
+  bulbRenderer: {fileID: 760525000}
+  bulbMaterialIndex: 0
+  onIntensity: 2.5
+  offIntensity: 0
+  warmColor: {r: 1, g: 0.78, b: 0.42, a: 1}
+  bulbEmissionOn: {r: 2, g: 1.2, b: 0.55, a: 1}
+  flickerStrength: 0.45
+  flickerSpeed: 11
+--- !u!23 &760525000 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 1842969807233920127, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
+  m_PrefabInstance: {fileID: 1386499974}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &761849817 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 121418290699475107, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
+  m_PrefabInstance: {fileID: 1472469065}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &761849818
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 761849817}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9fc9298833488b438f4fc26c50d3da6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SmartFarm.DayNight.StreetLamp
+  lampLight: {fileID: 693104444}
+  bulbRenderer: {fileID: 761849820}
+  bulbMaterialIndex: 0
+  onIntensity: 2.5
+  offIntensity: 0
+  warmColor: {r: 1, g: 0.78, b: 0.42, a: 1}
+  bulbEmissionOn: {r: 2, g: 1.2, b: 0.55, a: 1}
+  flickerStrength: 0.45
+  flickerSpeed: 11
+--- !u!23 &761849820 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 1842969807233920127, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
+  m_PrefabInstance: {fileID: 1472469065}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &762698199 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4904380416175107781, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
+  m_PrefabInstance: {fileID: 1199328504}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &762698200
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 762698199}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9fc9298833488b438f4fc26c50d3da6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SmartFarm.DayNight.StreetLamp
+  lampLight: {fileID: 1470874003}
+  bulbRenderer: {fileID: 762698202}
+  bulbMaterialIndex: 0
+  onIntensity: 2.5
+  offIntensity: 0
+  warmColor: {r: 1, g: 0.78, b: 0.42, a: 1}
+  bulbEmissionOn: {r: 2, g: 1.2, b: 0.55, a: 1}
+  flickerStrength: 0.45
+  flickerSpeed: 11
+--- !u!23 &762698202 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 6643664929220844057, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
+  m_PrefabInstance: {fileID: 1199328504}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &764790574
 GameObject:
   m_ObjectHideFlags: 0
@@ -119883,10 +120117,6 @@ PrefabInstance:
       propertyPath: m_BounceIntensity
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3976169497670997343, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
-      propertyPath: m_Shadows.m_Resolution
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 4904380416175107781, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
       propertyPath: m_Name
       value: StreetLamp1_ShortDouble (Wood) (4)
@@ -119937,7 +120167,7 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 4904380416175107781, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1229905275}
+      addedObject: {fileID: 115810368}
   m_SourcePrefab: {fileID: 100100000, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
 --- !u!1 &778128243
 GameObject:
@@ -120557,6 +120787,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 782516707}
   m_CullTransparentMesh: 1
+--- !u!108 &784506430 stripped
+Light:
+  m_CorrespondingSourceObject: {fileID: 3976169497670997343, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
+  m_PrefabInstance: {fileID: 776162798}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &785586614
 GameObject:
   m_ObjectHideFlags: 0
@@ -137050,6 +137285,32 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 815230080}
   m_CullTransparentMesh: 1
+--- !u!1 &819863771 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3734492269467231323, guid: f300f7b935a7847bb9f64ba531db6d4d, type: 3}
+  m_PrefabInstance: {fileID: 8402281819704407221}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &819863773
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 819863771}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 0
+  serializedVersion: 3
+  m_Size: {x: 77.68839, y: 1.1274663, z: 114.574265}
+  m_Center: {x: 0.000000029802322, y: 0.5903252, z: -18.43603}
 --- !u!1 &820060496
 GameObject:
   m_ObjectHideFlags: 0
@@ -143160,6 +143421,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 23e23e350dec5274bb2acba2dbe26449, type: 3}
+--- !u!108 &836296359 stripped
+Light:
+  m_CorrespondingSourceObject: {fileID: 8254729079026295609, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
+  m_PrefabInstance: {fileID: 258035871}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &836692514
 GameObject:
   m_ObjectHideFlags: 0
@@ -148599,37 +148865,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1 &848522697 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 121418290699475107, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
-  m_PrefabInstance: {fileID: 1409324670}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &848522698
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 848522697}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b9fc9298833488b438f4fc26c50d3da6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SmartFarm.DayNight.StreetLamp
-  lampLight: {fileID: 1093072919}
-  bulbRenderer: {fileID: 848522700}
-  bulbMaterialIndex: 0
-  onIntensity: 2.5
-  offIntensity: 0
-  warmColor: {r: 1, g: 0.78, b: 0.42, a: 1}
-  bulbEmissionOn: {r: 2, g: 1.2, b: 0.55, a: 1}
-  flickerStrength: 0.45
-  flickerSpeed: 11
---- !u!23 &848522700 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 1842969807233920127, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
-  m_PrefabInstance: {fileID: 1409324670}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &849521398 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5920611166848448842, guid: 8b33f71f7fc7de347b67ac35de192fb3, type: 3}
@@ -155243,6 +155478,63 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1878726976}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &871216721
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 43.16
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 4.045
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -2.87
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2888545007160614275, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_Name
+      value: SolarPanel (4)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
 --- !u!21 &872807028
 Material:
   serializedVersion: 8
@@ -172325,63 +172617,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5920611166848448842, guid: 8b33f71f7fc7de347b67ac35de192fb3, type: 3}
   m_PrefabInstance: {fileID: 653455419}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &923576793
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 43.44
-      objectReference: {fileID: 0}
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 4.09
-      objectReference: {fileID: 0}
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 5.64
-      objectReference: {fileID: 0}
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.69465846
-      objectReference: {fileID: 0}
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0.7193398
-      objectReference: {fileID: 0}
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: -92
-      objectReference: {fileID: 0}
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2888545007160614275, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_Name
-      value: SolarPanel
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
 --- !u!4 &924029058 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2595333245518502035, guid: 23e23e350dec5274bb2acba2dbe26449, type: 3}
@@ -172872,37 +173107,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 952f6d29da783884882cc65c4e3ef1e7, type: 3}
---- !u!1 &929600984 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 121418290699475107, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
-  m_PrefabInstance: {fileID: 2037346917}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &929600985
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 929600984}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b9fc9298833488b438f4fc26c50d3da6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SmartFarm.DayNight.StreetLamp
-  lampLight: {fileID: 1729666062}
-  bulbRenderer: {fileID: 929600987}
-  bulbMaterialIndex: 0
-  onIntensity: 2.5
-  offIntensity: 0
-  warmColor: {r: 1, g: 0.78, b: 0.42, a: 1}
-  bulbEmissionOn: {r: 2, g: 1.2, b: 0.55, a: 1}
-  flickerStrength: 0.45
-  flickerSpeed: 11
---- !u!23 &929600987 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 1842969807233920127, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
-  m_PrefabInstance: {fileID: 2037346917}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &930538216 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2595333245518502035, guid: 23e23e350dec5274bb2acba2dbe26449, type: 3}
@@ -172912,11 +173116,6 @@ Transform:
 Transform:
   m_CorrespondingSourceObject: {fileID: 2595333245518502035, guid: 23e23e350dec5274bb2acba2dbe26449, type: 3}
   m_PrefabInstance: {fileID: 1268485145}
-  m_PrefabAsset: {fileID: 0}
---- !u!108 &933731442 stripped
-Light:
-  m_CorrespondingSourceObject: {fileID: 3976169497670997343, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
-  m_PrefabInstance: {fileID: 312988731}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &935520431 stripped
 Transform:
@@ -172928,6 +173127,41 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2595333245518502035, guid: 23e23e350dec5274bb2acba2dbe26449, type: 3}
   m_PrefabInstance: {fileID: 1729815421}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &941840195
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 941840196}
+  m_Layer: 0
+  m_Name: GuideDestinations
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &941840196
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 941840195}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1535843394}
+  - {fileID: 2033243500}
+  - {fileID: 1986485430}
+  - {fileID: 263269891}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &945191717
 GameObject:
   m_ObjectHideFlags: 0
@@ -175860,6 +176094,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 989079749}
   m_CullTransparentMesh: 1
+--- !u!1001 &991001552
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 43.09
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 4.045
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 5.43
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2888545007160614275, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_Name
+      value: SolarPanel
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
 --- !u!1 &991379713
 GameObject:
   m_ObjectHideFlags: 0
@@ -184736,6 +185027,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5920611166848448842, guid: 8b33f71f7fc7de347b67ac35de192fb3, type: 3}
   m_PrefabInstance: {fileID: 315253390}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1046196866 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4904380416175107781, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
+  m_PrefabInstance: {fileID: 1233935248}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1046196867
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1046196866}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9fc9298833488b438f4fc26c50d3da6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SmartFarm.DayNight.StreetLamp
+  lampLight: {fileID: 2009885425}
+  bulbRenderer: {fileID: 1046196869}
+  bulbMaterialIndex: 0
+  onIntensity: 2.5
+  offIntensity: 0
+  warmColor: {r: 1, g: 0.78, b: 0.42, a: 1}
+  bulbEmissionOn: {r: 2, g: 1.2, b: 0.55, a: 1}
+  flickerStrength: 0.45
+  flickerSpeed: 11
+--- !u!23 &1046196869 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 6643664929220844057, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
+  m_PrefabInstance: {fileID: 1233935248}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1046278864
 GameObject:
   m_ObjectHideFlags: 0
@@ -185357,6 +185679,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e3b628c4ee7456642b336c6dca001103, type: 3}
+--- !u!108 &1057323047 stripped
+Light:
+  m_CorrespondingSourceObject: {fileID: 8254729079026295609, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
+  m_PrefabInstance: {fileID: 231394839}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1059363366
 GameObject:
   m_ObjectHideFlags: 0
@@ -191511,11 +191838,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1089357141}
   m_CullTransparentMesh: 1
---- !u!108 &1093072919 stripped
-Light:
-  m_CorrespondingSourceObject: {fileID: 8254729079026295609, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
-  m_PrefabInstance: {fileID: 1409324670}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1093324800
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -204762,37 +205084,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 23e23e350dec5274bb2acba2dbe26449, type: 3}
---- !u!1 &1144668760 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 121418290699475107, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
-  m_PrefabInstance: {fileID: 258035871}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1144668761
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1144668760}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b9fc9298833488b438f4fc26c50d3da6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SmartFarm.DayNight.StreetLamp
-  lampLight: {fileID: 1835962932}
-  bulbRenderer: {fileID: 1144668763}
-  bulbMaterialIndex: 0
-  onIntensity: 2.5
-  offIntensity: 0
-  warmColor: {r: 1, g: 0.78, b: 0.42, a: 1}
-  bulbEmissionOn: {r: 2, g: 1.2, b: 0.55, a: 1}
-  flickerStrength: 0.45
-  flickerSpeed: 11
---- !u!23 &1144668763 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 1842969807233920127, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
-  m_PrefabInstance: {fileID: 258035871}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1146129229
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -205661,6 +205952,37 @@ MonoBehaviour:
   autoRefreshName: 1
   refreshInterval: 1
   debugLogs: 0
+--- !u!1 &1165699740 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 121418290699475107, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
+  m_PrefabInstance: {fileID: 1607356831}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1165699741
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1165699740}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9fc9298833488b438f4fc26c50d3da6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SmartFarm.DayNight.StreetLamp
+  lampLight: {fileID: 2052694373}
+  bulbRenderer: {fileID: 1165699743}
+  bulbMaterialIndex: 0
+  onIntensity: 2.5
+  offIntensity: 0
+  warmColor: {r: 1, g: 0.78, b: 0.42, a: 1}
+  bulbEmissionOn: {r: 2, g: 1.2, b: 0.55, a: 1}
+  flickerStrength: 0.45
+  flickerSpeed: 11
+--- !u!23 &1165699743 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 1842969807233920127, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
+  m_PrefabInstance: {fileID: 1607356831}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1170541374
 GameObject:
   m_ObjectHideFlags: 0
@@ -216915,10 +217237,10 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1193708402}
   m_CullTransparentMesh: 1
---- !u!108 &1197327660 stripped
+--- !u!108 &1198054554 stripped
 Light:
   m_CorrespondingSourceObject: {fileID: 8254729079026295609, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
-  m_PrefabInstance: {fileID: 1607356831}
+  m_PrefabInstance: {fileID: 1386499974}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1199207607
 GameObject:
@@ -216965,10 +217287,6 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3976169497670997343, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
       propertyPath: m_BounceIntensity
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3976169497670997343, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
-      propertyPath: m_Shadows.m_Resolution
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4904380416175107781, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
@@ -217021,7 +217339,7 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 4904380416175107781, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1441991774}
+      addedObject: {fileID: 762698200}
   m_SourcePrefab: {fileID: 100100000, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
 --- !u!4 &1201205907 stripped
 Transform:
@@ -217458,6 +217776,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1215411428}
   m_CullTransparentMesh: 1
+--- !u!1001 &1220460087
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 43.13
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 4.045
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 1.308
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2888545007160614275, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_Name
+      value: SolarPanel (2)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
 --- !u!1001 &1220621194
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -218055,37 +218430,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2595333245518502035, guid: 23e23e350dec5274bb2acba2dbe26449, type: 3}
   m_PrefabInstance: {fileID: 267894076}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1229905274 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4904380416175107781, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
-  m_PrefabInstance: {fileID: 776162798}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1229905275
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1229905274}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b9fc9298833488b438f4fc26c50d3da6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SmartFarm.DayNight.StreetLamp
-  lampLight: {fileID: 1864372522}
-  bulbRenderer: {fileID: 1229905277}
-  bulbMaterialIndex: 0
-  onIntensity: 2.5
-  offIntensity: 0
-  warmColor: {r: 1, g: 0.78, b: 0.42, a: 1}
-  bulbEmissionOn: {r: 2, g: 1.2, b: 0.55, a: 1}
-  flickerStrength: 0.45
-  flickerSpeed: 11
---- !u!23 &1229905277 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 6643664929220844057, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
-  m_PrefabInstance: {fileID: 776162798}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1229999155
 GameObject:
   m_ObjectHideFlags: 0
@@ -218449,6 +218793,37 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1233727544 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4904380416175107781, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
+  m_PrefabInstance: {fileID: 1935951300}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1233727545
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1233727544}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9fc9298833488b438f4fc26c50d3da6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SmartFarm.DayNight.StreetLamp
+  lampLight: {fileID: 1368659753}
+  bulbRenderer: {fileID: 1233727547}
+  bulbMaterialIndex: 0
+  onIntensity: 2.5
+  offIntensity: 0
+  warmColor: {r: 1, g: 0.78, b: 0.42, a: 1}
+  bulbEmissionOn: {r: 2, g: 1.2, b: 0.55, a: 1}
+  flickerStrength: 0.45
+  flickerSpeed: 11
+--- !u!23 &1233727547 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 6643664929220844057, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
+  m_PrefabInstance: {fileID: 1935951300}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1233879508
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -218518,10 +218893,6 @@ PrefabInstance:
       propertyPath: m_BounceIntensity
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3976169497670997343, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
-      propertyPath: m_Shadows.m_Resolution
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 4904380416175107781, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
       propertyPath: m_Name
       value: StreetLamp1_ShortDouble (Wood) (5)
@@ -218572,7 +218943,7 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 4904380416175107781, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1319534302}
+      addedObject: {fileID: 1046196867}
   m_SourcePrefab: {fileID: 100100000, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
 --- !u!1 &1234912414
 GameObject:
@@ -223554,37 +223925,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8b33f71f7fc7de347b67ac35de192fb3, type: 3}
---- !u!1 &1236357679 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 121418290699475107, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
-  m_PrefabInstance: {fileID: 1607356831}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1236357680
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1236357679}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b9fc9298833488b438f4fc26c50d3da6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SmartFarm.DayNight.StreetLamp
-  lampLight: {fileID: 1197327660}
-  bulbRenderer: {fileID: 1236357682}
-  bulbMaterialIndex: 0
-  onIntensity: 2.5
-  offIntensity: 0
-  warmColor: {r: 1, g: 0.78, b: 0.42, a: 1}
-  bulbEmissionOn: {r: 2, g: 1.2, b: 0.55, a: 1}
-  flickerStrength: 0.45
-  flickerSpeed: 11
---- !u!23 &1236357682 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 1842969807233920127, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
-  m_PrefabInstance: {fileID: 1607356831}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1237624231
 GameObject:
   m_ObjectHideFlags: 0
@@ -230616,6 +230956,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1275360621}
   m_CullTransparentMesh: 1
+--- !u!1001 &1277095324
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 43.12
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 4.045
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.759
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2888545007160614275, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_Name
+      value: SolarPanel (3)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
 --- !u!4 &1278910304 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2595333245518502035, guid: 23e23e350dec5274bb2acba2dbe26449, type: 3}
@@ -235906,6 +236303,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!108 &1293290788 stripped
+Light:
+  m_CorrespondingSourceObject: {fileID: 8254729079026295609, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
+  m_PrefabInstance: {fileID: 1409324670}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1296470002
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -236216,63 +236618,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 23e23e350dec5274bb2acba2dbe26449, type: 3}
---- !u!1001 &1304871740
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 43.65
-      objectReference: {fileID: 0}
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 4.09
-      objectReference: {fileID: 0}
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -0.59
-      objectReference: {fileID: 0}
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.69465846
-      objectReference: {fileID: 0}
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0.7193398
-      objectReference: {fileID: 0}
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: -92
-      objectReference: {fileID: 0}
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2888545007160614275, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_Name
-      value: SolarPanel (3)
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
 --- !u!1001 &1307468620
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -236886,37 +237231,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5920611166848448842, guid: 8b33f71f7fc7de347b67ac35de192fb3, type: 3}
   m_PrefabInstance: {fileID: 1350807717}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1319534301 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4904380416175107781, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
-  m_PrefabInstance: {fileID: 1233935248}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1319534302
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1319534301}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b9fc9298833488b438f4fc26c50d3da6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SmartFarm.DayNight.StreetLamp
-  lampLight: {fileID: 2106915910}
-  bulbRenderer: {fileID: 1319534304}
-  bulbMaterialIndex: 0
-  onIntensity: 2.5
-  offIntensity: 0
-  warmColor: {r: 1, g: 0.78, b: 0.42, a: 1}
-  bulbEmissionOn: {r: 2, g: 1.2, b: 0.55, a: 1}
-  flickerStrength: 0.45
-  flickerSpeed: 11
---- !u!23 &1319534304 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 6643664929220844057, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
-  m_PrefabInstance: {fileID: 1233935248}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1320198457 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5920611166848448842, guid: 8b33f71f7fc7de347b67ac35de192fb3, type: 3}
@@ -237281,6 +237595,11 @@ Material:
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
+--- !u!108 &1327029780 stripped
+Light:
+  m_CorrespondingSourceObject: {fileID: 8254729079026295609, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
+  m_PrefabInstance: {fileID: 98134833}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1328896576
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -249309,6 +249628,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 651c268bc395de846997feac020cf89e, type: 3}
+--- !u!108 &1368659753 stripped
+Light:
+  m_CorrespondingSourceObject: {fileID: 3976169497670997343, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
+  m_PrefabInstance: {fileID: 1935951300}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1369107392
 GameObject:
   m_ObjectHideFlags: 0
@@ -250809,17 +251133,13 @@ PrefabInstance:
       propertyPath: m_BounceIntensity
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8254729079026295609, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
-      propertyPath: m_Shadows.m_Resolution
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 121418290699475107, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1990137405}
+      addedObject: {fileID: 760524998}
   m_SourcePrefab: {fileID: 100100000, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
 --- !u!1 &1387078872
 GameObject:
@@ -252305,17 +252625,13 @@ PrefabInstance:
       propertyPath: m_BounceIntensity
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8254729079026295609, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
-      propertyPath: m_Shadows.m_Resolution
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 121418290699475107, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 848522698}
+      addedObject: {fileID: 318227530}
   m_SourcePrefab: {fileID: 100100000, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
 --- !u!4 &1410939500 stripped
 Transform:
@@ -254453,37 +254769,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8b33f71f7fc7de347b67ac35de192fb3, type: 3}
---- !u!1 &1441991773 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4904380416175107781, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
-  m_PrefabInstance: {fileID: 1199328504}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1441991774
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1441991773}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b9fc9298833488b438f4fc26c50d3da6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SmartFarm.DayNight.StreetLamp
-  lampLight: {fileID: 1775871950}
-  bulbRenderer: {fileID: 1441991776}
-  bulbMaterialIndex: 0
-  onIntensity: 2.5
-  offIntensity: 0
-  warmColor: {r: 1, g: 0.78, b: 0.42, a: 1}
-  bulbEmissionOn: {r: 2, g: 1.2, b: 0.55, a: 1}
-  flickerStrength: 0.45
-  flickerSpeed: 11
---- !u!23 &1441991776 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 6643664929220844057, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
-  m_PrefabInstance: {fileID: 1199328504}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1442261059
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -260408,6 +260693,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1451307621}
   m_CullTransparentMesh: 1
+--- !u!1 &1451412758 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4904380416175107781, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
+  m_PrefabInstance: {fileID: 1812453939}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1451412759
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1451412758}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9fc9298833488b438f4fc26c50d3da6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SmartFarm.DayNight.StreetLamp
+  lampLight: {fileID: 682525164}
+  bulbRenderer: {fileID: 1451412761}
+  bulbMaterialIndex: 0
+  onIntensity: 2.5
+  offIntensity: 0
+  warmColor: {r: 1, g: 0.78, b: 0.42, a: 1}
+  bulbEmissionOn: {r: 2, g: 1.2, b: 0.55, a: 1}
+  flickerStrength: 0.45
+  flickerSpeed: 11
+--- !u!23 &1451412761 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 6643664929220844057, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
+  m_PrefabInstance: {fileID: 1812453939}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1452983146
 GameObject:
   m_ObjectHideFlags: 0
@@ -261799,6 +262115,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 23e23e350dec5274bb2acba2dbe26449, type: 3}
+--- !u!108 &1470874003 stripped
+Light:
+  m_CorrespondingSourceObject: {fileID: 3976169497670997343, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
+  m_PrefabInstance: {fileID: 1199328504}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1472469065
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -261855,17 +262176,13 @@ PrefabInstance:
       propertyPath: m_BounceIntensity
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8254729079026295609, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
-      propertyPath: m_Shadows.m_Resolution
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 121418290699475107, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 194716541}
+      addedObject: {fileID: 761849818}
   m_SourcePrefab: {fileID: 100100000, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
 --- !u!1 &1472771150
 GameObject:
@@ -265231,6 +265548,97 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1518015821}
   m_CullTransparentMesh: 1
+--- !u!1001 &1518185246
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2580804248861465011, guid: 1fd58ec95a02ba04585cca50d8d47f38, type: 3}
+      propertyPath: m_Name
+      value: Gardner_Avatar_Base
+      objectReference: {fileID: 0}
+    - target: {fileID: 2925944919690609417, guid: 1fd58ec95a02ba04585cca50d8d47f38, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 15.134108
+      objectReference: {fileID: 0}
+    - target: {fileID: 2925944919690609417, guid: 1fd58ec95a02ba04585cca50d8d47f38, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.2021141
+      objectReference: {fileID: 0}
+    - target: {fileID: 2925944919690609417, guid: 1fd58ec95a02ba04585cca50d8d47f38, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 7.4392943
+      objectReference: {fileID: 0}
+    - target: {fileID: 2925944919690609417, guid: 1fd58ec95a02ba04585cca50d8d47f38, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2925944919690609417, guid: 1fd58ec95a02ba04585cca50d8d47f38, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2925944919690609417, guid: 1fd58ec95a02ba04585cca50d8d47f38, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2925944919690609417, guid: 1fd58ec95a02ba04585cca50d8d47f38, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2925944919690609417, guid: 1fd58ec95a02ba04585cca50d8d47f38, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2925944919690609417, guid: 1fd58ec95a02ba04585cca50d8d47f38, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2925944919690609417, guid: 1fd58ec95a02ba04585cca50d8d47f38, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3391687826455322463, guid: 1fd58ec95a02ba04585cca50d8d47f38, type: 3}
+      propertyPath: m_Avatar
+      value: 
+      objectReference: {fileID: 9000000, guid: 8c4aa23a48448b049bac58ced1565297, type: 3}
+    - target: {fileID: 3391687826455322463, guid: 1fd58ec95a02ba04585cca50d8d47f38, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 7f7acdc344f49e14994d1930e9828307, type: 2}
+    - target: {fileID: 8547198915105564729, guid: 1fd58ec95a02ba04585cca50d8d47f38, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.0007756303
+      objectReference: {fileID: 0}
+    - target: {fileID: 8547198915105564729, guid: 1fd58ec95a02ba04585cca50d8d47f38, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.0693189
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 2925944919690609417, guid: 1fd58ec95a02ba04585cca50d8d47f38, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 293770726}
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2580804248861465011, guid: 1fd58ec95a02ba04585cca50d8d47f38, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1565325329}
+    - targetCorrespondingSourceObject: {fileID: 2580804248861465011, guid: 1fd58ec95a02ba04585cca50d8d47f38, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1565325328}
+    - targetCorrespondingSourceObject: {fileID: 2580804248861465011, guid: 1fd58ec95a02ba04585cca50d8d47f38, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1565325327}
+    - targetCorrespondingSourceObject: {fileID: 2580804248861465011, guid: 1fd58ec95a02ba04585cca50d8d47f38, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1565325326}
+    - targetCorrespondingSourceObject: {fileID: 2580804248861465011, guid: 1fd58ec95a02ba04585cca50d8d47f38, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1565325325}
+  m_SourcePrefab: {fileID: 100100000, guid: 1fd58ec95a02ba04585cca50d8d47f38, type: 3}
 --- !u!1 &1523439366
 GameObject:
   m_ObjectHideFlags: 0
@@ -265941,6 +266349,53 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1535210541}
   m_CullTransparentMesh: 1
+--- !u!1 &1535843393
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1535843394}
+  - component: {fileID: 1535843395}
+  m_Layer: 0
+  m_Name: CropFieldTarget
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1535843394
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1535843393}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 39.64, y: -0.2021141, z: 21.85}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 941840196}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1535843395
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1535843393}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b62fcf58426fc8f488d35e71b6d1aff6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SmartFarm.GuideNPC.GuideDestination
+  area: 0
+  label: 
+  lookAtOnArrival: {fileID: 0}
 --- !u!1001 &1537056099
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -268142,6 +268597,281 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2595333245518502035, guid: 23e23e350dec5274bb2acba2dbe26449, type: 3}
   m_PrefabInstance: {fileID: 161428773}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1565325324 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2580804248861465011, guid: 1fd58ec95a02ba04585cca50d8d47f38, type: 3}
+  m_PrefabInstance: {fileID: 1518185246}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1565325325
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1565325324}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a35f6cfbfba9b548aaa00d52cfe8a50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.XR.Interaction.Toolkit::UnityEngine.XR.Interaction.Toolkit.Interactables.XRSimpleInteractable
+  m_InteractionManager: {fileID: 0}
+  m_Colliders: []
+  m_InteractionLayers:
+    m_Bits: 1
+  m_DistanceCalculationMode: 1
+  m_SelectMode: 0
+  m_FocusMode: 1
+  m_CustomReticle: {fileID: 0}
+  m_AllowGazeInteraction: 0
+  m_AllowGazeSelect: 0
+  m_OverrideGazeTimeToSelect: 0
+  m_GazeTimeToSelect: 0.5
+  m_OverrideTimeToAutoDeselectGaze: 0
+  m_TimeToAutoDeselectGaze: 3
+  m_AllowGazeAssistance: 0
+  m_FirstHoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_LastHoverExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_HoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_HoverExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FirstSelectEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_LastSelectExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_SelectEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_SelectExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FirstFocusEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_LastFocusExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FocusEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FocusExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Activated:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Deactivated:
+    m_PersistentCalls:
+      m_Calls: []
+  m_StartingHoverFilters: []
+  m_StartingSelectFilters: []
+  m_StartingInteractionStrengthFilters: []
+--- !u!114 &1565325326
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1565325324}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce3a12ba2db20e74383c78b2583c7585, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SmartFarm.GuideNPC.SmartFarmGuideNPC
+  walkSpeed: 1.4
+  angularSpeed: 220
+  acceleration: 6
+  stoppingDistance: 1.5
+  animator: {fileID: 1565325330}
+  speedParameter: Speed
+  greetTrigger: Greet
+  pointTrigger: Point
+  speedDamping: 0.12
+  player: {fileID: 0}
+  welcomeRadius: 3.5
+  welcomeResetRadius: 6
+  welcomeTitle: Welcome to Smart Farm VR
+  welcomeSubtitle: Tap me to choose where to go.
+  welcomeVoice: {fileID: 0}
+  destinations:
+  - area: 0
+    label: Crop Field
+    target: {fileID: 1535843394}
+  - area: 1
+    label: Meeting Area
+    target: {fileID: 2033243500}
+  - area: 2
+    label: Smart Screens
+    target: {fileID: 1986485430}
+  - area: 3
+    label: Training Room
+    target: {fileID: 263269891}
+  interactable: {fileID: 1565325325}
+  menu: {fileID: 293770725}
+  openMenuAfterWelcome: 0
+  labelHeight: 2.1
+  buildLabel: 1
+  voiceSource: {fileID: 1565325327}
+--- !u!82 &1565325327
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1565325324}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!195 &1565325328
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1565325324}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.3
+  m_Speed: 1.4
+  m_Acceleration: 6
+  avoidancePriority: 50
+  m_AngularSpeed: 220
+  m_StoppingDistance: 1.5
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 1.8
+  m_BaseOffset: -0.4
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
+--- !u!136 &1565325329
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1565325324}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.3
+  m_Height: 1.8
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.9, z: 0}
+--- !u!95 &1565325330 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 3391687826455322463, guid: 1fd58ec95a02ba04585cca50d8d47f38, type: 3}
+  m_PrefabInstance: {fileID: 1518185246}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1565325331 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2925944919690609417, guid: 1fd58ec95a02ba04585cca50d8d47f38, type: 3}
+  m_PrefabInstance: {fileID: 1518185246}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1565836986
 GameObject:
   m_ObjectHideFlags: 0
@@ -270221,6 +270951,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1584826949}
   m_CullTransparentMesh: 1
+--- !u!1 &1586396713 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 121418290699475107, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
+  m_PrefabInstance: {fileID: 98134833}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1586396714
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1586396713}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9fc9298833488b438f4fc26c50d3da6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SmartFarm.DayNight.StreetLamp
+  lampLight: {fileID: 1327029780}
+  bulbRenderer: {fileID: 1586396716}
+  bulbMaterialIndex: 0
+  onIntensity: 2.5
+  offIntensity: 0
+  warmColor: {r: 1, g: 0.78, b: 0.42, a: 1}
+  bulbEmissionOn: {r: 2, g: 1.2, b: 0.55, a: 1}
+  flickerStrength: 0.45
+  flickerSpeed: 11
+--- !u!23 &1586396716 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 1842969807233920127, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
+  m_PrefabInstance: {fileID: 98134833}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1586447588 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2595333245518502035, guid: 23e23e350dec5274bb2acba2dbe26449, type: 3}
@@ -271538,17 +272299,13 @@ PrefabInstance:
       propertyPath: m_BounceIntensity
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8254729079026295609, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
-      propertyPath: m_Shadows.m_Resolution
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 121418290699475107, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1236357680}
+      addedObject: {fileID: 1165699741}
   m_SourcePrefab: {fileID: 100100000, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
 --- !u!1 &1607649864
 GameObject:
@@ -301773,11 +302530,63 @@ Material:
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
---- !u!108 &1695246087 stripped
-Light:
-  m_CorrespondingSourceObject: {fileID: 8254729079026295609, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
-  m_PrefabInstance: {fileID: 231394839}
-  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1695548957
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 43.13
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 4.045
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 3.378
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2888545007160614275, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
+      propertyPath: m_Name
+      value: SolarPanel (1)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
 --- !u!1 &1696194463
 GameObject:
   m_ObjectHideFlags: 0
@@ -302092,6 +302901,37 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ad623c66f9136c147992343d894191d6, type: 3}
+--- !u!1 &1697335001 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 121418290699475107, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
+  m_PrefabInstance: {fileID: 720214538}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1697335002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1697335001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9fc9298833488b438f4fc26c50d3da6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SmartFarm.DayNight.StreetLamp
+  lampLight: {fileID: 40284128}
+  bulbRenderer: {fileID: 1697335004}
+  bulbMaterialIndex: 0
+  onIntensity: 2.5
+  offIntensity: 0
+  warmColor: {r: 1, g: 0.78, b: 0.42, a: 1}
+  bulbEmissionOn: {r: 2, g: 1.2, b: 0.55, a: 1}
+  flickerStrength: 0.45
+  flickerSpeed: 11
+--- !u!23 &1697335004 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 1842969807233920127, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
+  m_PrefabInstance: {fileID: 720214538}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1698770725
 GameObject:
   m_ObjectHideFlags: 0
@@ -302384,6 +303224,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8b33f71f7fc7de347b67ac35de192fb3, type: 3}
+--- !u!108 &1703429667 stripped
+Light:
+  m_CorrespondingSourceObject: {fileID: 8254729079026295609, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
+  m_PrefabInstance: {fileID: 687098074}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1703894647 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2595333245518502035, guid: 23e23e350dec5274bb2acba2dbe26449, type: 3}
@@ -313314,11 +314159,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2595333245518502035, guid: 23e23e350dec5274bb2acba2dbe26449, type: 3}
   m_PrefabInstance: {fileID: 2055560772}
   m_PrefabAsset: {fileID: 0}
---- !u!108 &1729666062 stripped
-Light:
-  m_CorrespondingSourceObject: {fileID: 8254729079026295609, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
-  m_PrefabInstance: {fileID: 2037346917}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1729815421
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -313729,37 +314569,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 23e23e350dec5274bb2acba2dbe26449, type: 3}
---- !u!1 &1733008366 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4904380416175107781, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
-  m_PrefabInstance: {fileID: 1935951300}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1733008367
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1733008366}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b9fc9298833488b438f4fc26c50d3da6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SmartFarm.DayNight.StreetLamp
-  lampLight: {fileID: 686025004}
-  bulbRenderer: {fileID: 1733008369}
-  bulbMaterialIndex: 0
-  onIntensity: 2.5
-  offIntensity: 0
-  warmColor: {r: 1, g: 0.78, b: 0.42, a: 1}
-  bulbEmissionOn: {r: 2, g: 1.2, b: 0.55, a: 1}
-  flickerStrength: 0.45
-  flickerSpeed: 11
---- !u!23 &1733008369 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 6643664929220844057, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
-  m_PrefabInstance: {fileID: 1935951300}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1733345792
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -315607,11 +316416,6 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
---- !u!108 &1775871950 stripped
-Light:
-  m_CorrespondingSourceObject: {fileID: 3976169497670997343, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
-  m_PrefabInstance: {fileID: 1199328504}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1777155186
 GameObject:
   m_ObjectHideFlags: 0
@@ -328366,10 +329170,6 @@ PrefabInstance:
       propertyPath: m_BounceIntensity
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3976169497670997343, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
-      propertyPath: m_Shadows.m_Resolution
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 4904380416175107781, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
       propertyPath: m_Name
       value: StreetLamp1_ShortDouble (Wood) (2)
@@ -328420,7 +329220,7 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 4904380416175107781, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 156611362}
+      addedObject: {fileID: 1451412759}
   m_SourcePrefab: {fileID: 100100000, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
 --- !u!1001 &1812835668
 PrefabInstance:
@@ -334245,11 +335045,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2595333245518502035, guid: 23e23e350dec5274bb2acba2dbe26449, type: 3}
   m_PrefabInstance: {fileID: 1139499074}
   m_PrefabAsset: {fileID: 0}
---- !u!108 &1835962932 stripped
-Light:
-  m_CorrespondingSourceObject: {fileID: 8254729079026295609, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
-  m_PrefabInstance: {fileID: 258035871}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1839227923
 GameObject:
   m_ObjectHideFlags: 0
@@ -339932,11 +340727,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 733966e0ed75c5c418c6f63a09b92779, type: 3}
---- !u!108 &1864372522 stripped
-Light:
-  m_CorrespondingSourceObject: {fileID: 3976169497670997343, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
-  m_PrefabInstance: {fileID: 776162798}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1864516801
 GameObject:
   m_ObjectHideFlags: 0
@@ -341612,63 +342402,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2595333245518502035, guid: 23e23e350dec5274bb2acba2dbe26449, type: 3}
   m_PrefabInstance: {fileID: 737828816}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &1883874949
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 43.58
-      objectReference: {fileID: 0}
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 4.09
-      objectReference: {fileID: 0}
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 1.48
-      objectReference: {fileID: 0}
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.69465846
-      objectReference: {fileID: 0}
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0.7193398
-      objectReference: {fileID: 0}
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: -92
-      objectReference: {fileID: 0}
-    - target: {fileID: 2548470924365596473, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2888545007160614275, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
-      propertyPath: m_Name
-      value: SolarPanel (2)
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 3f224e0adb4c2094ea7380ad5a08d8a8, type: 3}
 --- !u!1 &1884540352
 GameObject:
   m_ObjectHideFlags: 0
@@ -344030,16 +344763,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: def7813de3031814aba5fd882b924c17, type: 3}
---- !u!108 &1908921824 stripped
-Light:
-  m_CorrespondingSourceObject: {fileID: 3976169497670997343, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
-  m_PrefabInstance: {fileID: 1812453939}
-  m_PrefabAsset: {fileID: 0}
---- !u!108 &1910225492 stripped
-Light:
-  m_CorrespondingSourceObject: {fileID: 8254729079026295609, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
-  m_PrefabInstance: {fileID: 687098074}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1914578355 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5920611166848448842, guid: 8b33f71f7fc7de347b67ac35de192fb3, type: 3}
@@ -349683,6 +350406,37 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9de657c1c3aab8e40aa81c262958aa9e, type: 3}
+--- !u!1 &1927388993 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 121418290699475107, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
+  m_PrefabInstance: {fileID: 687098074}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1927388994
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1927388993}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9fc9298833488b438f4fc26c50d3da6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SmartFarm.DayNight.StreetLamp
+  lampLight: {fileID: 1703429667}
+  bulbRenderer: {fileID: 1927388996}
+  bulbMaterialIndex: 0
+  onIntensity: 2.5
+  offIntensity: 0
+  warmColor: {r: 1, g: 0.78, b: 0.42, a: 1}
+  bulbEmissionOn: {r: 2, g: 1.2, b: 0.55, a: 1}
+  flickerStrength: 0.45
+  flickerSpeed: 11
+--- !u!23 &1927388996 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 1842969807233920127, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
+  m_PrefabInstance: {fileID: 687098074}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1927444410 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2595333245518502035, guid: 23e23e350dec5274bb2acba2dbe26449, type: 3}
@@ -350195,37 +350949,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1 &1932165683 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 121418290699475107, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
-  m_PrefabInstance: {fileID: 120053173}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1932165684
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1932165683}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b9fc9298833488b438f4fc26c50d3da6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SmartFarm.DayNight.StreetLamp
-  lampLight: {fileID: 637146892}
-  bulbRenderer: {fileID: 1932165686}
-  bulbMaterialIndex: 0
-  onIntensity: 2.5
-  offIntensity: 0
-  warmColor: {r: 1, g: 0.78, b: 0.42, a: 1}
-  bulbEmissionOn: {r: 2, g: 1.2, b: 0.55, a: 1}
-  flickerStrength: 0.45
-  flickerSpeed: 11
---- !u!23 &1932165686 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 1842969807233920127, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
-  m_PrefabInstance: {fileID: 120053173}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1933354507
 GameObject:
   m_ObjectHideFlags: 0
@@ -355375,10 +356098,6 @@ PrefabInstance:
       propertyPath: m_BounceIntensity
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3976169497670997343, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
-      propertyPath: m_Shadows.m_Resolution
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 4904380416175107781, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
       propertyPath: m_Name
       value: StreetLamp1_ShortDouble (Wood)
@@ -355429,7 +356148,7 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 4904380416175107781, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1733008367}
+      addedObject: {fileID: 1233727545}
   m_SourcePrefab: {fileID: 100100000, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
 --- !u!1 &1936866087
 GameObject:
@@ -355797,6 +356516,103 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5920611166848448842, guid: 8b33f71f7fc7de347b67ac35de192fb3, type: 3}
   m_PrefabInstance: {fileID: 1709429745}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1945315041
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1945315042}
+  - component: {fileID: 1945315043}
+  m_Layer: 0
+  m_Name: LampLight
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1945315042
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1945315041}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.000000012150753, y: 0.27798188, z: 7.330091e-11}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 266311529}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!108 &1945315043
+Light:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1945315041}
+  m_Enabled: 1
+  serializedVersion: 11
+  m_Type: 2
+  m_Color: {r: 1, g: 0.78, b: 0.42, a: 1}
+  m_Intensity: 0
+  m_Range: 9
+  m_SpotAngle: 30
+  m_InnerSpotAngle: 21.80208
+  m_CookieSize: 10
+  m_Shadows:
+    m_Type: 2
+    m_Resolution: -1
+    m_CustomResolution: -1
+    m_Strength: 0.5
+    m_Bias: 0.05
+    m_NormalBias: 0.4
+    m_NearPlane: 0.2
+    m_CullingMatrixOverride:
+      e00: 1
+      e01: 0
+      e02: 0
+      e03: 0
+      e10: 0
+      e11: 1
+      e12: 0
+      e13: 0
+      e20: 0
+      e21: 0
+      e22: 1
+      e23: 0
+      e30: 0
+      e31: 0
+      e32: 0
+      e33: 1
+    m_UseCullingMatrixOverride: 0
+  m_Cookie: {fileID: 0}
+  m_DrawHalo: 0
+  m_Flare: {fileID: 0}
+  m_RenderMode: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingLayerMask: 1
+  m_Lightmapping: 4
+  m_LightShadowCasterMode: 0
+  m_AreaSize: {x: 1, y: 1}
+  m_BounceIntensity: 0
+  m_ColorTemperature: 6570
+  m_UseColorTemperature: 0
+  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_UseBoundingSphereOverride: 0
+  m_UseViewFrustumForShadowCasterCull: 1
+  m_ForceVisible: 0
+  m_ShadowRadius: 0
+  m_ShadowAngle: 0
+  m_LightUnit: 1
+  m_LuxAtDistance: 1
+  m_EnableSpotReflector: 1
 --- !u!21 &1947748424
 Material:
   serializedVersion: 8
@@ -363385,6 +364201,53 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ac8d86af490971f4d8cd6caeb30e91cc, type: 3}
+--- !u!1 &1986485429
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1986485430}
+  - component: {fileID: 1986485431}
+  m_Layer: 0
+  m_Name: SmartScreensTarget
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1986485430
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1986485429}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 26.01, y: -0.2021141, z: 34.61}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 941840196}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1986485431
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1986485429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b62fcf58426fc8f488d35e71b6d1aff6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SmartFarm.GuideNPC.GuideDestination
+  area: 2
+  label: 
+  lookAtOnArrival: {fileID: 0}
 --- !u!4 &1987329816 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5920611166848448842, guid: 8b33f71f7fc7de347b67ac35de192fb3, type: 3}
@@ -363642,37 +364505,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1990113358}
   m_CullTransparentMesh: 1
---- !u!1 &1990137404 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 121418290699475107, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
-  m_PrefabInstance: {fileID: 1386499974}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1990137405
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1990137404}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b9fc9298833488b438f4fc26c50d3da6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SmartFarm.DayNight.StreetLamp
-  lampLight: {fileID: 609045329}
-  bulbRenderer: {fileID: 1990137407}
-  bulbMaterialIndex: 0
-  onIntensity: 2.5
-  offIntensity: 0
-  warmColor: {r: 1, g: 0.78, b: 0.42, a: 1}
-  bulbEmissionOn: {r: 2, g: 1.2, b: 0.55, a: 1}
-  flickerStrength: 0.45
-  flickerSpeed: 11
---- !u!23 &1990137407 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 1842969807233920127, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
-  m_PrefabInstance: {fileID: 1386499974}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1992243490 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5920611166848448842, guid: 8b33f71f7fc7de347b67ac35de192fb3, type: 3}
@@ -369178,6 +370010,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2009669838}
   m_CullTransparentMesh: 1
+--- !u!108 &2009885425 stripped
+Light:
+  m_CorrespondingSourceObject: {fileID: 3976169497670997343, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
+  m_PrefabInstance: {fileID: 1233935248}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2009887481
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -380336,6 +381173,53 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_3: W
+--- !u!1 &2033243499
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2033243500}
+  - component: {fileID: 2033243501}
+  m_Layer: 0
+  m_Name: MeetingAreaTarget
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2033243500
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2033243499}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 31.89, y: -0.2021141, z: 26.1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 941840196}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2033243501
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2033243499}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b62fcf58426fc8f488d35e71b6d1aff6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SmartFarm.GuideNPC.GuideDestination
+  area: 1
+  label: 
+  lookAtOnArrival: {fileID: 0}
 --- !u!1 &2035042443
 GameObject:
   m_ObjectHideFlags: 0
@@ -380724,17 +381608,13 @@ PrefabInstance:
       propertyPath: m_BounceIntensity
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8254729079026295609, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
-      propertyPath: m_Shadows.m_Resolution
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 121418290699475107, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 929600985}
+      addedObject: {fileID: 2085911874}
   m_SourcePrefab: {fileID: 100100000, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
 --- !u!1 &2038174565
 GameObject:
@@ -381828,6 +382708,16 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!108 &2051513927 stripped
+Light:
+  m_CorrespondingSourceObject: {fileID: 3976169497670997343, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
+  m_PrefabInstance: {fileID: 312988731}
+  m_PrefabAsset: {fileID: 0}
+--- !u!108 &2052694373 stripped
+Light:
+  m_CorrespondingSourceObject: {fileID: 8254729079026295609, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
+  m_PrefabInstance: {fileID: 1607356831}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2055323477
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -383397,6 +384287,37 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2085786631}
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &2085911873 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 121418290699475107, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
+  m_PrefabInstance: {fileID: 2037346917}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2085911874
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2085911873}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9fc9298833488b438f4fc26c50d3da6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SmartFarm.DayNight.StreetLamp
+  lampLight: {fileID: 36826654}
+  bulbRenderer: {fileID: 2085911876}
+  bulbMaterialIndex: 0
+  onIntensity: 2.5
+  offIntensity: 0
+  warmColor: {r: 1, g: 0.78, b: 0.42, a: 1}
+  bulbEmissionOn: {r: 2, g: 1.2, b: 0.55, a: 1}
+  flickerStrength: 0.45
+  flickerSpeed: 11
+--- !u!23 &2085911876 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 1842969807233920127, guid: a0db7f048a9ccd3418cc76708bc2c06c, type: 3}
+  m_PrefabInstance: {fileID: 2037346917}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2087700449
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -389971,11 +390892,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300002, guid: 3ab93ae7c9f5bb447b66aa065e43047f, type: 3}
---- !u!108 &2106915910 stripped
-Light:
-  m_CorrespondingSourceObject: {fileID: 3976169497670997343, guid: 18cd2fc0a780b0e40b1ee8a58822853f, type: 3}
-  m_PrefabInstance: {fileID: 1233935248}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2108214614
 GameObject:
   m_ObjectHideFlags: 0
@@ -400224,6 +401140,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1051863551791554566, guid: f300f7b935a7847bb9f64ba531db6d4d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1171437867}
+    - targetCorrespondingSourceObject: {fileID: 3734492269467231323, guid: f300f7b935a7847bb9f64ba531db6d4d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 819863773}
   m_SourcePrefab: {fileID: 100100000, guid: f300f7b935a7847bb9f64ba531db6d4d, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
@@ -400525,8 +401444,12 @@ SceneRoots:
   - {fileID: 1233935248}
   - {fileID: 1963086328}
   - {fileID: 1355766090}
-  - {fileID: 923576793}
-  - {fileID: 544705084}
-  - {fileID: 1883874949}
-  - {fileID: 1304871740}
-  - {fileID: 489769888}
+  - {fileID: 991001552}
+  - {fileID: 1695548957}
+  - {fileID: 1220460087}
+  - {fileID: 1277095324}
+  - {fileID: 871216721}
+  - {fileID: 1518185246}
+  - {fileID: 941840196}
+  - {fileID: 509753167}
+  - {fileID: 992273}

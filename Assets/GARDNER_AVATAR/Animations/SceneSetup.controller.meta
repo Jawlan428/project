@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: e95f4deb7c137774086495f0edd30776
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249990
+  packageName: Gardner avatar
+  packageVersion: 1.0
+  assetPath: Assets/GARDNER_AVATAR/Animations/SceneSetup.controller
+  uploadId: 596345

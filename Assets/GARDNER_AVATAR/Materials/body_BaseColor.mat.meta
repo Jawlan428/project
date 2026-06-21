@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: da3afe22c80a00f49b19453c59698b2d
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249990
+  packageName: Gardner avatar
+  packageVersion: 1.0
+  assetPath: Assets/GARDNER_AVATAR/Materials/body_BaseColor.mat
+  uploadId: 596345

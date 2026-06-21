@@ -220,7 +220,11 @@ namespace VRRecordings
                 return;
             }
 
-            if (!System.IO.File.Exists(filePath))
+            // NOTE: On Android (Quest), StreamingAssets live inside the compressed APK and the
+            // path is a URL like "jar:file:///.../base.apk!/assets/...". System.IO.File.Exists
+            // does NOT work on such paths, so only validate existence for real filesystem paths.
+            bool isUrlPath = filePath.Contains("://");
+            if (!isUrlPath && !System.IO.File.Exists(filePath))
             {
                 Debug.LogError($"[VRVideoScreenPlayer] File does not exist: {filePath}");
                 return;
@@ -275,15 +279,17 @@ namespace VRRecordings
                 titleText.text = System.IO.Path.GetFileNameWithoutExtension(filePath);
             }
 
-            // Set video source - always use URL mode with file:// prefix
+            // Set video source - always use URL mode.
             string url;
-            if (filePath.StartsWith("file://"))
+            if (filePath.Contains("://"))
             {
+                // Already a URL: Android StreamingAssets ("jar:file://...") or "file://..." paths.
+                // Pass through unchanged — adding another scheme would corrupt the URL.
                 url = filePath;
             }
             else
             {
-                // Convert to proper file URL (works on all platforms)
+                // Real filesystem path (Editor / Windows / standalone) → make a file URL.
                 url = "file:///" + filePath.Replace("\\", "/");
             }
             
