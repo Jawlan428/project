@@ -136,6 +136,7 @@
 <nav id="nav">
   <button data-view="home" class="active">🏠 בית</button>
   <button data-view="cook">🍳 מה להכין</button>
+  <button data-view="discover">🌐 גלה באינטרנט</button>
   <button data-view="plan">📅 תכנון שבועי</button>
   <button data-view="shop">🛒 רשימת קניות</button>
   <button data-view="pantry">🥕 המזווה</button>
@@ -176,6 +177,21 @@
     <h2 class="section">מה אפשר להכין מהמצרכים שבבית</h2>
     <p class="muted" style="margin-top:-6px">לפי <b id="cook-pantry-count">0</b> מצרכים במזווה. אפשר להתעלם מבסיס (מלח, שמן, מים...) בהגדרות המתכון.</p>
     <div id="cook-list"></div>
+  </section>
+
+  <!-- DISCOVER -->
+  <section class="view" id="view-discover">
+    <h2 class="section">גילוי מתכונים מהאינטרנט</h2>
+    <p class="muted" style="margin-top:-6px">חיפוש מתכונים אמיתיים לפי המצרכים שבמזווה שלך (מקור: TheMealDB). התוצאות באנגלית.</p>
+    <div class="card">
+      <div class="ing-add">
+        <input id="disc-input" placeholder="חפש לפי מצרך (ריק = לפי כל המזווה)" enterkeyhint="search">
+        <button class="btn" id="disc-go">🔎 חפש</button>
+      </div>
+      <p class="muted" style="font-size:12px;margin:8px 0 0">טיפ: לחיצה על "חפש" בלי טקסט תשתמש במצרכים שבמזווה. חיפוש חי דורש אירוח כאתר (GitHub Pages) ולא עובד בתוך תצוגת Claude.</p>
+    </div>
+    <div id="disc-status"></div>
+    <div id="disc-list"></div>
   </section>
 
   <!-- PLAN -->
@@ -269,6 +285,10 @@
     <div class="field">
       <label>הוראות הכנה (לא חובה)</label>
       <textarea id="f-steps" placeholder="איך מכינים? שלב אחר שלב..."></textarea>
+    </div>
+    <div class="field">
+      <label>קישור למקור (לא חובה)</label>
+      <input id="f-link" placeholder="https://... קישור למתכון או לסרטון">
     </div>
     <div class="row" style="gap:8px">
       <button class="btn grow" id="dlg-save">💾 שמור מתכון</button>
@@ -410,6 +430,7 @@
         </div>
         <div style="margin-top:8px">${r.ings.map(i=>`<span class="chip">${esc(i.t)}</span>`).join("")}</div>
         ${a.missing.length?`<div class="missing">חסר: ${a.missing.map(esc).join("، ")}</div>`:'<div class="have">כל המצרכים קיימים ✓</div>'}
+        ${r.link?`<div style="margin-top:6px"><a href="${esc(r.link)}" target="_blank" rel="noopener" style="color:var(--brand);font-size:13px;font-weight:700;text-decoration:none">🔗 מקור המתכון</a></div>`:""}
         ${r.steps?`<details class="rec"><summary>הוראות הכנה</summary><div class="inner">${esc(r.steps).replace(/\n/g,"<br>")}</div></details>`:""}
         <div class="row" style="gap:6px;margin-top:10px">
           <button class="btn ghost sm re-edit" data-id="${r.id}">✏️ עריכה</button>
@@ -433,11 +454,12 @@
       $("#dlg-title").textContent="עריכת מתכון";
       $("#f-name").value=r.name; $("#f-cat").value=r.cat;
       dlgIngs=r.ings.map(i=>i.t); $("#f-steps").value=r.steps||"";
+      $("#f-link").value=r.link||"";
       $("#dlg-delete").style.display="";
     }else{
       $("#dlg-title").textContent="מתכון חדש";
       $("#f-name").value=""; $("#f-cat").value="ארוחת צהריים";
-      dlgIngs=[]; $("#f-steps").value="";
+      dlgIngs=[]; $("#f-steps").value=""; $("#f-link").value="";
       $("#dlg-delete").style.display="none";
     }
     renderDlgIngs();
@@ -463,7 +485,7 @@
     const name=$("#f-name").value.trim();
     if(!name){ toast("נא להזין שם ארוחה"); return; }
     if(!dlgIngs.length){ toast("נא להוסיף לפחות מצרך אחד"); return; }
-    const data={ name, cat:$("#f-cat").value, ings:dlgIngs.map(t=>({t})), steps:$("#f-steps").value.trim() };
+    const data={ name, cat:$("#f-cat").value, ings:dlgIngs.map(t=>({t})), steps:$("#f-steps").value.trim(), link:$("#f-link").value.trim() };
     if(editingId){ const r=findR(editingId); Object.assign(r,data); }
     else { state.recipes.push({ id:uid(), ...data, basics:[], made:0 }); }
     save(); $("#recipe-dlg").close(); renderAll(); toast("המתכון נשמר ✓");
@@ -686,6 +708,136 @@
 
   function findR(id){ return state.recipes.find(r=>r.id===id); }
   function esc(s){ return (s||"").toString().replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+
+  // ============ DISCOVER (TheMealDB) ============
+  const HE2EN = {
+    "עגבניה":"tomato","עגבניות":"tomato","בצל":"onion","שום":"garlic","ביצה":"egg","ביצים":"egg",
+    "גבינה":"cheese","חלב":"milk","חמאה":"butter","אורז":"rice","פסטה":"pasta","ספגטי":"spaghetti",
+    "קמח":"flour","סוכר":"sugar","עוף":"chicken","חזה עוף":"chicken","בשר":"beef","בקר":"beef",
+    "בשר טחון":"minced beef","טחון":"minced beef","דג":"fish","סלמון":"salmon","טונה":"tuna",
+    "תפוח אדמה":"potato","תפוחי אדמה":"potato","תפוא":"potato","גזר":"carrot","מלפפון":"cucumber",
+    "חסה":"lettuce","פטריות":"mushrooms","פטריה":"mushrooms","ברוקולי":"broccoli","כרובית":"cauliflower",
+    "כרוב":"cabbage","תירס":"corn","אפונה":"peas","שעועית":"beans","עדשים":"lentils","חומוס":"chickpeas",
+    "לימון":"lemon","תפוז":"orange","תפוח":"apple","בננה":"banana","שמן":"oil","שמן זית":"olive oil",
+    "יין":"wine","בזיליקום":"basil","פטרוזיליה":"parsley","כוסברה":"coriander","נענע":"mint",
+    "רוזמרין":"rosemary","קינמון":"cinnamon","כמון":"cumin","פפריקה":"paprika","קארי":"curry",
+    "ג'ינג'ר":"ginger","שוקולד":"chocolate","שמנת":"cream","יוגורט":"yogurt","דבש":"honey",
+    "אגוזים":"nuts","שקדים":"almonds","קוקוס":"coconut","בטטה":"sweet potato","חציל":"aubergine",
+    "קישוא":"courgette","פלפל":"pepper","פלפל אדום":"red pepper","צ'ילי":"chilli","נקניק":"sausage",
+    "נקניקיות":"sausages","בייקון":"bacon","טופו":"tofu","לחם":"bread","וניל":"vanilla",
+    "פרמזן":"parmesan","מוצרלה":"mozzarella","מלח":"salt","מים":"water","רוטב סויה":"soy sauce",
+    "עגבניות מרוסקות":"chopped tomatoes","רסק עגבניות":"tomato puree","סלרי":"celery"
+  };
+  const EN2HE = (()=>{ const m={}; for(const k in HE2EN){ const e=HE2EN[k]; if(!m[e]) m[e]=k; } return m; })();
+  function heToEn(word){
+    const n=norm(word);
+    if(HE2EN[n]) return HE2EN[n];
+    for(const k in HE2EN){ if(n.includes(norm(k))||norm(k).includes(n)) return HE2EN[k]; }
+    return /[a-z]/i.test(n)? n : null;
+  }
+  function enToHe(word){
+    const n=norm(word);
+    if(EN2HE[n]) return EN2HE[n];
+    for(const e in EN2HE){ if(n.includes(e)||e.includes(n)) return EN2HE[e]; }
+    return word;
+  }
+
+  const MDB="https://www.themealdb.com/api/json/v1/1/";
+  async function jget(url){ const r=await fetch(url); if(!r.ok) throw new Error("net"); return r.json(); }
+  function discStatus(html){ $("#disc-status").innerHTML=html; }
+
+  async function runDiscover(){
+    const wrap=$("#disc-list"); wrap.innerHTML="";
+    const typed=$("#disc-input").value.trim();
+    let queries=[];
+    if(typed){ const e=heToEn(typed); if(e) queries=[e]; else { discStatus('<div class="card muted">לא זוהה מצרך לחיפוש.</div>'); return; } }
+    else {
+      const set=new Set();
+      state.pantry.forEach(p=>{ const e=heToEn(p); if(e) set.add(e); });
+      queries=Array.from(set).slice(0,5);
+    }
+    if(!queries.length){ discStatus('<div class="card muted">אין מצרכים לחיפוש. הוסף מצרכים למזווה או הקלד מצרך למעלה.</div>'); return; }
+    discStatus('<div class="card">⏳ מחפש מתכונים לפי: '+queries.map(q=>esc(enToHe(q))).join(", ")+' ...</div>');
+    try{
+      const freq={};
+      for(const q of queries){
+        try{
+          const d=await jget(MDB+"filter.php?i="+encodeURIComponent(q));
+          (d.meals||[]).forEach(m=>{ freq[m.idMeal]=(freq[m.idMeal]||0)+1; });
+        }catch(e){}
+      }
+      let ids=Object.keys(freq).sort((a,b)=>freq[b]-freq[a]).slice(0,12);
+      if(!ids.length){ discStatus('<div class="card muted">לא נמצאו מתכונים תואמים. נסה מצרך אחר.</div>'); return; }
+      const cards=[];
+      for(const id of ids){
+        try{
+          const d=await jget(MDB+"lookup.php?i="+id);
+          const meal=d.meals&&d.meals[0]; if(!meal) continue;
+          const ings=[];
+          for(let i=1;i<=20;i++){ const g=meal["strIngredient"+i]; if(g&&g.trim()) ings.push(g.trim()); }
+          const missing=[], have=[];
+          ings.forEach(g=>{ const he=enToHe(g); (pantryHas(he)||pantryHas(g))?have.push(he):missing.push(he); });
+          cards.push({meal, ings, have, missing});
+        }catch(e){}
+      }
+      cards.sort((a,b)=>a.missing.length-b.missing.length);
+      discStatus('<div class="muted" style="margin:4px 0 10px">נמצאו '+cards.length+' מתכונים, מדורגים לפי התאמה למזווה שלך.</div>');
+      bindDiscCards(cards);
+    }catch(err){
+      discStatus('<div class="card"><b>לא ניתן לחפש כרגע 🌐</b><br><span class="muted" style="font-size:13px">חיפוש חי דורש שהאפליקציה תתארח כאתר (GitHub Pages) או תיפתח מקומית מהקובץ. הוא אינו עובד בתוך תצוגת התצוגה המקדימה של Claude, שחוסמת גישה לרשת.</span></div>');
+    }
+  }
+  window.__discCache=null;
+  function discCard(c,idx){
+    const m=c.meal;
+    const badge = c.missing.length===0? '<span class="pill green">אפשר להכין ✓</span>'
+      : (c.missing.length<=3? `<span class="pill amber">השלמות קטנות: ${c.missing.length}</span>`
+      : `<span class="pill brand">חסרים ${c.missing.length}</span>`);
+    return `<div class="card">
+      <div class="row" style="justify-content:space-between;align-items:flex-start;gap:10px">
+        <div class="grow">
+          <div class="recipe-title">${esc(m.strMeal)}</div>
+          <div style="margin-top:5px">${m.strCategory?`<span class="pill brand">${esc(m.strCategory)}</span> `:""}${badge}</div>
+        </div>
+        ${m.strMealThumb?`<img src="${esc(m.strMealThumb)}" alt="" style="width:64px;height:64px;border-radius:12px;object-fit:cover;flex:0 0 auto">`:""}
+      </div>
+      ${c.missing.length?`<div class="missing">חסר לקנות: ${c.missing.map(esc).join("، ")}</div>`:'<div class="have">יש לך את כל המצרכים ✓</div>'}
+      <div style="margin-top:8px;display:flex;gap:12px;flex-wrap:wrap">
+        ${m.strSource?`<a href="${esc(m.strSource)}" target="_blank" rel="noopener" style="color:var(--brand);font-size:13px;font-weight:700;text-decoration:none">🔗 מתכון מלא</a>`:""}
+        ${m.strYoutube?`<a href="${esc(m.strYoutube)}" target="_blank" rel="noopener" style="color:var(--brand);font-size:13px;font-weight:700;text-decoration:none">▶️ סרטון</a>`:""}
+      </div>
+      <div class="row" style="gap:6px;margin-top:10px">
+        <button class="btn ghost sm dc-save" data-i="${idx}">💾 שמור למאגר</button>
+        ${c.missing.length?`<button class="btn line sm dc-shop" data-i="${idx}">🛒 הוסף חוסרים לקנייה</button>`:""}
+      </div>
+    </div>`;
+  }
+  function bindDiscCards(cards){
+    $("#disc-list").innerHTML=cards.map((c,i)=>discCard(c,i)).join("");
+    window.__discCache=cards;
+    $$("#disc-list .dc-save").forEach(b=>b.onclick=()=>{
+      const c=window.__discCache[+b.dataset.i]; if(!c) return;
+      const m=c.meal;
+      const ings=c.ings.map(g=>({t:enToHe(g)}));
+      const steps=(m.strInstructions||"").trim();
+      const link=m.strSource||m.strYoutube||"";
+      if(state.recipes.some(r=>norm(r.name)===norm(m.strMeal))){ toast("כבר קיים במאגר"); return; }
+      state.recipes.push({id:uid(), name:m.strMeal, cat:mapCat(m.strCategory), ings, steps, link, basics:[], made:0});
+      save(); renderAll(); toast("נשמר למאגר ✓");
+    });
+    $$("#disc-list .dc-shop").forEach(b=>b.onclick=()=>{
+      const c=window.__discCache[+b.dataset.i]; if(!c) return;
+      let added=0;
+      c.missing.forEach(mm=>{ if(!state.shop.some(s=>norm(s.t)===norm(mm))){ state.shop.push({t:mm,done:false,manual:true}); added++; } });
+      save(); renderStats(); toast(added?`נוספו ${added} לרשימת הקניות`:"הכל כבר ברשימה");
+    });
+  }
+  function mapCat(c){
+    const map={Breakfast:"ארוחת בוקר",Dessert:"קינוח",Seafood:"ארוחת ערב",Vegetarian:"ארוחת צהריים",Vegan:"ארוחת צהריים",Starter:"מנה קלה / חטיף",Side:"מנה קלה / חטיף",Soup:"מרק"};
+    return map[c]||"ארוחת צהריים";
+  }
+  $("#disc-go").onclick=runDiscover;
+  $("#disc-input").addEventListener("keydown",e=>{ if(e.key==="Enter") runDiscover(); });
 
   function renderAll(){
     renderStats(); renderHome(); renderPantry(); renderRecipes();
